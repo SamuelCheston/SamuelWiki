@@ -7,6 +7,8 @@ type ProjectCardProps = {
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
+  const previewPages = project.pages.filter((page) => page.slug !== "").slice(0, 3)
+
   return (
     <Box
       borderWidth="1px"
@@ -41,6 +43,21 @@ export function ProjectCard({ project }: ProjectCardProps) {
             </Text>
           )}
         </HStack>
+
+        {previewPages.length > 0 ? (
+          <Box>
+            <Text color="fg.muted" fontSize="sm" mb={2}>
+              文档预览
+            </Text>
+            <Stack gap={1}>
+              {previewPages.map((page) => (
+                <ChakraLink key={page.id} asChild fontSize="sm">
+                  <RouterLink to={page.href}>{page.title}</RouterLink>
+                </ChakraLink>
+              ))}
+            </Stack>
+          </Box>
+        ) : null}
       </Stack>
     </Box>
   )
