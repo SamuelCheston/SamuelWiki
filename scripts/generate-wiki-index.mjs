@@ -70,6 +70,14 @@ function toOptionalString(value) {
   return typeof value === "string" && value.trim() ? value.trim() : undefined
 }
 
+function isNonNegativeInteger(value) {
+  return Number.isInteger(value) && value >= 0
+}
+
+function isValidDateString(value) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value)
+}
+
 function deriveTitle(fileName) {
   const basename = fileName.replace(/\.md$/i, "")
 
@@ -118,7 +126,7 @@ async function generate() {
     const parsed = matter(raw)
     const data = parsed.data ?? {}
     const slug = fileName === "index.md" ? "" : fileName.replace(/\.md$/i, "")
-    const title = toOptionalString(data.title) ?? deriveTitle(fileName)
+    const title = toOptionalString(data.title)
     const description = toOptionalString(data.description)
     const order = toNumber(data.order)
     const tags = toArray(data.tags)
@@ -142,6 +150,36 @@ async function generate() {
       href,
     }
 
+    if (!title) {
+      violations.push(`title 为必填字段: wiki/${relativePath}`)
+    }
+
+    if (
+      Object.prototype.hasOwnProperty.call(data, "description") &&
+      typeof data.description !== "string"
+    ) {
+      violations.push(`description 必须是字符串: wiki/${relativePath}`)
+    }
+
+    if (
+      Object.prototype.hasOwnProperty.call(data, "order") &&
+      !isNonNegativeInteger(data.order)
+    ) {
+      violations.push(`order 必须是大于等于 0 的整数: wiki/${relativePath}`)
+    }
+
+    if (
+      Object.prototype.hasOwnProperty.call(data, "tags") &&
+      (!Array.isArray(data.tags) ||
+        data.tags.some((tag) => typeof tag !== "string" || !tag.trim()))
+    ) {
+      violations.push(`tags 必须是非空字符串数组: wiki/${relativePath}`)
+    }
+
+    if (updatedAt && !isValidDateString(updatedAt)) {
+      violations.push(`updatedAt 必须使用 YYYY-MM-DD 格式: wiki/${relativePath}`)
+    }
+
     const projectId = `${group}/${project}`
 
     if (!projectMap.has(projectId)) {
@@ -150,6 +188,30 @@ async function generate() {
 
     projectMap.get(projectId).push(page)
     pageContentMap[moduleKey] = parsed.content.trim()
+  }
+
+  for (const [projectId, pages] of projectMap.entries()) {
+    const [group, project] = projectId.split("/")
+    const hasIndexPage = pages.some((page) => page.slug === "")
+
+    if (!hasIndexPage) {
+      violations.push(`项目缺少 index.md: wiki/${group}/${project}/`)
+    }
+
+    const seenSlugs = new Set()
+
+    for (const page of pages) {
+      const slugKey = page.slug.toLowerCase()
+
+      if (seenSlugs.has(slugKey)) {
+        violations.push(
+          `项目内存在重复 slug: wiki/${group}/${project}/ (${page.slug || "index"})`,
+        )
+        continue
+      }
+
+      seenSlugs.add(slugKey)
+    }
   }
 
   if (violations.length > 0) {

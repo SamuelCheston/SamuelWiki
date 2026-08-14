@@ -21,7 +21,7 @@ wiki/
 
 ## Frontmatter 规范
 
-建议第一版统一使用以下字段：
+第一版统一使用以下字段：
 
 ```yaml
 ---
@@ -37,14 +37,24 @@ updatedAt: 2026-08-14
 
 字段说明：
 
-1. `title`：页面标题，建议必填。
-2. `description`：页面摘要，用于列表页和 SEO 文案。
-3. `order`：页面排序，数字越小越靠前。
-4. `tags`：页面标签数组。
-5. `updatedAt`：最后更新时间，建议使用 `YYYY-MM-DD`。
+1. `title`：页面标题，必填。
+2. `description`：页面摘要，用于列表页和 SEO 文案，选填。
+3. `order`：页面排序，选填；必须是大于等于 `0` 的整数。
+4. `tags`：页面标签数组，选填；如果填写，必须是字符串数组。
+5. `updatedAt`：最后更新时间，选填；如果填写，必须使用 `YYYY-MM-DD`。
 
 ## 页面约定
 
 1. 每个项目目录至少包含一个 `index.md`。
 2. `index.md` 作为项目首页，对应路由 `/projects/<group>/<project>`。
 3. 其他 Markdown 文件名会映射为页面 slug，例如 `quick-start.md` 对应 `/projects/<group>/<project>/quick-start`。
+
+## 严格校验规则
+
+当前项目采用严格校验策略，以下情况会直接导致构建失败：
+
+1. Markdown 文件不在 `wiki/<group>/<project>/` 下。
+2. 项目目录缺少 `index.md`。
+3. 页面缺少 `title`。
+4. `order`、`tags`、`updatedAt` 字段格式不合法。
+5. 同一项目内存在重复 slug。

@@ -165,70 +165,61 @@ function ProjectPage() {
         pages={projectMeta.pages}
       />
 
-      <Stack gap={6}>
-        <Box
-          borderWidth="1px"
-          borderRadius="2xl"
-          p={{ base: 5, md: 6 }}
-          bg="bg.panel"
-          boxShadow="sm"
-        >
-          <Stack gap={3}>
-            <HStack gap={2} wrap="wrap">
-              <Badge>{projectMeta.group}</Badge>
-              <Badge>{projectMeta.project}</Badge>
-              <Badge>{projectMeta.pageCount} pages</Badge>
-            </HStack>
+      <Box
+        borderWidth="1px"
+        borderRadius="2xl"
+        p={{ base: 5, md: 6 }}
+        bg="bg.panel"
+        boxShadow="sm"
+      >
+        <Stack gap={5}>
+          <Box>
+            <Text color="fg.muted" fontSize="sm" mb={2}>
+              {group} / {project}
+            </Text>
             <Heading size="xl">{projectMeta.title}</Heading>
-            <Text color="fg.muted">
+            <Text color="fg.muted" mt={3}>
               {projectMeta.description ?? "暂无项目描述。"}
             </Text>
-          </Stack>
-        </Box>
+            <HStack gap={2} wrap="wrap" mt={4}>
+              <Badge>{projectMeta.pageCount} pages</Badge>
+              {projectMeta.updatedAt ? (
+                <Badge>更新于 {projectMeta.updatedAt}</Badge>
+              ) : null}
+              {projectMeta.tags.map((tag) => (
+                <Badge key={tag} variant="subtle">
+                  #{tag}
+                </Badge>
+              ))}
+            </HStack>
+          </Box>
 
-        <Box
-          borderWidth="1px"
-          borderRadius="2xl"
-          p={{ base: 5, md: 6 }}
-          bg="bg.panel"
-          boxShadow="sm"
-        >
-          <Heading size="lg" mb={4}>
-            文档列表
-          </Heading>
-          <Stack gap={3}>
-            {docs.map((page) => (
-              <Box key={page.id}>
-                <ChakraLink asChild fontWeight="medium">
-                  <RouterLink to={page.href}>{page.title}</RouterLink>
-                </ChakraLink>
-                {page.description ? (
-                  <Text color="fg.muted" mt={1} fontSize="sm">
-                    {page.description}
-                  </Text>
-                ) : null}
-              </Box>
-            ))}
-          </Stack>
-        </Box>
+          {docs.length > 0 ? (
+            <Box>
+              <Text fontWeight="medium" mb={3}>
+                文档导航
+              </Text>
+              <HStack gap={2} wrap="wrap">
+                {docs.map((page) => (
+                  <ChakraLink
+                    key={page.id}
+                    asChild
+                    px={3}
+                    py={1.5}
+                    borderRadius="full"
+                    bg="bg.muted"
+                    fontSize="sm"
+                  >
+                    <RouterLink to={page.href}>{page.title}</RouterLink>
+                  </ChakraLink>
+                ))}
+              </HStack>
+            </Box>
+          ) : null}
 
-        <Box
-          borderWidth="1px"
-          borderRadius="2xl"
-          p={{ base: 5, md: 6 }}
-          bg="bg.panel"
-          boxShadow="sm"
-        >
-          <Heading size="lg" mb={4}>
-            项目首页
-          </Heading>
-          {isLoading ? (
-            <Spinner />
-          ) : (
-            <MarkdownRenderer content={content} />
-          )}
-        </Box>
-      </Stack>
+          {isLoading ? <Spinner /> : <MarkdownRenderer content={content} />}
+        </Stack>
+      </Box>
     </Grid>
   )
 }
