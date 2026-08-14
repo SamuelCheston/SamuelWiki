@@ -14,6 +14,7 @@ import {
 import { useEffect, useMemo, useState } from "react"
 import {
   Link as RouterLink,
+  useLocation,
   Outlet,
   Route,
   Routes,
@@ -153,9 +154,6 @@ function ProjectPage() {
   if (!projectMeta) {
     return <NotFoundContent />
   }
-
-  const docs = projectMeta.pages.filter((page) => page.slug !== "")
-
   return (
     <Grid templateColumns={{ base: "1fr", lg: "280px 1fr" }} gap={6}>
       <ProjectSidebar
@@ -193,29 +191,6 @@ function ProjectPage() {
               ))}
             </HStack>
           </Box>
-
-          {docs.length > 0 ? (
-            <Box>
-              <Text fontWeight="medium" mb={3}>
-                文档导航
-              </Text>
-              <HStack gap={2} wrap="wrap">
-                {docs.map((page) => (
-                  <ChakraLink
-                    key={page.id}
-                    asChild
-                    px={3}
-                    py={1.5}
-                    borderRadius="full"
-                    bg="bg.muted"
-                    fontSize="sm"
-                  >
-                    <RouterLink to={page.href}>{page.title}</RouterLink>
-                  </ChakraLink>
-                ))}
-              </HStack>
-            </Box>
-          ) : null}
 
           {isLoading ? <Spinner /> : <MarkdownRenderer content={content} />}
         </Stack>
@@ -307,7 +282,12 @@ function ProjectSidebar(props: {
   description?: string
   pages: WikiPageMeta[]
 }) {
-  const navPages = useMemo(
+  const location = useLocation()
+  const indexPage = useMemo(
+    () => props.pages.find((page) => page.slug === ""),
+    [props.pages],
+  )
+  const docPages = useMemo(
     () => props.pages.filter((page) => page.slug !== ""),
     [props.pages],
   )
@@ -333,23 +313,75 @@ function ProjectSidebar(props: {
           ) : null}
         </Box>
 
+        <Box>
+          <Text fontSize="sm" fontWeight="medium" color="fg.muted" mb={3}>
+            目录树
+          </Text>
+
+          <Stack gap={1} pl={1} borderInlineStartWidth="1px" borderColor="border.muted">
+            {indexPage ? (
+              <SidebarTreeItem
+                href={props.homeHref}
+                label={indexPage.title}
+                isActive={location.pathname === props.homeHref}
+              />
+            ) : (
+              <SidebarTreeItem
+                href={props.homeHref}
+                label="项目首页"
+                isActive={location.pathname === props.homeHref}
+              />
+            )}
+
+            {docPages.length > 0 ? (
+              <Box pl={4} pt={2}>
+                <Text fontSize="xs" color="fg.muted" textTransform="uppercase" letterSpacing="0.08em" mb={2}>
+                  文档
+                </Text>
+                <Stack gap={1}>
+                  {docPages.map((page) => (
+                    <SidebarTreeItem
+                      key={page.id}
+                      href={page.href}
+                      label={page.title}
+                      isActive={location.pathname === page.href}
+                    />
+                  ))}
+                </Stack>
+              </Box>
+            ) : null}
+          </Stack>
+        </Box>
+
         <Button asChild size="sm" variant="outline">
-          <RouterLink to={props.homeHref}>
-            返回项目首页
+          <RouterLink to="/projects">
+            返回项目列表
           </RouterLink>
         </Button>
-
-        <Stack gap={3}>
-          {navPages.map((page) => (
-            <Box key={page.id}>
-              <ChakraLink asChild>
-                <RouterLink to={page.href}>{page.title}</RouterLink>
-              </ChakraLink>
-            </Box>
-          ))}
-        </Stack>
       </Stack>
     </Box>
+  )
+}
+
+function SidebarTreeItem(props: {
+  href: string
+  label: string
+  isActive: boolean
+}) {
+  return (
+    <ChakraLink
+      asChild
+      display="block"
+      px={3}
+      py={2}
+      borderRadius="lg"
+      bg={props.isActive ? "colorPalette.subtle" : "transparent"}
+      color={props.isActive ? "colorPalette.fg" : "fg.default"}
+      fontWeight={props.isActive ? "semibold" : "medium"}
+      _hover={{ bg: "bg.muted" }}
+    >
+      <RouterLink to={props.href}>{props.label}</RouterLink>
+    </ChakraLink>
   )
 }
 
