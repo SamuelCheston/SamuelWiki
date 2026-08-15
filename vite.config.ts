@@ -1,3 +1,5 @@
+import fs from "node:fs/promises"
+import path from "node:path"
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -19,7 +21,27 @@ function getPackageName(id: string) {
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: "copy-wiki-directory",
+      apply: "build",
+      async closeBundle() {
+        const rootDir = process.cwd()
+        const sourceDir = path.resolve(rootDir, "wiki")
+        const targetDir = path.resolve(rootDir, "dist", "wiki")
+
+        try {
+          await fs.access(sourceDir)
+        } catch {
+          return
+        }
+
+        await fs.rm(targetDir, { recursive: true, force: true })
+        await fs.cp(sourceDir, targetDir, { recursive: true })
+      },
+    },
+  ],
   resolve: {
     tsconfigPaths: true,
   },
