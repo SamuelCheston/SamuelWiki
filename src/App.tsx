@@ -30,7 +30,6 @@ import {
   groupProjectPages,
   getWikiPage,
   getWikiProject,
-  getWikiProjects,
   searchWikiProjects,
 } from "@/features/wiki/wiki"
 
@@ -64,8 +63,6 @@ function App() {
 }
 
 function AppShell() {
-  const projects = getWikiProjects()
-
   return (
     <Box minH="100vh" bg="bg.canvas">
       <Container maxW="7xl" py={{ base: 6, md: 10 }}>
