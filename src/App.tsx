@@ -11,7 +11,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react"
-import { useEffect, useMemo, useState } from "react"
+import { Suspense, lazy, useEffect, useMemo, useState } from "react"
 import {
   Link as RouterLink,
   Outlet,
@@ -20,8 +20,6 @@ import {
   useLocation,
   useParams,
 } from "react-router-dom"
-import { DocToc } from "@/components/wiki/DocToc"
-import { MarkdownRenderer } from "@/components/wiki/MarkdownRenderer"
 import { ProjectCard } from "@/components/wiki/ProjectCard"
 import { SearchBox } from "@/components/wiki/SearchBox"
 import { loadWikiPageContent } from "@/generated/wiki-index"
@@ -29,11 +27,24 @@ import { extractMarkdownHeadings } from "@/features/wiki/markdown"
 import type { WikiPageMeta, WikiProjectMeta } from "@/features/wiki/types"
 import {
   getAdjacentPages,
+  groupProjectPages,
   getWikiPage,
   getWikiProject,
   getWikiProjects,
   searchWikiProjects,
 } from "@/features/wiki/wiki"
+
+const LazyDocToc = lazy(async () => {
+  const module = await import("@/components/wiki/DocToc")
+
+  return { default: module.DocToc }
+})
+
+const LazyMarkdownRenderer = lazy(async () => {
+  const module = await import("@/components/wiki/MarkdownRenderer")
+
+  return { default: module.MarkdownRenderer }
+})
 
 function App() {
   return (
@@ -109,7 +120,7 @@ function AppShell() {
 
 function HomePage() {
   const [query, setQuery] = useState("")
-  const projects = useMemo(() => searchWikiProjects(query), [query])
+  const results = useMemo(() => searchWikiProjects(query), [query])
 
   return (
     <Stack gap={6}>
@@ -124,14 +135,20 @@ function HomePage() {
 
       <Text color="fg.muted" fontSize="sm">
         {query.trim()
-          ? `找到 ${projects.length} 个匹配项目`
-          : `当前共 ${projects.length} 个项目`}
+          ? `找到 ${results.length} 个匹配项目`
+          : `当前共 ${results.length} 个项目`}
       </Text>
 
-      {projects.length > 0 ? (
+      {results.length > 0 ? (
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+          {results.map((result) => (
+            <ProjectCard
+              key={result.project.id}
+              project={result.project}
+              matchedPages={result.matchedPages}
+              matchedFields={result.matchedFields}
+              queryActive={Boolean(query.trim())}
+            />
           ))}
         </Grid>
       ) : (
@@ -184,10 +201,7 @@ function WikiReaderPage(props: {
 
   return (
     <Stack gap={4}>
-      <MobileProjectNav
-        projectMeta={props.projectMeta}
-        currentHref={props.page.href}
-      />
+      <MobileProjectNav projectMeta={props.projectMeta} />
 
       <Grid
         templateColumns={{
@@ -198,10 +212,7 @@ function WikiReaderPage(props: {
         gap={6}
       >
         <Box display={{ base: "none", lg: "block" }}>
-          <ProjectSidebar
-            projectMeta={props.projectMeta}
-            currentHref={props.page.href}
-          />
+          <ProjectSidebar projectMeta={props.projectMeta} />
         </Box>
 
         <Box
@@ -236,7 +247,13 @@ function WikiReaderPage(props: {
               />
             </Box>
 
-            {isLoading ? <Spinner /> : <MarkdownRenderer content={content} />}
+            {isLoading ? (
+              <Spinner />
+            ) : (
+              <Suspense fallback={<Spinner />}>
+                <LazyMarkdownRenderer content={content} />
+              </Suspense>
+            )}
 
             <AdjacentNav
               previousPage={previousPage}
@@ -245,7 +262,9 @@ function WikiReaderPage(props: {
           </Stack>
         </Box>
 
-        <DocToc headings={headings} />
+        <Suspense fallback={null}>
+          <LazyDocToc headings={headings} />
+        </Suspense>
       </Grid>
     </Stack>
   )
@@ -283,16 +302,11 @@ function useWikiContent(moduleKey: string) {
 
 function ProjectSidebar(props: {
   projectMeta: WikiProjectMeta
-  currentHref: string
 }) {
   const location = useLocation()
-  const indexPage = useMemo(
-    () => props.projectMeta.pages.find((page) => page.slug === ""),
-    [props.projectMeta.pages],
-  )
-  const docPages = useMemo(
-    () => props.projectMeta.pages.filter((page) => page.slug !== ""),
-    [props.projectMeta.pages],
+  const { indexPage, docPages } = useMemo(
+    () => groupProjectPages(props.projectMeta),
+    [props.projectMeta],
   )
 
   return (
@@ -317,24 +331,41 @@ function ProjectSidebar(props: {
         </Box>
 
         <Box>
-          <Text fontSize="sm" fontWeight="medium" color="fg.muted" mb={3}>
-            目录树
-          </Text>
+          <HStack justify="space-between" mb={3}>
+            <Text fontSize="sm" fontWeight="medium" color="fg.muted">
+              目录树
+            </Text>
+            <Badge variant="subtle">{docPages.length} docs</Badge>
+          </HStack>
 
           <Stack
-            gap={1}
+            gap={3}
             pl={1}
             borderInlineStartWidth="1px"
             borderColor="border.muted"
           >
-            <SidebarTreeItem
-              href={props.projectMeta.href}
-              label={indexPage?.title ?? "项目首页"}
-              isActive={location.pathname === props.projectMeta.href}
-            />
+            <Box>
+              <Text
+                fontSize="xs"
+                color="fg.muted"
+                textTransform="uppercase"
+                letterSpacing="0.08em"
+                mb={2}
+                pl={3}
+              >
+                概览
+              </Text>
+              <Stack gap={1}>
+                <SidebarTreeItem
+                  href={props.projectMeta.href}
+                  label={indexPage?.title ?? "项目首页"}
+                  isActive={location.pathname === props.projectMeta.href}
+                />
+              </Stack>
+            </Box>
 
             {docPages.length > 0 ? (
-              <Box pl={4} pt={2}>
+              <Box pl={4}>
                 <Text
                   fontSize="xs"
                   color="fg.muted"
@@ -362,12 +393,6 @@ function ProjectSidebar(props: {
         <Button asChild size="sm" variant="outline">
           <RouterLink to="/projects">返回项目列表</RouterLink>
         </Button>
-
-        {location.pathname !== props.currentHref ? (
-          <Button asChild size="sm" colorPalette="teal">
-            <RouterLink to={props.currentHref}>回到当前页面</RouterLink>
-          </Button>
-        ) : null}
       </Stack>
     </Box>
   )
@@ -375,16 +400,20 @@ function ProjectSidebar(props: {
 
 function MobileProjectNav(props: {
   projectMeta: WikiProjectMeta
-  currentHref: string
 }) {
   const [open, setOpen] = useState(false)
 
   return (
     <>
       <HStack display={{ base: "flex", lg: "none" }} justify="space-between">
-        <Text color="fg.muted" fontSize="sm">
-          {props.projectMeta.title}
-        </Text>
+        <Stack gap={0}>
+          <Text color="fg.muted" fontSize="xs">
+            项目导航
+          </Text>
+          <Text fontSize="sm" fontWeight="medium">
+            {props.projectMeta.title}
+          </Text>
+        </Stack>
         <Button size="sm" variant="outline" onClick={() => setOpen(true)}>
           打开目录
         </Button>
@@ -414,10 +443,7 @@ function MobileProjectNav(props: {
                 </Button>
               </HStack>
 
-              <ProjectSidebar
-                projectMeta={props.projectMeta}
-                currentHref={props.currentHref}
-              />
+              <ProjectSidebar projectMeta={props.projectMeta} />
             </Stack>
           </Box>
         </Box>

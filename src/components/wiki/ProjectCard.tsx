@@ -4,10 +4,20 @@ import type { WikiProjectMeta } from "@/features/wiki/types"
 
 type ProjectCardProps = {
   project: WikiProjectMeta
+  matchedPages?: WikiProjectMeta["pages"]
+  matchedFields?: string[]
+  queryActive?: boolean
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
-  const previewPages = project.pages.filter((page) => page.slug !== "").slice(0, 3)
+export function ProjectCard({
+  project,
+  matchedPages,
+  matchedFields,
+  queryActive = false,
+}: ProjectCardProps) {
+  const previewPages = (matchedPages && matchedPages.length > 0
+    ? matchedPages
+    : project.pages.filter((page) => page.slug !== "").slice(0, 3))
 
   return (
     <Box
@@ -44,10 +54,20 @@ export function ProjectCard({ project }: ProjectCardProps) {
           )}
         </HStack>
 
+        {queryActive && matchedFields && matchedFields.length > 0 ? (
+          <HStack gap={2} wrap="wrap">
+            {matchedFields.map((field) => (
+              <Badge key={field} colorPalette="teal">
+                命中{field}
+              </Badge>
+            ))}
+          </HStack>
+        ) : null}
+
         {previewPages.length > 0 ? (
           <Box>
             <Text color="fg.muted" fontSize="sm" mb={2}>
-              文档预览
+              {queryActive ? "匹配文档" : "文档预览"}
             </Text>
             <Stack gap={1}>
               {previewPages.map((page) => (
