@@ -1,4 +1,4 @@
-import { Badge, Box, HStack, Link as ChakraLink, Stack, Text } from "@chakra-ui/react"
+import { Badge, Box, HStack, Link as ChakraLink, LinkBox, LinkOverlay, Stack, Text } from "@chakra-ui/react"
 import { Link as RouterLink } from "react-router-dom"
 import type { WikiProjectMeta } from "@/features/wiki/types"
 
@@ -20,18 +20,23 @@ export function ProjectCard({
     : project.pages.filter((page) => page.slug !== "").slice(0, 3))
 
   return (
-    <Box
+    <LinkBox
+      as="article"
       borderWidth="1px"
       borderRadius="xl"
       p={5}
       bg="bg.panel"
       boxShadow="sm"
+      _hover={{ bg: "bg.muted", cursor: "pointer" }}
+      transition="background 0.2s"
     >
       <Stack gap={3}>
         <HStack justify="space-between" align="start">
           <Box>
             <ChakraLink asChild fontWeight="semibold" fontSize="xl">
-              <RouterLink to={project.href}>{project.title}</RouterLink>
+              <LinkOverlay asChild>
+                <RouterLink to={project.href}>{project.title}</RouterLink>
+              </LinkOverlay>
             </ChakraLink>
             <Text color="fg.muted" fontSize="sm">
               {project.group} / {project.project}
@@ -79,6 +84,6 @@ export function ProjectCard({
           </Box>
         ) : null}
       </Stack>
-    </Box>
+    </LinkBox>
   )
 }

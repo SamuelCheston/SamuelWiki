@@ -70,47 +70,6 @@ function AppShell() {
     <Box minH="100vh" bg="bg.canvas">
       <Container maxW="7xl" py={{ base: 6, md: 10 }}>
         <Stack gap={8}>
-          <Box
-            borderWidth="1px"
-            borderRadius="2xl"
-            px={{ base: 5, md: 8 }}
-            py={{ base: 5, md: 6 }}
-            bg="bg.panel"
-            boxShadow="sm"
-          >
-            <Stack gap={4}>
-              <HStack justify="space-between" align="start" wrap="wrap">
-                <Box>
-                  <ChakraLink asChild fontSize="2xl" fontWeight="bold">
-                    <RouterLink to="/">HRPAuth Wiki</RouterLink>
-                  </ChakraLink>
-                  <Text color="fg.muted" mt={2}>
-                    面向多项目文档沉淀的 Wiki 站点。当前已接入 {projects.length} 个项目。
-                  </Text>
-                </Box>
-                <Button asChild colorPalette="teal">
-                  <RouterLink to="/projects">浏览项目</RouterLink>
-                </Button>
-              </HStack>
-
-              <HStack gap={2} wrap="wrap">
-                {projects.map((project) => (
-                  <ChakraLink
-                    key={project.id}
-                    asChild
-                    px={3}
-                    py={1.5}
-                    borderRadius="full"
-                    bg="bg.muted"
-                    fontSize="sm"
-                  >
-                    <RouterLink to={project.href}>{project.title}</RouterLink>
-                  </ChakraLink>
-                ))}
-              </HStack>
-            </Stack>
-          </Box>
-
           <Outlet />
         </Stack>
       </Container>
