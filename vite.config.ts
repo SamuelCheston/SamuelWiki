@@ -21,6 +21,7 @@ function getPackageName(id: string) {
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Build with relative asset URLs so the static site can be served from any subpath.
   base: "./",
   plugins: [
     react(),
@@ -30,7 +31,7 @@ export default defineConfig({
       async closeBundle() {
         const rootDir = process.cwd()
         const sourceDir = path.resolve(rootDir, "wiki")
-        const targetDir = path.resolve(rootDir, "docs", "wiki")
+        const targetDir = path.resolve(rootDir, "dist", "wiki")
 
         try {
           await fs.access(sourceDir)
@@ -47,8 +48,6 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   build: {
-    outDir: "docs",
-    emptyOutDir: true,
     rollupOptions: {
       output: {
         manualChunks(id) {
