@@ -46,6 +46,27 @@ const LazyMarkdownRenderer = lazy(async () => {
 })
 
 function App() {
+  // #region debug-point D:app-render
+  useEffect(() => {
+    fetch("http://127.0.0.1:7777/event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sessionId: "homepage-white-screen",
+        runId: "pre-fix",
+        hypothesisId: "D",
+        location: "src/App.tsx:App",
+        msg: "[DEBUG] app rendered",
+        data: {
+          path: window.location.pathname,
+          hash: window.location.hash,
+        },
+        ts: Date.now(),
+      }),
+    }).catch(() => {})
+  }, [])
+  // #endregion
+
   return (
     <Routes>
       <Route path="/" element={<AppShell />}>
@@ -77,6 +98,27 @@ function AppShell() {
 function HomePage() {
   const [query, setQuery] = useState("")
   const results = useMemo(() => searchWikiProjects(query), [query])
+
+  // #region debug-point E:homepage-render
+  useEffect(() => {
+    fetch("http://127.0.0.1:7777/event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sessionId: "homepage-white-screen",
+        runId: "pre-fix",
+        hypothesisId: "E",
+        location: "src/App.tsx:HomePage",
+        msg: "[DEBUG] homepage rendered",
+        data: {
+          resultCount: results.length,
+          query,
+        },
+        ts: Date.now(),
+      }),
+    }).catch(() => {})
+  }, [query, results.length])
+  // #endregion
 
   return (
     <Stack gap={6}>
