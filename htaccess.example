@@ -1,0 +1,61 @@
+# ------------------------------------------------------------------------------
+# | VitePress Static Site .htaccess Example                                    |
+# ------------------------------------------------------------------------------
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. 强制 HTTPS (如果已配置 SSL，取消注释以下行)
+  # RewriteCond %{HTTPS} off
+  # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # 2. 处理干净的 URL (隐藏 .html 后缀)
+  # 如果请求的文件不存在但加上 .html 后存在，则内部重写
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}\.html -f
+  RewriteRule ^(.*)$ $1.html [L]
+
+  # 3. 将显式的 .html 请求重定向到干净的 URL (防止重复内容)
+  RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\.html\ HTTP/
+  RewriteRule ^(.*)\.html$ /$1 [R=301,L]
+
+  # 4. 如果项目是单页应用 (SPA) 模式，取消注释以下行以支持路由回退
+  # RewriteCond %{REQUEST_FILENAME} !-f
+  # RewriteCond %{REQUEST_FILENAME} !-d
+  # RewriteRule . /index.html [L]
+</IfModule>
+
+# 5. 启用 Gzip 压缩以提高加载速度
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript application/json application/xml image/svg+xml
+</IfModule>
+
+# 6. 设置浏览器缓存策略 (Leverage Browser Caching)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  # 默认缓存 1 个月
+  ExpiresDefault "access plus 1 month"
+  
+  # HTML 不缓存，确保用户始终看到最新内容
+  ExpiresByType text/html "access plus 0 seconds"
+  
+  # 静态资源 (CSS, JS) 缓存 1 年 (因为 VitePress 构建的文件名通常带有哈希)
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType application/x-javascript "access plus 1 year"
+  
+  # 图片和图标缓存 1 个月
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
+
+# 7. 自定义 404 错误页面
+# 注意：路径应相对于网站根目录
+ErrorDocument 404 /404.html
+
+# 8. 禁止列出目录内容
+Options -Indexes
