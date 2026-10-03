@@ -1,37 +1,13 @@
 {
-  "name": "SamuelWiki",
+  "name": "samuelwiki",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "prepare:wiki": "node ./scripts/generate-wiki-index.mjs",
-    "predev": "npm run prepare:wiki",
-    "prebuild": "npm run prepare:wiki",
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@chakra-ui/react": "^3.36.1",
-    "@emotion/react": "^11.14.0",
-    "gray-matter": "^4.0.3",
-    "highlight.js": "^11.12.0",
-    "next-themes": "^0.4.6",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "react-icons": "^5.7.0",
-    "react-markdown": "^10.1.0",
-    "react-router-dom": "^7.18.2",
-    "remark-gfm": "^4.0.1"
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
-    "@types/node": "^24.13.3",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.4",
-    "oxlint": "^1.75.0",
-    "typescript": "~6.0.2",
-    "vite": "^8.2.0"
+    "vitepress": "^1.6.3"
   }
 }
