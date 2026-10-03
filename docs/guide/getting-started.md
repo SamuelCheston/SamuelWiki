@@ -1,36 +1,36 @@
-# 快速开始
+# Quick Start
 
-本页帮助你在本地运行、预览并构建这套 wiki 站点。
+This page helps you run, preview, and build the wiki site locally.
 
-## 安装依赖
+## Install Dependencies
 
 ```bash
 npm install
 ```
 
-## 启动开发环境
+## Start the Dev Server
 
 ```bash
 npm run docs:dev
 ```
 
-启动后，你可以在本地浏览器中实时查看文档变更效果。
+After it starts, open the local URL in your browser to preview changes in real time.
 
-## 构建生产版本
+## Build for Production
 
 ```bash
 npm run docs:build
 ```
 
-如果需要预览构建产物，可以继续执行：
+To preview the built output, run:
 
 ```bash
 npm run docs:preview
 ```
 
-## 推荐工作流
+## Recommended Workflow
 
-1. 在 `docs/` 下新增或编辑 Markdown 页面
-2. 同步更新 `docs/.vitepress/config.mts` 中的导航或侧边栏
-3. 本地预览确认页面层级、链接和样式是否正常
-4. 构建一次，确保站点可以正常生成静态文件
+1. Add or edit Markdown pages under `docs/`
+2. Update navigation or sidebar settings in `docs/.vitepress/config.mts`
+3. Preview locally to verify page hierarchy, links, and styles
+4. Run a build to confirm the site generates static output correctly

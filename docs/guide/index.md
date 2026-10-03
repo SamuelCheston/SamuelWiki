@@ -1,21 +1,21 @@
-# 开始使用
+# Getting Started
 
-这一部分面向第一次接触站点的同学，帮助你快速理解这套 wiki 的定位、目录和维护方式。
+This section is for teammates who are new to the site and need a quick understanding of its purpose, structure, and maintenance workflow.
 
-## 你会在这里找到什么
+## What You Will Find Here
 
-- 如何在本地启动和预览文档站点
-- 当前站点采用的目录组织方式
-- 编写新文档时建议遵循的基本规范
+- How to run and preview the documentation site locally
+- How the current wiki content is organized
+- The basic writing rules recommended for new pages
 
-## 建议阅读顺序
+## Suggested Reading Order
 
-1. 先看 [快速开始](/guide/getting-started)
-2. 再看 [项目结构](/guide/project-structure)
-3. 最后阅读 [文档编写规范](/guide/writing-docs)
+1. Start with [Quick Start](/guide/getting-started)
+2. Then read [Project Structure](/guide/project-structure)
+3. Finish with [Writing Docs](/guide/writing-docs)
 
-## 适用人群
+## Who This Section Is For
 
-- 新加入项目、需要快速建立上下文的成员
-- 负责维护文档目录和页面内容的同学
-- 需要把零散资料整理成体系化 wiki 的团队
+- New contributors who need context quickly
+- Maintainers responsible for page organization and updates
+- Teams turning scattered notes into a structured wiki

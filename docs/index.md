@@ -3,66 +3,66 @@ layout: home
 
 hero:
   name: SamuelWiki
-  text: 面向产品团队的现代化 Wiki Site
-  tagline: 把产品文档、规范说明、部署资料和常见问题统一到一个清晰可维护的站点里。
+  text: A Modern Wiki Site for Product Teams
+  tagline: Bring product docs, specifications, deployment notes, and common questions into one clear and maintainable site.
   actions:
     - theme: brand
-      text: 开始使用
+      text: Get Started
       link: /guide/
     - theme: alt
-      text: 查看参考资料
+      text: Browse Reference
       link: /reference/
 
 features:
-  - title: 清晰的信息架构
-    details: 以“开始使用、参考资料、FAQ、更新记录”为主轴组织内容，适合持续扩展。
-  - title: 本地搜索即开即用
-    details: 已启用 VitePress 本地搜索，适合中小型 wiki 站点快速检索内容。
-  - title: 文档与产品协作友好
-    details: 支持规范、流程、架构、部署和常见问题共存，方便团队统一沉淀知识。
+  - title: Clear Information Architecture
+    details: Organize content around getting started, reference, FAQ, and changelog sections that scale cleanly over time.
+  - title: Built-in Local Search
+    details: Local search is already enabled, which works well for small and medium-sized wiki sites.
+  - title: Friendly for Product Collaboration
+    details: Keep guides, standards, architecture notes, deployment docs, and FAQs in one shared knowledge base.
 ---
 
-## 常用入口
+## Key Sections
 
 <div class="wiki-grid">
   <a class="wiki-card" href="/guide/">
-    <h3>开始使用</h3>
-    <p>快速了解站点结构、启动方式以及如何继续维护这套 wiki。</p>
+    <h3>Getting Started</h3>
+    <p>Learn the site structure, development workflow, and how to maintain this wiki.</p>
   </a>
   <a class="wiki-card" href="/reference/">
-    <h3>参考资料</h3>
-    <p>集中查看架构说明、内容模型和部署策略等长期有效的信息。</p>
+    <h3>Reference</h3>
+    <p>Find long-lived documentation such as architecture, content model, and deployment notes.</p>
   </a>
   <a class="wiki-card" href="/faq">
     <h3>FAQ</h3>
-    <p>沉淀高频问题、排错提示和团队常见使用说明。</p>
+    <p>Capture common questions, troubleshooting tips, and repeated team guidance.</p>
   </a>
   <a class="wiki-card" href="/changelog">
-    <h3>更新记录</h3>
-    <p>跟踪站点内容演进，帮助团队快速了解最近变化。</p>
+    <h3>Changelog</h3>
+    <p>Track site evolution and help the team stay aware of recent changes.</p>
   </a>
 </div>
 
-## 推荐阅读路径
+## Suggested Reading Paths
 
 <div class="wiki-list">
   <div class="wiki-list-item">
-    <strong>1. 新成员入门</strong>
-    先看 <a href="/guide/getting-started">快速开始</a>，再阅读 <a href="/guide/project-structure">项目结构</a>。
+    <strong>1. New team members</strong>
+    Start with <a href="/guide/getting-started">Quick Start</a>, then read <a href="/guide/project-structure">Project Structure</a>.
   </div>
   <div class="wiki-list-item">
-    <strong>2. 内容维护者</strong>
-    优先阅读 <a href="/guide/writing-docs">文档编写规范</a> 和 <a href="/reference/content-model">内容模型</a>。
+    <strong>2. Content maintainers</strong>
+    Read <a href="/guide/writing-docs">Writing Docs</a> and <a href="/reference/content-model">Content Model</a> first.
   </div>
   <div class="wiki-list-item">
-    <strong>3. 负责部署的同学</strong>
-    直接进入 <a href="/reference/deployment">部署说明</a>，了解构建、产物和发布建议。
+    <strong>3. Deployment owners</strong>
+    Go straight to <a href="/reference/deployment">Deployment</a> to review build and release guidance.
   </div>
 </div>
 
-## 这个站点包含什么
+## What This Site Includes
 
-- 面向新成员的入门文档
-- 面向维护者的编写与协作规范
-- 面向工程同学的架构与部署说明
-- 面向团队的常见问题和更新记录
+- Onboarding docs for new contributors
+- Writing and collaboration guidelines for maintainers
+- Architecture and deployment references for engineers
+- FAQs and changelog pages for ongoing team updates

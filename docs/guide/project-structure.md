@@ -1,35 +1,36 @@
-# 项目结构
+# Project Structure
 
-下面是当前 wiki 站点的核心目录职责说明。
+Below is an overview of the main directories and what they are responsible for.
 
-## 目录总览
+## Directory Overview
 
 ```text
 docs/
   .vitepress/
-    config.mts         # 站点配置、导航、侧边栏、搜索等
+    config.mts         # Site config, nav, sidebar, search, locale settings
     theme/
-      index.ts         # 自定义主题入口
-      style.css        # 站点样式扩展
-  guide/               # 入门与维护说明
-  reference/           # 架构、模型、部署等参考资料
-  index.md             # 首页
-  faq.md               # 常见问题
-  changelog.md         # 更新记录
-  about.md             # 关于页面
+      index.ts         # Custom theme entry
+      style.css        # Site style extensions
+  guide/               # Onboarding and maintenance guides
+  reference/           # Architecture, content model, deployment references
+  zh/                  # Chinese localized pages
+  index.md             # Home page
+  faq.md               # FAQ
+  changelog.md         # Changelog
+  about.md             # About page
 ```
 
-## 内容组织建议
+## Content Organization Guidance
 
-- `guide/`：放操作型文档，强调“怎么做”
-- `reference/`：放长期稳定的说明，强调“是什么”和“为什么”
-- 顶层单页：适合承载 FAQ、更新记录、关于我们这类跨栏目内容
+- `guide/`: task-oriented pages that explain how to do something
+- `reference/`: stable pages that explain what something is and why it exists
+- top-level single pages: useful for FAQ, changelog, and about-style content
 
-## 扩展方式
+## How to Extend It
 
-新增一个文档专题时，推荐这样做：
+When adding a new documentation section, this is a good default workflow:
 
-1. 在 `docs/` 下创建对应目录
-2. 新增一个入口页 `index.md`
-3. 把子页面加入 `config.mts` 的侧边栏
-4. 在首页或相关栏目补上入口链接
+1. Create a matching directory under `docs/`
+2. Add an `index.md` page as the section entry
+3. Register subpages in the sidebar inside `config.mts`
+4. Add entry links from the home page or related sections

@@ -1,15 +1,21 @@
-# 更新记录
+# Changelog
 
 ## 2026-10-03
 
-### 初始化站点
+### Initial Setup
 
-- 创建 VitePress 基础项目
-- 接入本地搜索
-- 配置导航、侧边栏和页脚
+- Created the base VitePress project
+- Enabled local search
+- Configured navigation, sidebar, and footer
 
-### 扩充为完整 wiki
+### Expanded into a Full Wiki
 
-- 新增现代卡片式首页
-- 补齐 Guide、Reference、FAQ、About 等页面结构
-- 增加主题样式扩展，提升首页入口和内容区可读性
+- Added a modern card-based home page
+- Completed the Guide, Reference, FAQ, and About structure
+- Added custom theme styles for a more polished landing experience
+
+### Added i18n
+
+- Switched the default locale to English
+- Added a Chinese locale under `/zh/`
+- Localized navigation, sidebar, and core content pages

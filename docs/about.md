@@ -1,23 +1,23 @@
-# 关于 SamuelWiki
+# About SamuelWiki
 
-SamuelWiki 是一套基于 VitePress 构建的产品文档型 wiki 站点模板。
+SamuelWiki is a VitePress-based wiki template designed for product documentation and team knowledge sharing.
 
-## 目标
+## Goals
 
-- 为团队提供统一的知识入口
-- 降低文档维护和查找成本
-- 让产品、设计、研发都能参与内容沉淀
+- Give the team one shared knowledge entry point
+- Reduce the cost of maintaining and finding documentation
+- Make it easy for product, design, and engineering to contribute
 
-## 当前特点
+## Current Features
 
-- 现代卡片式首页
-- 面向产品文档的内容分区
-- 可直接扩展的导航和侧边栏结构
-- 适合部署到静态托管环境
+- A modern card-based home page
+- Product-documentation-oriented content sections
+- Navigation and sidebar structures that are easy to extend
+- A static-site setup that is simple to deploy
 
-## 适合后续继续补充的方向
+## Good Next Additions
 
-- 品牌 Logo 与配色体系
-- 评论或反馈入口
-- 版本化文档
-- 自动化部署与内容检查
+- Brand logo and color system
+- Feedback or comment entry points
+- Versioned documentation
+- Automated deployment and content checks

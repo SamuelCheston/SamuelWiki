@@ -1,21 +1,21 @@
 # FAQ
 
-## 这套站点适合拿来做什么
+## What is this site good for
 
-适合承载产品文档、研发规范、部署说明、团队知识库和常见问题。
+It works well for product docs, engineering standards, deployment notes, team knowledge bases, and recurring questions.
 
-## 新页面应该放在哪
+## Where should a new page go
 
-如果页面主要解决“怎么做”，优先放到 `guide/`；如果主要解决“是什么”，优先放到 `reference/`。
+If the page mainly explains how to do something, put it under `guide/`. If it mainly explains what something is, put it under `reference/`.
 
-## 如何让页面出现在导航里
+## How do I add pages to the navigation
 
-更新 `docs/.vitepress/config.mts` 中的 `nav` 或 `sidebar` 配置即可。
+Update the `nav` or `sidebar` settings in `docs/.vitepress/config.mts`.
 
-## 搜索为什么能直接使用
+## Why does search work out of the box
 
-因为当前已经启用了 VitePress 的本地搜索能力，构建后会自动生成对应索引。
+Because local search is already enabled in VitePress, and the index is generated during build.
 
-## 将来可以继续扩展什么
+## What can be added later
 
-可以继续扩展自定义组件、公告栏、评论系统、统计分析和自动化部署流程。
+You can keep extending this site with custom components, announcements, comments, analytics, and automated deployment.

@@ -1,30 +1,31 @@
-# 站点架构
+# Site Architecture
 
-这套 wiki 站点基于 VitePress 构建，属于典型的静态站点架构。
+This wiki site is built with VitePress and follows a typical static-site architecture.
 
-## 架构分层
+## Layers
 
-### 内容层
+### Content Layer
 
-使用 Markdown 编写页面内容，适合文档、规范、FAQ 和说明类信息的持续维护。
+Pages are written in Markdown, which is a good fit for guides, standards, FAQs, and reference material.
 
-### 配置层
+### Configuration Layer
 
-`docs/.vitepress/config.mts` 负责管理：
+`docs/.vitepress/config.mts` manages:
 
-- 顶部导航
-- 侧边栏
-- 搜索
-- 页脚
-- 页面大纲和文档导航
+- top navigation
+- sidebars
+- search
+- footer
+- outline and document navigation
+- locale switching
 
-### 展示层
+### Presentation Layer
 
-`docs/.vitepress/theme/` 中的主题扩展负责首页卡片样式和全站视觉补充。
+The custom theme files inside `docs/.vitepress/theme/` handle the home page cards and global visual tweaks.
 
-## 为什么适合做 wiki
+## Why It Works Well for a Wiki
 
-- 内容与结构都放在版本库里，便于协作和回溯
-- 构建结果是纯静态文件，部署简单
-- 站内搜索、导航和大纲能力比较成熟
-- 非前端同学也能通过 Markdown 参与维护
+- Content and structure live in version control, which helps collaboration and traceability
+- The build output is static, so deployment stays simple
+- Search, navigation, and page outlines are already mature
+- Non-frontend teammates can still contribute through Markdown

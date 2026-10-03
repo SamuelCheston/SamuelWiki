@@ -1,38 +1,38 @@
-# 文档编写规范
+# Writing Docs
 
-为了让这套 wiki 能长期维护，建议统一采用下面这些基本规范。
+To keep this wiki maintainable over time, it helps to follow a shared set of writing rules.
 
-## 页面结构
+## Page Structure
 
-每篇文档尽量包含这几个部分：
+Each page should ideally include these parts:
 
-- 页面目标：说明这篇文档解决什么问题
-- 背景信息：帮助读者快速建立上下文
-- 正文内容：按任务或主题分块组织
-- 相关链接：指向上下游文档
+- Page goal: what problem this page solves
+- Context: the background a reader needs first
+- Main content: organized by task or topic
+- Related links: connections to upstream or downstream docs
 
-## 标题层级
+## Heading Levels
 
-- 一个页面只保留一个一级标题
-- 二级标题用于拆分主要章节
-- 三级标题用于补充细节，不要层级过深
+- Keep one level-1 heading per page
+- Use level-2 headings for major sections
+- Use level-3 headings only for supporting detail
 
-## 写作建议
+## Writing Guidance
 
-- 标题尽量直接，避免使用模糊命名
-- 一段只表达一个主要观点
-- 操作步骤用有序列表
-- 命令、路径、配置项统一使用代码格式
+- Prefer direct and specific titles
+- Keep one main idea per paragraph
+- Use ordered lists for step-by-step actions
+- Format commands, paths, and config keys as code
 
-## 链接维护
+## Link Maintenance
 
-- 新增页面后，记得更新导航或侧边栏
-- 涉及上下游流程时，补充相关文档链接
-- 删除或重命名页面时，及时检查失效链接
+- Update navigation or sidebars after adding new pages
+- Add links to related docs when a process spans multiple pages
+- Check for broken links after deleting or renaming pages
 
-## 内容生命周期
+## Content Lifecycle
 
-不同文档的更新频率会不同，建议用下面的方式维护：
+Different page types change at different speeds. A useful rule of thumb is:
 
-- 高频变化内容：放在更新记录、FAQ 或操作指南
-- 低频变化内容：放在架构说明、内容模型、规范文档
+- High-change content belongs in changelogs, FAQs, or task guides
+- Low-change content belongs in architecture, content model, and standards pages

@@ -1,39 +1,39 @@
-# 部署说明
+# Deployment
 
-VitePress 输出的是静态资源，因此可以部署到绝大多数静态托管平台。
+VitePress produces static assets, so this site can be deployed to most static hosting platforms.
 
-## 构建命令
+## Build Command
 
 ```bash
 npm run docs:build
 ```
 
-默认产物目录为：
+The default output directory is:
 
 ```text
 docs/.vitepress/dist
 ```
 
-## 常见部署目标
+## Common Deployment Targets
 
-- Nginx 静态目录
+- Nginx static hosting
 - GitHub Pages
 - Vercel
 - Netlify
-- 内部对象存储或 CDN
+- Internal object storage or CDN
 
-## 部署前检查
+## Pre-Deployment Checks
 
-1. 本地执行一次构建
-2. 检查页面链接和导航是否正常
-3. 确认是否需要配置自定义域名或基础路径
-4. 如果部署在子路径下，补充 `base` 配置
+1. Run a local build
+2. Check that page links and navigation work
+3. Confirm whether you need a custom domain or base path
+4. Add a `base` config if the site will be served from a subpath
 
-## 后续扩展建议
+## Good Next Steps
 
-如果将来要接到正式发布流程中，可以继续补充：
+If this site later becomes part of a formal release workflow, consider adding:
 
-- CI 自动构建
-- PR 预览环境
-- 链接检查
-- 内容审核流程
+- CI builds
+- PR preview environments
+- link checking
+- content review steps

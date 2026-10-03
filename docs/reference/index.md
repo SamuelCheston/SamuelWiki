@@ -1,15 +1,15 @@
-# 参考资料
+# Reference
 
-这里集中放置相对稳定、适合长期引用的资料页面。
+This section collects the pages that are relatively stable and meant to be referenced over time.
 
-## 包含内容
+## Included Here
 
-- [站点架构](/reference/architecture)
-- [内容模型](/reference/content-model)
-- [部署说明](/reference/deployment)
+- [Site Architecture](/reference/architecture)
+- [Content Model](/reference/content-model)
+- [Deployment](/reference/deployment)
 
-## 适合什么时候看
+## When to Read This Section
 
-- 想理解这套 wiki 是怎么组织的
-- 想规范化沉淀页面类型和内容边界
-- 准备把站点部署到静态托管平台时
+- When you want to understand how the wiki is organized
+- When you want clearer boundaries between content types
+- When you are preparing to deploy the site to a static hosting platform
