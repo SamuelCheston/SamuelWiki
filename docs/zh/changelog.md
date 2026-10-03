@@ -2,6 +2,13 @@
 
 ## 2026-10-03
 
+### 项目迁移至 HRPAuth
+
+- 将项目从 SamuelWiki 迁移到 HRPAuth。
+- 根据 HRPAuth 微服务架构同步了所有文档（首页、指南、关于）。
+- 更新了 `package.json` 和 `config.mts` 中的项目元数据。
+- 统一了中英文指南结构，并新增了配置文件使用指南。
+
 ### 初始化站点
 
 - 创建 VitePress 基础项目

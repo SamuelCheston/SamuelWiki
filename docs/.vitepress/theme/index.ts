@@ -8,7 +8,7 @@ import './style.css'
 export default {
   ...DefaultTheme,
   Layout: defineComponent({
-    name: 'SamuelWikiTheme',
+    name: 'HRPAuthTheme',
     setup() {
       const route = useRoute()
 

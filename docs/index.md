@@ -2,9 +2,9 @@
 layout: home
 
 hero:
-  name: SamuelWiki
-  text: A Modern Wiki Site for Product Teams
-  tagline: Bring product docs, specifications, deployment notes, and common questions into one clear and maintainable site.
+  name: HRPAuth
+  text: Microservices Authentication System
+  tagline: A powerful, extensible, and maintainable authentication environment for Minecraft communities.
   actions:
     - theme: brand
       text: Get Started
@@ -14,32 +14,32 @@ hero:
       link: /reference/
 
 features:
-  - title: Clear Information Architecture
-    details: Organize content around getting started, reference, FAQ, and changelog sections that scale cleanly over time.
-  - title: Built-in Local Search
-    details: Local search is already enabled, which works well for small and medium-sized wiki sites.
-  - title: Friendly for Product Collaboration
-    details: Keep guides, standards, architecture notes, deployment docs, and FAQs in one shared knowledge base.
+  - title: Microservices Architecture
+    details: Built with microservices to ensure extensibility and maintainability for modern authentication needs.
+  - title: Official & Third-party Services
+    details: Deploy official services for full features or integrate third-party services to extend functionality.
+  - title: Easy Deployment
+    details: Quick start with minimal configuration, supporting MySQL and Redis out of the box.
 ---
 
-## Key Sections
+## Key Components
 
 <div class="wiki-grid">
   <a class="wiki-card" href="/guide/">
     <h3>Getting Started</h3>
-    <p>Learn the site structure, development workflow, and how to maintain this wiki.</p>
+    <p>Learn the original purpose, deployment steps, and how to get HRPAuth running.</p>
   </a>
-  <a class="wiki-card" href="/reference/">
-    <h3>Reference</h3>
-    <p>Find long-lived documentation such as architecture, content model, and deployment notes.</p>
+  <a class="wiki-card" href="/guide/getting-started">
+    <h3>Quick Start</h3>
+    <p>Step-by-step instructions for HRPAuth, HASkinLib, WinnerProxy, and HASkinProxy.</p>
   </a>
   <a class="wiki-card" href="/faq">
     <h3>FAQ</h3>
-    <p>Capture common questions, troubleshooting tips, and repeated team guidance.</p>
+    <p>Common questions about setup, configuration, and troubleshooting.</p>
   </a>
   <a class="wiki-card" href="/changelog">
     <h3>Changelog</h3>
-    <p>Track site evolution and help the team stay aware of recent changes.</p>
+    <p>Track the evolution of HRPAuth services and documentation updates.</p>
   </a>
 </div>
 
@@ -47,22 +47,22 @@ features:
 
 <div class="wiki-list">
   <div class="wiki-list-item">
-    <strong>1. New team members</strong>
-    Start with <a href="/guide/getting-started">Quick Start</a>, then read <a href="/guide/project-structure">Project Structure</a>.
+    <strong>1. New Administrators</strong>
+    Start with the <a href="/guide/">Overview</a> and then follow the <a href="/guide/getting-started">Quick Start</a> guide.
   </div>
   <div class="wiki-list-item">
-    <strong>2. Content maintainers</strong>
-    Read <a href="/guide/writing-docs">Writing Docs</a> and <a href="/reference/content-model">Content Model</a> first.
+    <strong>2. Advanced Configuration</strong>
+    Learn how to customize your setup in <a href="/guide/how-to-use-conf-file">Configuration Guide</a>.
   </div>
   <div class="wiki-list-item">
-    <strong>3. Deployment owners</strong>
-    Go straight to <a href="/reference/deployment">Deployment</a> to review build and release guidance.
+    <strong>3. Deployment Owners</strong>
+    Review the <a href="/reference/deployment">Deployment Reference</a> for production-ready setups.
   </div>
 </div>
 
-## What This Site Includes
+## Project Ecosystem
 
-- Onboarding docs for new contributors
-- Writing and collaboration guidelines for maintainers
-- Architecture and deployment references for engineers
-- FAQs and changelog pages for ongoing team updates
+- **HRPAuth**: Core authentication service (OAuth2, Yggdrasil-API).
+- **HASkinLib**: Public skin library square.
+- **WinnerProxy**: Reserved UUID support for Mojang players.
+- **HASkinProxy**: API translation proxy for skin loaders.

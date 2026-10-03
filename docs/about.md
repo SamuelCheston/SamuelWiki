@@ -1,23 +1,24 @@
-# About SamuelWiki
+# About HRPAuth
 
-SamuelWiki is a VitePress-based wiki template designed for product documentation and team knowledge sharing.
+HRPAuth is a powerful, extensible, and maintainable authentication system environment designed for Minecraft communities. It leverages a microservices architecture to provide a full-featured authentication experience.
 
 ## Goals
 
-- Give the team one shared knowledge entry point
-- Reduce the cost of maintaining and finding documentation
-- Make it easy for product, design, and engineering to contribute
+- Provide a secure and reliable authentication entry point for Minecraft players.
+- Ensure high availability and scalability through a microservices-based design.
+- Offer a seamless experience with official and third-party service integration.
+- Simplify the deployment and management of complex authentication environments.
 
-## Current Features
+## Core Features
 
-- A modern card-based home page
-- Product-documentation-oriented content sections
-- Navigation and sidebar structures that are easy to extend
-- A static-site setup that is simple to deploy
+- **Microservices Architecture**: Components like HRPAuth, HASkinLib, WinnerProxy, and HASkinProxy work together efficiently.
+- **Extensibility**: Easily integrate third-party services to extend the ecosystem.
+- **Easy Configuration**: Simple YAML-based configuration for all services.
+- **Performance**: Optimized for high-concurrency authentication requests.
 
-## Good Next Additions
+## Project Ecosystem
 
-- Brand logo and color system
-- Feedback or comment entry points
-- Versioned documentation
-- Automated deployment and content checks
+- **HRPAuth**: The core service providing OAuth2 and Yggdrasil-API.
+- **HASkinLib**: A dedicated library for managing and serving Minecraft skins.
+- **WinnerProxy**: A proxy service that reserves UUIDs for Mojang players.
+- **HASkinProxy**: Translates Yggdrasil-API requests to CustomSkinLoader-API.

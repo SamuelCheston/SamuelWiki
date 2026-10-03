@@ -2,8 +2,8 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   lang: 'en-US',
-  title: 'SamuelWiki',
-  description: 'A modern wiki and documentation hub for product teams',
+  title: 'HRPAuth',
+  description: 'A microservices-based authentication system environment for Minecraft',
   cleanUrls: true,
   lastUpdated: true,
   locales: {
@@ -30,8 +30,7 @@ export default defineConfig({
               items: [
                 { text: 'Overview', link: '/guide/' },
                 { text: 'Quick Start', link: '/guide/getting-started' },
-                { text: 'Project Structure', link: '/guide/project-structure' },
-                { text: 'Writing Docs', link: '/guide/writing-docs' }
+                { text: 'Configuration', link: '/guide/how-to-use-conf-file' }
               ]
             }
           ],
@@ -59,8 +58,8 @@ export default defineConfig({
           text: 'Last updated'
         },
         footer: {
-          message: 'Built with VitePress for product documentation and knowledge sharing',
-          copyright: 'Copyright © 2026 SamuelWiki'
+          message: 'Built with VitePress for HRPAuth documentation',
+          copyright: 'Copyright © 2026 HRPAuth'
         }
       }
     },
@@ -87,8 +86,7 @@ export default defineConfig({
               items: [
                 { text: '概览', link: '/zh/guide/' },
                 { text: '快速开始', link: '/zh/guide/getting-started' },
-                { text: '项目结构', link: '/zh/guide/project-structure' },
-                { text: '文档编写规范', link: '/zh/guide/writing-docs' }
+                { text: '配置文件使用', link: '/zh/guide/how-to-use-conf-file' }
               ]
             }
           ],
@@ -116,8 +114,8 @@ export default defineConfig({
           text: '最后更新于'
         },
         footer: {
-          message: '使用 VitePress 构建的产品文档与知识中心',
-          copyright: 'Copyright © 2026 SamuelWiki'
+          message: '使用 VitePress 构建的 HRPAuth 文档中心',
+          copyright: 'Copyright © 2026 HRPAuth'
         }
       }
     }

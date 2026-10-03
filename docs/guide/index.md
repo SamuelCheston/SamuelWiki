@@ -1,21 +1,18 @@
 # Getting Started
 
-This section is for teammates who are new to the site and need a quick understanding of its purpose, structure, and maintenance workflow.
+## Original Purpose
+HRPAuth is a bunch of tools which is aimed at create a authentication system environment.  
+To make it extensible and maintainable, we use microservices architecture.  
+We recommend you to deploy every official service as long as you can so that you can enjoy the full feature of HRPAuth.  
+Besides, you can also deploy third-party services to extend the feature of HRPAuth.
 
-## What You Will Find Here
-
-- How to run and preview the documentation site locally
-- How the current wiki content is organized
-- The basic writing rules recommended for new pages
-
-## Suggested Reading Order
-
-1. Start with [Quick Start](/guide/getting-started)
-2. Then read [Project Structure](/guide/project-structure)
-3. Finish with [Writing Docs](/guide/writing-docs)
-
-## Who This Section Is For
-
-- New contributors who need context quickly
-- Maintainers responsible for page organization and updates
-- Teams turning scattered notes into a structured wiki
+## Minimal quick start ( not recommended, just show the original purpose )
+Download the latest release from [GitHub](https://github.com/CoreMatch/HRPAuth/releases/latest).  
+Create a Mysql user `hrpa` with password `hrpa`.  
+Create a database `hrpa` owned by `hrpa`.  
+Deploy a redis instance without any password.  
+run the release.
+```bash
+./HRPAuth-ver-os-arch
+```
+It will initialize the database schema, config file and key pairs automatically then start the server.

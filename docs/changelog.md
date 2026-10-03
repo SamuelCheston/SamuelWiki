@@ -2,6 +2,13 @@
 
 ## 2026-10-03
 
+### Project Migration to HRPAuth
+
+- Migrated the project from SamuelWiki to HRPAuth.
+- Synchronized all documentation (Home, Guide, About) with the HRPAuth microservices architecture.
+- Updated project metadata in `package.json` and `config.mts`.
+- Aligned Chinese and English guide structures, adding configuration guides.
+
 ### Initial Setup
 
 - Created the base VitePress project
