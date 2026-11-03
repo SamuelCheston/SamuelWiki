@@ -6,6 +6,7 @@ This section collects the pages that are relatively stable and meant to be refer
 
 - [Site Architecture](/reference/architecture)
 - [Content Model](/reference/content-model)
+- [Writing Conventions](/reference/writing-docs)
 - [Deployment](/reference/deployment)
 
 ## When to Read This Section

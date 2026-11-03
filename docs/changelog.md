@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-04
+
+### Expanded to the Whole Ecosystem
+
+- Added a `projects/` section that documents every project in the HA ecosystem.
+- Gave each core project an architecture page and a configuration or API reference page.
+- Added a writing conventions page to the reference section.
+- Reworked the home page into an ecosystem overview with project cards and reading paths.
+- Added the Projects entry to the navigation and a grouped sidebar.
+
 ## 2026-10-03
 
 ### Project Migration to HRPAuth

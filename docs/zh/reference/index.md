@@ -6,6 +6,7 @@
 
 - [站点架构](/zh/reference/architecture)
 - [内容模型](/zh/reference/content-model)
+- [文档编写规范](/zh/reference/writing-docs)
 - [部署说明](/zh/reference/deployment)
 
 ## 适合什么时候看
