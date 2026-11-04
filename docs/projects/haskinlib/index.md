@@ -62,7 +62,7 @@ The default listener is `:2701`. The first run writes `config.yaml`, creates `./
 
 ## Configuration
 
-`config.yaml` lives in the working directory. The first run writes the defaults and stamps `version: "6"` into the file. An older file is migrated one version at a time, and the original is copied to `config.yaml.bak.<version>` before the migration starts.
+`config.yaml` lives in the working directory. The first run writes the defaults and stamps `version: "7"` into the file. An older file is migrated one version at a time, and the original is copied to `config.yaml.bak.<version>` before the migration starts.
 
 - `server`: listen port and CORS origin
 - `database`: MySQL connection and the table prefix

@@ -4,10 +4,10 @@ Quick-start samples for every service that reads a YAML file. The per-project co
 
 ## HRPAuth
 
-Schema version `11`. Since the 2026-10 split the `yggdrasil.*` blocks live in the HRPAuth-Yggdrasil-API service, and the core gained `core_api`, `yggdrasil_api` and `sdk_packages`. Full reference: [Configuration & API](/projects/hrpauth/configuration).
+Schema version `12`. Since the 2026-10 split the `yggdrasil.*` blocks live in the HRPAuth-Yggdrasil-API service, and the core gained `core_api`, `yggdrasil_api` and `sdk_packages`. Full reference: [Configuration & API](/projects/hrpauth/configuration).
 
 ```yaml
-version: "11"
+version: "12"
 site:
     name: HRPAuth
     implementation: HRPAuth
@@ -20,7 +20,8 @@ callback:
 frontend:
     url: https://auth.example.com/ # The frontend site url.
 database:
-    host: 127.0.0.1
+    host: 127.0.0.1 # Host only; the port has its own field since v12 (the old inline ip:port form still works).
+    port: 3306
     db_name: hrpauth
     user: hrpauth
     password: ""
@@ -80,15 +81,16 @@ The Yggdrasil protocol service. Its configuration carries the former `yggdrasil.
 
 ## Skin library (HASkinLib)
 
-Schema version `6`.
+Schema version `7`.
 
 ```yaml
-version: "6"
+version: "7"
 server:
     port: ":2701"
     cors: "*" # Keep '*', or set it to your frontend url.
 database: # Often the same MySQL as HRPAuth.
     host: 127.0.0.1
+    port: 3306 # Dedicated port field since v7 (the old inline ip:port form still works).
     db_name: hrpauth
     user: hrpauth
     password: ""

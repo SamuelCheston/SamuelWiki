@@ -107,7 +107,7 @@ MySQL 与 Redis **不在** Compose 栈内启动，预期它们已经存在，并
 | `DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASSWORD`、`DB_NAME` | MySQL 连接 |
 | `REDIS_HOST`、`REDIS_PORT`、`REDIS_PASSWORD`、`REDIS_DB` | Redis 连接 |
 
-各服务消费 `DB_PORT` 的方式不同：`HRPAuth` 没有独立端口字段，模板把端口拼进 host（`host: "${DB_HOST}:${DB_PORT}"`）；`HRPAuth-Yggdrasil-API` 自配置 v4 起有独立的 `database.port` 字段；`MatchCoreArena-Server` 读取自己的端口设置。只有 `HASkinLib` 完全没有端口字段，固定连接 MySQL 默认的 3306 端口。
+`DB_PORT` 的消费方式：自 2026-11-05 的配置结构升级（HRPAuth v12、HRPAuth-Yggdrasil-API v4、HASkinLib v7）起，三个服务都有了独立的 `database.port` 字段，模板把 `host` 与 `port` 分开渲染。旧的内联 `ip:port` 写法仍然兼容——设置了 `port` 时，内联部分会被剥掉。`MatchCoreArena-Server` 读取自己的端口设置。
 
 服务之间的互联使用 Compose 服务名：
 
@@ -143,7 +143,7 @@ docker compose logs -f hrpauth
 ## 限制
 
 - 整个栈要求各服务仓库与部署器仓库同级检出，构建上下文不是可直接下载的产物。
-- 模板只支持通过环境变量渲染配置。服务自身结构中写死的字段（例如上文提到的 HASkinLib 缺失的 MySQL 端口字段）无法被覆盖。
+- 模板只支持通过环境变量渲染配置。服务自身结构中写死的字段无法被覆盖。
 - **HA WebUI SDK 处理器** 只在轮询到的 SDK 列表 ETag 变化（或强制触发）时才完整构建一次前端，因此其容器需要访问模板仓库与 npm registry 的出站网络。
 
 ## 相关页面

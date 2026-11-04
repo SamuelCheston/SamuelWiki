@@ -20,7 +20,7 @@ Migration behavior details:
 
 ## Schema Versions
 
-The top-level `version` field is the configuration schema version. Upgrades are chain-linked, one migration function per version (`config/migrations.go`). Current version: **11**.
+The top-level `version` field is the configuration schema version. Upgrades are chain-linked, one migration function per version (`config/migrations.go`). Current version: **12**.
 
 | Version | Changes |
 |---------|---------|
@@ -34,12 +34,13 @@ The top-level `version` field is the configuration schema version. Upgrades are 
 | `8` | Decouple yggdrasil: introduced `core_api` and `yggdrasil_api` sections for service-to-service communication |
 | `9` | Added top-level `sdk_packages` section for compile-time SDK aggregation |
 | `10` | Removed static `internal_key` from `core_api` and `yggdrasil_api`; internal service authentication now uses dynamic temporary keys via OAuth2 |
-| `11` (Current) | Added database connection retry settings: `database.retry_interval_sec` (default 3), `database.max_retries` (default 5), `database.next_round_delay_min` (default 5) |
+| `11` | Added database connection retry settings: `database.retry_interval_sec` (default 3), `database.max_retries` (default 5), `database.next_round_delay_min` (default 5) |
+| `12` (Current) | Added the optional `database.port`; `database.host` no longer needs the inline `ip:port` form (the inline form stays compatible) |
 
 ## Complete `config.yaml` Example
 
 ```yaml
-version: "11"
+version: "12"
 site:
   name: "HRPAuth"
   implementation: "HRPAuth"
@@ -53,6 +54,7 @@ frontend:
   url: "https://auth.example.com/"
 database:
   host: "localhost"
+  port: 3306
   db_name: "hrpauth"
   user: "root"
   password: ""
@@ -105,13 +107,14 @@ sdk_packages:
 
 | Section | Field | Type | Default | Description |
 |-------|-------|------|---------|-------------|
-| top-level | `version` | string | — | Configuration schema version (current `"11"`) |
+| top-level | `version` | string | — | Configuration schema version (current `"12"`) |
 | `site` | `name` / `implementation` / `version` | string | `"HRPAuth"` / `"HRPAuth"` / `"1.0.0"` | Service identity; appears in `GET /status` and Yggdrasil `meta.serverName` |
 | `server` | `port` | string | `":2778"` | Listening port (must include colon) |
 | `server` | `cors_origin` | string | `"*"` | CORS allowed Origin |
 | `callback` | `url` | string | — | Backend callback address (appears as `site.url` in the `GET /` status response) |
 | `frontend` | `url` | string | — | Frontend page address |
 | `database` | `host` / `db_name` / `user` / `password` | string | — | MySQL connection |
+| `database` | `port` | int | `0` | MySQL port; `0` keeps the legacy behavior, in which `host` may carry an inline `ip:port` (that inline form stays compatible) |
 | `database` | `charset` | string | — | Character set, recommended `utf8mb4` |
 | `database` | `retry_interval_sec` / `max_retries` / `next_round_delay_min` | int | `3` / `5` / `5` | Connection retry interval, max retries, delay before the next retry round (`0` disables further rounds) |
 | `verification_code` | `code_ttl` | int | `600` | Verification code TTL (seconds) |

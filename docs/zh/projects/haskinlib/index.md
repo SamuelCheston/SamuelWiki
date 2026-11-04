@@ -62,7 +62,7 @@ go build -o ./build/hasl
 
 ## 配置
 
-`config.yaml` 位于工作目录。首次运行会写入默认配置，并在文件里标记 `version: "6"`。版本较旧的文件会逐级迁移，迁移前先把原文件备份为 `config.yaml.bak.<version>`。
+`config.yaml` 位于工作目录。首次运行会写入默认配置，并在文件里标记 `version: "7"`。版本较旧的文件会逐级迁移，迁移前先把原文件备份为 `config.yaml.bak.<version>`。
 
 - `server`：监听端口与 CORS 来源
 - `database`：MySQL 连接与表前缀

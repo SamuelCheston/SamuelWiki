@@ -74,7 +74,7 @@ Docker 镜像内不含 `config.yaml`。请把它挂载到 `/app/config.yaml`，�
 
 ## 配置
 
-`config.yaml` 位于二进制同目录。首次运行时按默认值生成；当文件 `version` 低于当前二进制支持的版本时，先备份原文件，再逐版迁移到当前版本 `3`。
+`config.yaml` 位于二进制同目录。首次运行时按默认值生成；当文件 `version` 低于当前二进制支持的版本时，先备份原文件，再逐版迁移到当前版本 `4`（v4 新增 `database.port`；历史上短暂存在的 v4 `manage.token` 步骤已回退，配置文件里多余的 `manage` 段会被忽略）。
 
 - `server`：监听端口与 CORS 来源
 - `site`：对外展示的名称与版本
