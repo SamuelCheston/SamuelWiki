@@ -51,11 +51,11 @@ go run .
 
 The service only reads local files.
 
-The listen port is defined in three places and they do not agree. The code default is `:2770`, `config.example.yaml` writes `:2771`, and the Docker template plus compose file use `:18080`. Pick one and keep it consistent with the `deployer.base_url` of the MaintenanceView.
+The listen port is defined in two places and they do not agree. The code default is `:2770`, and the Docker template plus compose file use `:18080`. Pick one and keep it consistent with the `deployer.base_url` of the MaintenanceView. (A `config.example.yaml` that wrote `:2771` once existed but was removed; the service now auto-generates `config.yaml` on first start.)
 
 ## Configuration
 
-Copy `config.example.yaml` to `config.yaml`. When the file is missing the service writes the default one on startup and migrates it when the version is older than the binary expects.
+The service auto-generates `config.yaml` with defaults on first start (the former `config.example.yaml` was removed), and migrates it when the version is older than the binary expects.
 
 - `version`: config schema version
 - `server.listen`: listen address, the code default is `:2770`

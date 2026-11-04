@@ -146,12 +146,13 @@ The Yggdrasil group is bound twice, at `/` and at `/winnerproxy`. Launchers and 
 
 ## Known Upstream Drift
 
-Two outbound calls are known not to succeed against the current upstream. Both are documented in HA-Contract's WinnerProxy dev contract (`docs/dev/WinnerProxy/README.md`) and are drift, not outages of the proxy itself.
+One outbound call is known not to succeed against the current upstream. It is documented in HA-Contract's WinnerProxy dev contract (`docs/dev/WinnerProxy/README.md`) and is drift, not an outage of the proxy itself.
 
 - **Proxy registration** (hasJoined stage 3): the proxy posts `{username, password, email, mojang_uuid}` to `POST /register`, but the upstream route now requires `identifier`. The call fails `400`, stage 3 fails, and Mojang players receive `503`. The contract-sanctioned replacement is `POST /internal/proxy-register` with an `X-Internal-Key` header; the key comes from `POST /services/auth-key` on the HRPAuth core
-- **Batch query**: the proxy posts to `{base}/yggdrasil/api/profiles/minecraft`, which after the relay prefix stripping arrives at the upstream as `/yggdrasil/api/profiles/minecraft` — not a registered route. The upstream route is `POST /api/profiles/minecraft`. The handler answers `500`
 
-Monitoring should not treat `500` on the batch route or `503` for Mojang players at join time as failures of the proxy process.
+The former **batch query** drift was fixed on 2026-11-05 (WinnerProxy `4ded866`): the extra `/yggdrasil` path segment is gone, so the proxy now posts prefix-less to `POST /api/profiles/minecraft`, and upstream failures surface as `502` with an explicit `{"error": ...}` reason instead of a bare `500`.
+
+Monitoring should not treat `503` for Mojang players at join time as a failure of the proxy process.
 
 ## What WinnerProxy Deliberately Does Not Do
 

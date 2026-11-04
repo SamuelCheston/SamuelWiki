@@ -146,12 +146,13 @@ Yggdrasil 这一组路由会绑定两次，分别在 `/` 和 `/winnerproxy` 下�
 
 ## 已知的上游漂移
 
-有两个出站调用在当前上游下无法成功。两者都记录在 HA-Contract 的 WinnerProxy 开发契约（`docs/dev/WinnerProxy/README.md`）里，属于漂移，不是代理本身的故障。
+有一个出站调用在当前上游下无法成功。它记录在 HA-Contract 的 WinnerProxy 开发契约（`docs/dev/WinnerProxy/README.md`）里，属于漂移，不是代理本身的故障。
 
 - **代理注册**（hasJoined 阶段三）：代理向 `POST /register` 发送 `{username, password, email, mojang_uuid}`，但上游路由现在要求 `identifier`。调用以 `400` 失败，阶段三失败，Mojang 玩家收到 `503`。契约认可的替代路径是带 `X-Internal-Key` 请求头的 `POST /internal/proxy-register`，密钥来自 HRPAuth 核心的 `POST /services/auth-key`
-- **批量查询**：代理请求 `{base}/yggdrasil/api/profiles/minecraft`，relay 剥掉前缀后上游收到的是 `/yggdrasil/api/profiles/minecraft`——不是已注册的路由。上游路由是 `POST /api/profiles/minecraft`。处理器回答 `500`
 
-监控不应把批量路由的 `500` 或加入时 Mojang 玩家的 `503` 当作代理进程的故障。
+原先的**批量查询**漂移已于 2026-11-05 修复（WinnerProxy `4ded866`）：多余的 `/yggdrasil` 路径段已移除，代理现在以无前缀形式请求 `POST /api/profiles/minecraft`；上游故障以带明确 `{"error": ...}` 原因的 `502` 呈现，不再是裸 `500`。
+
+监控不应把加入时 Mojang 玩家的 `503` 当作代理进程的故障。
 
 ## 明确不做的事
 

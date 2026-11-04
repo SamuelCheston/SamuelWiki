@@ -51,11 +51,11 @@ go run .
 
 服务只读取本地文件。
 
-监听端口在三处定义，且互不一致：代码默认值是 `:2770`，`config.example.yaml` 写的是 `:2771`，Docker 模板与 compose 文件用的是 `:18080`。请自行选定一个，并与维护视图的 `deployer.base_url` 保持一致。
+监听端口在两处定义，且互不一致：代码默认值是 `:2770`，Docker 模板与 compose 文件用的是 `:18080`。请自行选定一个，并与维护视图的 `deployer.base_url` 保持一致。（曾有一个写 `:2771` 的 `config.example.yaml`，现已移除；服务首次启动时会自动生成 `config.yaml`。）
 
 ## 配置
 
-把 `config.example.yaml` 复制为 `config.yaml`。文件不存在时服务会在启动时写入默认配置；当文件版本低于二进制支持的版本时，会按链式规则迁移。
+服务会在首次启动时自动生成带默认值的 `config.yaml`（原先的 `config.example.yaml` 已移除）；当文件版本低于二进制支持的版本时，会按链式规则迁移。
 
 - `version`：配置结构版本
 - `server.listen`：监听地址，代码默认值 `:2770`
