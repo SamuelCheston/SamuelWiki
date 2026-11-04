@@ -6,6 +6,9 @@ export default defineConfig({
   description: 'A microservices-based authentication system environment for Minecraft',
   cleanUrls: true,
   lastUpdated: true,
+  sitemap: {
+    hostname: 'https://wiki.mcnb.dev'
+  },
   locales: {
     root: {
       label: 'English',
