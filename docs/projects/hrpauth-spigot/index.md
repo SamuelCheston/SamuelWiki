@@ -1,6 +1,6 @@
 # HRPAuth Spigot
 
-HRPAuth Spigot is a Velocity proxy plugin that binds or migrates an in-game player identity to an HRPAuth platform account. It talks to the HRPAuth core over HTTP as an OAuth2 client, and it never opens a port of its own.
+HRPAuth Spigot is a Velocity proxy plugin that binds or migrates an in-game player identity to an HRPAuth platform account. It talks to the HRPAuth core over HTTP as an OAuth2 client — the token endpoint lives on the core, and the administrative routes are served by HRPAuth Yggdrasil API through the core's `/yggdrasil-api` relay — and it never opens a port of its own.
 
 ## What It Covers
 
@@ -36,7 +36,7 @@ build.gradle.kts, settings.gradle.kts, gradlew, gradle/
 ### Prerequisites
 
 - Java 25
-- a running HRPAuth core
+- a running HRPAuth core with the HRPAuth Yggdrasil API service registered behind its `/yggdrasil-api` relay
 - a Velocity proxy server
 
 ### Build
@@ -97,7 +97,7 @@ Only players can run these. Both forms are registered, `/ha` and `/hrpauth`.
 Claims the executing player's proxy-registered account.
 
 ```http
-POST /admin/claim-user HTTP/1.1
+POST /yggdrasil-api/admin/claim-user HTTP/1.1
 Host: 127.0.0.1:2778
 Content-Type: application/json
 Authorization: Bearer <service_token>
@@ -105,20 +105,22 @@ Authorization: Bearer <service_token>
 {"username":"<player name>","email":"<email>","password":"<password>"}
 ```
 
-The player name is read from the proxy session, so it is not an argument.
+The request goes to the core, which relays it to HRPAuth Yggdrasil API where the route is implemented. The player name is read from the proxy session, so it is not an argument.
 
 ### `/ha forcebind <email> <password>`
 
 Transfers the player's Mojang UUID from the proxy-registered account to the target account.
 
 ```http
-POST /admin/force-bind HTTP/1.1
+POST /yggdrasil-api/admin/force-bind HTTP/1.1
 Host: 127.0.0.1:2778
 Content-Type: application/json
 Authorization: Bearer <service_token>
 
 {"username":"<player name>","email":"<email>","password":"<password>","manage_token":"<manage_token>"}
 ```
+
+The target account's credentials are verified against the core; the `manage_token` must match the manage token configured on the HRPAuth Yggdrasil API service.
 
 ### Service Token
 
@@ -153,19 +155,18 @@ The force-bind command maps these:
 
 ## Current Status
 
-The plugin calls two administrative routes: `POST /admin/claim-user` and `POST /admin/force-bind`.
+The plugin calls two administrative routes through the core's relay prefix: `POST /yggdrasil-api/admin/claim-user` and `POST /yggdrasil-api/admin/force-bind`.
 
-- Neither route is registered anywhere in the current HRPAuth source. Against a core built from the current tree, both commands fail.
-- The two routes do exist in the prebuilt binaries shipped under the HRPAuth core's `build/` directory. They only work against one of those binaries.
-- The contract is still documented. HA-Contract's OpenAPI defines `/admin/claim-user` and `/admin/force-bind` with their request bodies, its HRPAuth data-models document describes the operator claiming and force bind flows, and its roadmap entry marks the backend handler as not implemented yet.
+- Both routes are implemented in [HRPAuth Yggdrasil API](/projects/hrpauth-yggdrasil-api/); the claim and force-bind work landed on 2026-11-05 and the HA-Contract roadmap entry is marked implemented. HA-Contract's OpenAPI (`hrpauth-yggdrasil-business.yaml`) defines both paths and their request bodies.
+- The historical `POST /user/declare-email` flow for giving a proxy account an email is gone; `/ha reg` (claim) is the replacement.
 - This repository ships no long-form design document. Its README is a short summary, and everything above is read from the source.
 - Naming is inconsistent in a way that trips people up. The repository is called HRPAuth-Spigot, but the plugin is a Velocity plugin, not a Spigot or Bukkit one. The plugin id is `hrpauth-proxy`, while the Gradle root project is `HRPAuth-Proxy`.
 
 ## Relationship With Other Projects
 
-- **Consumes** [HRPAuth](/projects/hrpauth/) over HTTP, for the token endpoint and the administrative routes
+- **Consumes** [HRPAuth](/projects/hrpauth/) over HTTP for the token endpoint, and [HRPAuth Yggdrasil API](/projects/hrpauth-yggdrasil-api/) through the core's `/yggdrasil-api` relay for the administrative routes
 - **Is** the only game-side consumer among the HRPAuth projects
-- **Does not depend** on [HRPAuth Web](/projects/hrpauth-web/), [HRPAuth Yggdrasil API](/projects/hrpauth-yggdrasil-api/), MySQL, or Redis
+- **Does not depend** on [HRPAuth Web](/projects/hrpauth-web/), MySQL, or Redis
 
 ## Related Pages
 

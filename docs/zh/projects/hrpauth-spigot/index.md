@@ -1,6 +1,6 @@
 # HRPAuth Spigot
 
-HRPAuth Spigot 是一个 Velocity 代理插件，负责把游戏内玩家身份绑定或迁移到 HRPAuth 平台账号。它以 OAuth2 客户端的身份通过 HTTP 与 HRPAuth 核心通信，本身不监听任何端口。
+HRPAuth Spigot 是一个 Velocity 代理插件，负责把游戏内玩家身份绑定或迁移到 HRPAuth 平台账号。它以 OAuth2 客户端的身份通过 HTTP 与 HRPAuth 核心通信——令牌接口在核心上，管理路由则由核心经 `/yggdrasil-api` relay 转发到 HRPAuth Yggdrasil API 提供——本身不监听任何端口。
 
 ## 覆盖范围
 
@@ -36,7 +36,7 @@ build.gradle.kts、settings.gradle.kts、gradlew、gradle/
 ### 运行前准备
 
 - Java 25
-- 一个运行中的 HRPAuth 核心
+- 一个运行中的 HRPAuth 核心，且 HRPAuth Yggdrasil API 服务已注册在它的 `/yggdrasil-api` relay 之后
 - 一个 Velocity 代理服务器
 
 ### 构建
@@ -97,7 +97,7 @@ log:
 认领执行者自己的代理侧注册账号。
 
 ```http
-POST /admin/claim-user HTTP/1.1
+POST /yggdrasil-api/admin/claim-user HTTP/1.1
 Host: 127.0.0.1:2778
 Content-Type: application/json
 Authorization: Bearer <service_token>
@@ -105,20 +105,22 @@ Authorization: Bearer <service_token>
 {"username":"<player name>","email":"<email>","password":"<password>"}
 ```
 
-玩家名从代理会话中读取，因此不是命令参数。
+请求发往核心，由核心中继到实现了该路由的 HRPAuth Yggdrasil API。玩家名从代理会话中读取，因此不是命令参数。
 
 ### `/ha forcebind <email> <password>`
 
 把玩家的 Mojang UUID 从代理侧注册账号迁移到目标账号。
 
 ```http
-POST /admin/force-bind HTTP/1.1
+POST /yggdrasil-api/admin/force-bind HTTP/1.1
 Host: 127.0.0.1:2778
 Content-Type: application/json
 Authorization: Bearer <service_token>
 
 {"username":"<player name>","email":"<email>","password":"<password>","manage_token":"<manage_token>"}
 ```
+
+目标账号的凭据会向核心校验；`manage_token` 必须与 HRPAuth Yggdrasil API 服务上配置的管理令牌一致。
 
 ### 服务令牌
 
@@ -153,19 +155,18 @@ grant_type=client_credentials&client_id=<client_id>&client_secret=<client_secret
 
 ## 当前状态
 
-插件会调用两个管理路由：`POST /admin/claim-user` 与 `POST /admin/force-bind`。
+插件经由核心的 relay 前缀调用两个管理路由：`POST /yggdrasil-api/admin/claim-user` 与 `POST /yggdrasil-api/admin/force-bind`。
 
-- 当前 HRPAuth 源码里没有注册这两个路由。对着用现有代码构建的核心跑，两个命令都打不通。
-- 这两个路由只存在于 HRPAuth 核心 `build/` 目录下的预编译二进制中，只有跑这些二进制才可用。
-- 契约本身仍有文档。HA-Contract 的 OpenAPI 定义了 `/admin/claim-user` 与 `/admin/force-bind` 及其请求体，其 HRPAuth 数据模型文档描述了运维认领与强绑流程，路线图条目里把后端处理器标为尚未实现。
+- 两条路由均已在 [HRPAuth Yggdrasil API](/zh/projects/hrpauth-yggdrasil-api/) 实现，认领与强绑功能于 2026-11-05 落地，HA-Contract 路线图中对应条目标记为已实现。HA-Contract 的 OpenAPI（`hrpauth-yggdrasil-business.yaml`）定义了两条路径及其请求体。
+- 历史上为代理账号补邮箱的 `POST /user/declare-email` 流程已被移除，`/ha reg`（认领）是它的替代。
 - 这个仓库没有详细的设计文档，README 只是一份简短摘要，上面的内容全部由源码反推。
 - 命名不一致的地方容易踩坑。仓库名叫 HRPAuth-Spigot，但插件本身是 Velocity 插件，不是 Spigot 或 Bukkit 插件。插件 id 是 `hrpauth-proxy`，而 Gradle 根项目名是 `HRPAuth-Proxy`。
 
 ## 与其它项目的关系
 
-- **依赖** [HRPAuth](/zh/projects/hrpauth/)，通过 HTTP 访问令牌接口与管理路由
+- **依赖** [HRPAuth](/zh/projects/hrpauth/)，通过 HTTP 访问令牌接口；管理路由则经由核心的 `/yggdrasil-api` relay 访问 [HRPAuth Yggdrasil API](/zh/projects/hrpauth-yggdrasil-api/)
 - **是** HRPAuth 家族中唯一的游戏侧消费者
-- **不依赖** [HRPAuth Web](/zh/projects/hrpauth-web/)、[HRPAuth Yggdrasil API](/zh/projects/hrpauth-yggdrasil-api/)，也不直接依赖 MySQL 与 Redis
+- **不依赖** [HRPAuth Web](/zh/projects/hrpauth-web/)，也不直接依赖 MySQL 与 Redis
 
 ## 相关页面
 
