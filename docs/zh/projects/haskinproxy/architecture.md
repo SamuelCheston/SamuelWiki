@@ -110,9 +110,9 @@ GET /Player.json
 
 ## 路由装配
 
-路由装配在 `internal/router`，注册顺序很关键。
+路由注册在 `internal/router`：先 `/health`，随后是 `GET /:username`、`GET /textures/:hash` 与 `POST /:username/texture/delete`。
 
-- `/health` 与 `/textures/:hash` 先于 `/:username` 通配注册，因此静态路由优先
+- `/textures/:hash` 与 `/:username` 通配共存，因为 Gin 会先匹配字面量 `textures` 段，再落到根通配
 - `/:username` 处理资料请求，要求路径段以 `.json` 结尾，否则返回 `404`
 
 ## 相关页面

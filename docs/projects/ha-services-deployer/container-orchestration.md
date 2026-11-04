@@ -50,6 +50,9 @@ Because the build contexts are relative (`../HRPAuth` and friends), the services
 | `ha-webui-sdkhandler` | [CoreMatch/HA-WebUI-SDKHandler](https://github.com/CoreMatch/HA-WebUI-SDKHandler) | `ha/ha-webui-sdkhandler` | 2704, 2705 | `config/sdkhandler.yaml.tmpl` |
 | `ha-services-deployer` | [CoreMatch/HA-Services-Deployer](https://github.com/CoreMatch/HA-Services-Deployer) | `ha/ha-services-deployer` | 18080 | `config/ha-services-deployer.yaml.tmpl` |
 | `ha-services-maintenance-view` | [CoreMatch/HA-Services-MaintenanceView](https://github.com/CoreMatch/HA-Services-MaintenanceView) | `ha/ha-services-maintenance-view` | 18081 | `config/ha-services-maintenance-view.yaml.tmpl` |
+| `ha-webui-nginx` | — (official `nginx:1.27-alpine`) | `nginx:1.27-alpine` | 8080 | `nginx-sdkhandler-artifacts.conf` (mounted) |
+
+`ha-webui-nginx` is optional: it belongs to the `webui` profile (`docker compose --profile webui up -d`) and serves the artifacts published by HA WebUI SDK Handler from the `sdkhandler-artifacts` volume, with an SPA fallback to `index.html`. It is the external web server of the `serve_artifacts: false` design.
 
 Host ports are published through `${PORT}` variables and default to the values above; every one of them can be overridden in `.env`.
 
@@ -104,7 +107,7 @@ MySQL and Redis are **not** started by the Compose stack. They are expected to e
 | `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` | MySQL connection |
 | `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, `REDIS_DB` | Redis connection |
 
-Note that the configuration schema of `HRPAuth`, `HASkinLib` and `HRPAuth-Yggdrasil-API` has **no database port field**; those services always connect to port 3306. Only `MatchCoreArena-Server` reads `DB_PORT`.
+Note how each service consumes `DB_PORT`: `HRPAuth` has no separate port field, so its template embeds the port into the host value (`host: "${DB_HOST}:${DB_PORT}"`); `HRPAuth-Yggdrasil-API` has a dedicated `database.port` field since its config v4; `MatchCoreArena-Server` reads its own port setting. Only `HASkinLib` has no port field at all and always connects to the MySQL default port 3306.
 
 Service-to-service wiring uses the Compose service names:
 
@@ -136,14 +139,14 @@ docker compose logs -f hrpauth
 ```
 
 Stop and remove the stack with `docker compose down`. Named volumes
-(`hrpauth-storage`, `ygg-storage`, `haskinlib-data`, `mca-data`, …) hold
+(`hrpauth-data`, `hrpauth-cache`, `haskin-textures`, `mca-data`, `sdkhandler-artifacts`; `hrpauth-storage` is kept for migration and deprecated) hold
 uploads, textures and service state and survive `down`.
 
 ## Limitations
 
 - The stack requires the sibling service repositories to be checked out next to the deployer repository; the build contexts are not downloadable artifacts.
-- The template renders configuration from environment variables only. Fields that a service hardcodes in its own schema (for example the missing MySQL port mentioned above) cannot be overridden.
-- **HA WebUI SDK Handler** performs a full frontend build on every poll cycle, so its container needs outbound network access to the template repository and the npm registry.
+- The template renders configuration from environment variables only. Fields that a service hardcodes in its own schema (for example the missing MySQL port field of HASkinLib mentioned above) cannot be overridden.
+- **HA WebUI SDK Handler** runs a full frontend build whenever the polled SDK list ETag changes (or a build is forced), so its container needs outbound network access to the template repository and the npm registry.
 
 ## Related Pages
 

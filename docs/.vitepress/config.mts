@@ -15,9 +15,6 @@ export default defineConfig({
       lang: 'en-US',
       link: '/',
       themeConfig: {
-        search: {
-          provider: 'local'
-        },
         nav: [
           { text: 'Home', link: '/' },
           { text: 'Getting Started', link: '/guide/' },
@@ -117,7 +114,9 @@ export default defineConfig({
                     { text: 'Overview', link: '/projects/winnerproxy/' },
                     { text: 'Architecture', link: '/projects/winnerproxy/architecture' },
                     { text: 'Data Flow', link: '/projects/winnerproxy/data-flow' },
+                    { text: 'API Reference', link: '/projects/winnerproxy/api' },
                     { text: 'Configuration', link: '/projects/winnerproxy/configuration' },
+                    { text: 'Deployment', link: '/projects/winnerproxy/deployment' },
                     { text: 'Troubleshooting', link: '/projects/winnerproxy/troubleshooting' }
                   ]
                 },
@@ -188,9 +187,6 @@ export default defineConfig({
       lang: 'zh-CN',
       link: '/zh/',
       themeConfig: {
-        search: {
-          provider: 'local'
-        },
         nav: [
           { text: '首页', link: '/zh/' },
           { text: '开始使用', link: '/zh/guide/' },
@@ -290,7 +286,9 @@ export default defineConfig({
                     { text: '概览', link: '/zh/projects/winnerproxy/' },
                     { text: '架构说明', link: '/zh/projects/winnerproxy/architecture' },
                     { text: '数据流转', link: '/zh/projects/winnerproxy/data-flow' },
+                    { text: '接口参考', link: '/zh/projects/winnerproxy/api' },
                     { text: '配置说明', link: '/zh/projects/winnerproxy/configuration' },
+                    { text: '部署', link: '/zh/projects/winnerproxy/deployment' },
                     { text: '故障排查', link: '/zh/projects/winnerproxy/troubleshooting' }
                   ]
                 },
@@ -353,6 +351,34 @@ export default defineConfig({
         footer: {
           message: '使用 VitePress 构建的 HRPAuth 文档中心',
           copyright: 'Copyright © 2026 HRPAuth'
+        }
+      }
+    }
+  },
+  themeConfig: {
+    search: {
+      provider: 'local',
+      options: {
+        locales: {
+          zh: {
+            translations: {
+              button: {
+                buttonText: '搜索',
+                buttonAriaText: '搜索'
+              },
+              modal: {
+                displayDetails: '显示详细列表',
+                resetButtonTitle: '清除查询条件',
+                backButtonTitle: '关闭搜索框',
+                noResultsText: '无法找到相关结果',
+                footer: {
+                  selectText: '选择',
+                  navigateText: '切换',
+                  closeText: '关闭'
+                }
+              }
+            }
+          }
         }
       }
     }

@@ -4,7 +4,7 @@
 
 ## 运行 HRPAuth
 HRPAuth 是 HRPAuth 的核心服务。
-它提供 HRPAuth Oauth2 身份验证服务、Yggdrasil-API 服务和基础功能。
+它提供 HRPAuth OAuth2 业务认证服务与微服务扩展层；Yggdrasil 协议面由独立的 [HRPAuth Yggdrasil API](/zh/projects/hrpauth-yggdrasil-api/) 服务提供。
 
 ### 下载 HRPAuth
 从 [GitHub](https://github.com/CoreMatch/HRPAuth/releases/latest) 下载最新版本。
@@ -17,7 +17,7 @@ HRPAuth 是 HRPAuth 的核心服务。
 ```bash
 ./HRPAuth-ver-os-arch
 ```
-它将自动初始化数据库架构、配置文件和密钥对，然后启动服务器。
+它会自动生成配置文件、应用数据库迁移并确保内置 OAuth2 客户端存在，然后启动服务器。
 您应该设置一个守护进程来保持所有服务运行。
 推荐的守护进程：[tinyvisor](https://github.com/SamuelCheston/Tinyvisor) [systemd](https://www.systemd.io/) [supervisor](https://supervisord.org/) [aaPanel](https://www.aapanel.com/)
 
@@ -56,9 +56,9 @@ WinnerProxy 让您可以同时保留 HRPAuth 玩家和 Mojang 玩家。
 ```bash
 ./WinnerProxy-ver-os-arch
 ```
-根据需要修改配置文件，文件中附有注释。
+根据需要修改配置文件，文件中附有注释。注意 WinnerProxy 读取的是 `config.yml`（`.yml` 扩展名），同目录下的 `config.yaml` 会被忽略。
 ```
-nano ./config.yaml
+nano ./config.yml
 ```
 再次运行发布版本。
 ```bash

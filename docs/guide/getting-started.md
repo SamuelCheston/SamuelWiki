@@ -4,7 +4,7 @@ This page helps you run, preview, and build the HRPAuth locally.
 
 ## Run HRPAuth
 HRPAuth is the core service of HRPAuth.  
-It provides HRPAuth Oauth2 authentication service, Yggdrasil-API service and basic features.
+It provides the HRPAuth OAuth2 business authentication service and the microservice extension layer; the Yggdrasil protocol surface is served by the separate [HRPAuth Yggdrasil API](/projects/hrpauth-yggdrasil-api/) service.
 ### Download HRPAuth
 Download the latest release from [GitHub](https://github.com/CoreMatch/HRPAuth/releases/latest).  
 Create a Mysql user `hrpa` with password `hrpa`.  
@@ -16,7 +16,7 @@ run the release.
 ```bash
 ./HRPAuth-ver-os-arch
 ```
-It will initialize the database schema, config file and key pairs automatically then start the server.  
+It generates the config file, applies the database migrations and ensures the built-in OAuth2 clients, then starts the server.  
 You should setup a daemon to keep all of the services running.  
 Recommended daemon: [tinyvisor](https://github.com/SamuelCheston/Tinyvisor) [systemd](https://www.systemd.io/) [supervisor](https://supervisord.org/) [aaPanel](https://www.aapanel.com/)
 
@@ -54,9 +54,9 @@ Try to run it to create a config file.
 ```bash
 ./WinnerProxy-ver-os-arch
 ```
-modify the config file as you need, there are notes in the file.
+modify the config file as you need, there are notes in the file. Note that WinnerProxy reads `config.yml` (with a `.yml` extension); a `config.yaml` next to it is ignored.
 ```
-nano ./config.yaml
+nano ./config.yml
 ```
 run the release again.
 ```bash

@@ -81,6 +81,8 @@ go build -o ./build/winnerproxy
 
 - [架构说明](/zh/projects/winnerproxy/architecture)：一次加入查询在代理内部如何流转
 - [数据流转](/zh/projects/winnerproxy/data-flow)：逐阶段的请求细节
+- [接口参考](/zh/projects/winnerproxy/api)：代理暴露的端点
 - [配置](/zh/projects/winnerproxy/configuration)：完整的配置参考
+- [部署](/zh/projects/winnerproxy/deployment)：二进制、systemd 与容器部署
 - [故障排查](/zh/projects/winnerproxy/troubleshooting)：日志与常见故障
 - [HRPAuth](/zh/projects/hrpauth/)：代理背后的服务

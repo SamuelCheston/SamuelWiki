@@ -70,6 +70,12 @@ The two systems are fully isolated. A business access token will not work agains
 
 Two periodic cleanup tasks start with the core: the deleted-accounts cleanup (every 5 days) and the OAuth2 token cleanup (every 24 hours). The Yggdrasil-side sweeps (session tokens, bot users, mbe timeouts) run in the HRPAuth Yggdrasil API service instead.
 
+## Account Deletion and Restoration
+
+- `DELETE /user` (password in the body, `user.delete` scope) soft-deletes the account: `users.deleted_at` is set and the UID is recorded in `deleted_accounts`. The account's tokens are revoked, so it is offline immediately.
+- When the user logs in again with correct credentials before the hard cleanup runs, the login clears the deletion mark and removes the `deleted_accounts` record — the account is restored automatically.
+- The deleted-accounts cleanup hard-deletes (cascade) accounts marked for more than 3 days. With the 5-day task interval, the effective grace period is between 3 and 8 days.
+
 ## Startup Behaviour
 
 The service prefers to do whatever it can automatically at startup.
