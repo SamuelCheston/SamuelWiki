@@ -70,6 +70,12 @@ Minecraft 客户端 / authlib-injector
 
 核心启动两个周期清理任务：已删除账号清理（每 5 天）与 OAuth2 令牌清理（每 24 小时）。Yggdrasil 侧的清扫（会话令牌、代注册账号、mbe 超时）在 HRPAuth Yggdrasil API 服务里运行。
 
+## 账号注销与恢复
+
+- `DELETE /user`（请求体带密码，要求 `user.delete` scope）执行软删除：置 `users.deleted_at`，并把 UID 记入 `deleted_accounts`。该账号的令牌会被撤销，立即下线。
+- 在物理清理发生前，用户用正确凭据再次登录时，登录会自动清除删除标记并移除 `deleted_accounts` 记录——账号随之恢复。
+- 已删除账号清理任务会级联物理删除标记超过 3 天的账号。任务周期为 5 天，因此实际冷静期在 3 到 8 天之间。
+
 ## 启动行为
 
 服务倾向于把"能自动做的初始化"放到启动流程里。

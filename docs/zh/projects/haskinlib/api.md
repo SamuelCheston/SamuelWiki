@@ -1,6 +1,6 @@
 # 接口参考
 
-HASkinLib 暴露七个路由，没有 `/api` 前缀。其中两个用于分发文件，且是公开的；其余接口需要 HRPAuth 颁发的 OAuth2 Bearer Token。
+HASkinLib 暴露八个路由，没有 `/api` 前缀。其中两个用于分发文件，且是公开的；除两个探针外，其余接口需要 HRPAuth 颁发的 OAuth2 Bearer Token。
 
 ## 接口清单
 
@@ -13,6 +13,7 @@ HASkinLib 暴露七个路由，没有 `/api` 前缀。其中两个用于分发�
 | `POST` | `/texture/delete` | Bearer | 删除属于自己的材质 |
 | `GET` | `/profile/textures` | Bearer | 自己的材质列表，当前暂时搁置 |
 | `GET` | `/example` | 无 | 存活检查 |
+| `GET` | `/health` | 无 | 健康探针 |
 
 ## 响应结构
 

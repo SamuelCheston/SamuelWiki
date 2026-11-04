@@ -81,6 +81,8 @@ See [Configuration](/projects/winnerproxy/configuration) for the field-by-field 
 
 - [Architecture](/projects/winnerproxy/architecture): how a join query travels through the proxy
 - [Data Flow](/projects/winnerproxy/data-flow): the stage-by-stage request details
+- [API Reference](/projects/winnerproxy/api): the endpoints the proxy exposes
 - [Configuration](/projects/winnerproxy/configuration): the full configuration reference
+- [Deployment](/projects/winnerproxy/deployment): binary, systemd and container deployment
 - [Troubleshooting](/projects/winnerproxy/troubleshooting): log lines and common failures
 - [HRPAuth](/projects/hrpauth/): the service behind the proxy

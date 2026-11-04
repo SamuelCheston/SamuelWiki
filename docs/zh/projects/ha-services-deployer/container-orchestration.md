@@ -50,6 +50,9 @@ HA-Services-Deployer/
 | `ha-webui-sdkhandler` | [CoreMatch/HA-WebUI-SDKHandler](https://github.com/CoreMatch/HA-WebUI-SDKHandler) | `ha/ha-webui-sdkhandler` | 2704、2705 | `config/sdkhandler.yaml.tmpl` |
 | `ha-services-deployer` | [CoreMatch/HA-Services-Deployer](https://github.com/CoreMatch/HA-Services-Deployer) | `ha/ha-services-deployer` | 18080 | `config/ha-services-deployer.yaml.tmpl` |
 | `ha-services-maintenance-view` | [CoreMatch/HA-Services-MaintenanceView](https://github.com/CoreMatch/HA-Services-MaintenanceView) | `ha/ha-services-maintenance-view` | 18081 | `config/ha-services-maintenance-view.yaml.tmpl` |
+| `ha-webui-nginx` | —（官方 `nginx:1.27-alpine`） | `nginx:1.27-alpine` | 8080 | `nginx-sdkhandler-artifacts.conf`（挂载） |
+
+`ha-webui-nginx` 是可选项：它属于 `webui` profile（`docker compose --profile webui up -d`），从 `sdkhandler-artifacts` 卷提供 HA WebUI SDK 处理器发布的产物，并带 SPA 回退到 `index.html`。它就是 `serve_artifacts: false` 设计中托管产物的外部 Web 服务器。
 
 主机端口通过 `${PORT}` 变量发布，默认值即上表数值，每一项都可在 `.env` 中覆盖。
 
@@ -104,7 +107,7 @@ MySQL 与 Redis **不在** Compose 栈内启动，预期它们已经存在，并
 | `DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASSWORD`、`DB_NAME` | MySQL 连接 |
 | `REDIS_HOST`、`REDIS_PORT`、`REDIS_PASSWORD`、`REDIS_DB` | Redis 连接 |
 
-注意 `HRPAuth`、`HASkinLib` 与 `HRPAuth-Yggdrasil-API` 的配置结构中**没有数据库端口字段**，这些服务固定连接 3306 端口。只有 `MatchCoreArena-Server` 会读取 `DB_PORT`。
+各服务消费 `DB_PORT` 的方式不同：`HRPAuth` 没有独立端口字段，模板把端口拼进 host（`host: "${DB_HOST}:${DB_PORT}"`）；`HRPAuth-Yggdrasil-API` 自配置 v4 起有独立的 `database.port` 字段；`MatchCoreArena-Server` 读取自己的端口设置。只有 `HASkinLib` 完全没有端口字段，固定连接 MySQL 默认的 3306 端口。
 
 服务之间的互联使用 Compose 服务名：
 
@@ -135,13 +138,13 @@ docker compose ps
 docker compose logs -f hrpauth
 ```
 
-使用 `docker compose down` 停止并移除整个栈。具名卷（`hrpauth-storage`、`ygg-storage`、`haskinlib-data`、`mca-data` 等）保存上传内容、材质与服务状态，在 `down` 之后依然保留。
+使用 `docker compose down` 停止并移除整个栈。具名卷（`hrpauth-data`、`hrpauth-cache`、`haskin-textures`、`mca-data`、`sdkhandler-artifacts`；`hrpauth-storage` 为迁移保留、已废弃）保存上传内容、材质与服务状态，在 `down` 之后依然保留。
 
 ## 限制
 
 - 整个栈要求各服务仓库与部署器仓库同级检出，构建上下文不是可直接下载的产物。
-- 模板只支持通过环境变量渲染配置。服务自身结构中写死的字段（例如上文提到的缺失的 MySQL 端口）无法被覆盖。
-- **HA WebUI SDK 处理器** 每个轮询周期都会完整构建一次前端，因此其容器需要访问模板仓库与 npm registry 的出站网络。
+- 模板只支持通过环境变量渲染配置。服务自身结构中写死的字段（例如上文提到的 HASkinLib 缺失的 MySQL 端口字段）无法被覆盖。
+- **HA WebUI SDK 处理器** 只在轮询到的 SDK 列表 ETag 变化（或强制触发）时才完整构建一次前端，因此其容器需要访问模板仓库与 npm registry 的出站网络。
 
 ## 相关页面
 

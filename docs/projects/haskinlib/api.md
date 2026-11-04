@@ -1,6 +1,6 @@
 # API
 
-HASkinLib exposes seven routes and no `/api` prefix. Two of them serve files and are public. The rest expect an OAuth2 bearer token issued by HRPAuth.
+HASkinLib exposes eight routes and no `/api` prefix. Two of them serve files and are public. The rest expect an OAuth2 bearer token issued by HRPAuth, except the two probes.
 
 ## Route List
 
@@ -13,6 +13,7 @@ HASkinLib exposes seven routes and no `/api` prefix. Two of them serve files and
 | `POST` | `/texture/delete` | Bearer | Delete one of your own textures |
 | `GET` | `/profile/textures` | Bearer | Your own texture list, currently shelved |
 | `GET` | `/example` | none | Liveness check |
+| `GET` | `/health` | none | Health probe |
 
 ## Response Envelope
 

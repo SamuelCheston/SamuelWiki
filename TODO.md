@@ -21,13 +21,27 @@ Unattended maintenance pass, 2026-11-05. Items below need a human decision or fo
 
 ## Documentation centralization
 
-- [ ] WinnerProxy pages `api.md` and `deployment.md` still live only in the frozen `CoreMatch/HRPAuth-Wiki` repository; import them into this wiki when their content is refreshed (data-flow and troubleshooting were imported and corrected on 2026-11-05).
-- [ ] `CoreMatch/HRPAuth-Wiki` is frozen: only the dead pointer in `HRPAuth/configuration.md` was fixed (it pointed at HA-Contract files that moved to the contract archive). Other frozen pages may still drift; treat this wiki as the only live documentation.
+- [x] WinnerProxy `data-flow.md` and `troubleshooting.md` imported and corrected (2026-11-05, round 1).
+- [x] WinnerProxy `api.md` and `deployment.md` rewritten against the current code/contract and imported with sidebar entries (2026-11-05, round 3); HRPAuth `operations.md` salvageable remainder (account deletion/restoration flow) merged into `projects/hrpauth/architecture`.
+- [ ] `CoreMatch/HRPAuth-Wiki` stays frozen; its content is superseded as follows (page-by-page verdict, 2026-11-05):
+
+  | Frozen page | Verdict | Reason |
+  |---|---|---|
+  | `WinnerProxy/api.md`, `WinnerProxy/deployment.md` | migrated (rewritten) | valuable, previously unmigrated; old versions drifted (port 2779, `/yggdrasil` prefix, M.T. auth) |
+  | `WinnerProxy/data-flow.md`, `WinnerProxy/troubleshooting.md` | migrated (rewritten) | round 1 |
+  | `WinnerProxy/index.md`, `architecture.md`, `configuration.md` | superseded | this wiki's WinnerProxy pages are current and verified against the code |
+  | `HRPAuth/operations.md` | superseded + salvaged | startup/background/migration/Redis topics are covered by this wiki's hrpauth architecture/configuration/database-migrations pages; Yggdrasil-side tasks moved to the Yggdrasil-API service; deletion/restoration flow salvaged into the architecture page; the `register.manage` advice and keygen content are dead |
+  | `HRPAuth/configuration.md`, `architecture.md`, `index.md`, `quick-start.md`, `api-overview.md` | superseded | this wiki's hrpauth pages (schema v11, post-split routes) replace them; the dead HA-Contract pointer in `configuration.md` was fixed in the frozen repo itself |
+  | `HRPAuth/data-models.md`, `token-system.md`, `microservices.md`, `feature-flags.md`, `profile-keys.md` | superseded by HA-Contract | contracts centralize in `HA-Contract/docs/dev/HRPAuth/` (authoritative); the frozen copies document pre-split state (`/services/list`, `/services/sdk/:name`, monolith Yggdrasil stack) |
+  | `HASkinProxy/api.md`, `index.md` | superseded | this wiki's haskinproxy pages cover the same surface |
+  | `docs/guide/*`, `docs/reference/*`, `docs/index/faq/changelog/about` | superseded | this wiki has its own current guide/reference/about pages; the frozen set describes the old repo layout |
+  | `README.md`, `knowledge/*` | not site content | repository meta / ADR memos; stay in the frozen repo |
 
 ## Upstream drift documented (not fixed) here
 
 - WinnerProxy hasJoined stage 3 (`POST /register` body mismatch) and the batch query double prefix are documented as drift on the WinnerProxy pages; the code fix is tracked in HA-Contract's `docs/dev/WinnerProxy/README.md` and WinnerProxy's knowledge base.
 - The HRPAuth-Spigot plugin still sends the retired `manage_token` field on force-bind; harmless (ignored server-side) until the plugin is updated.
+- MatchCoreArena-Server's auth client calls `POST /user/lookup-uuid` (found during the 2026-11-05 content spot check), but the HRPAuth core only registers `/user/lookup`; the contract has no `lookup-uuid` either. The wiki documents the MCA client as implemented; the endpoint mismatch is code-side drift to resolve in MCA or HRPAuth.
 
 ## Verification log
 

@@ -110,9 +110,9 @@ Because the deletion endpoint is a pass-through, an unauthenticated caller reach
 
 ## Route Assembly
 
-Routes are registered in `internal/router`, and the order matters.
+Routes are registered in `internal/router`: `/health` first, then `GET /:username`, `GET /textures/:hash`, and `POST /:username/texture/delete`.
 
-- `/health` and `/textures/:hash` are registered before the `/:username` wildcard, so the static routes win
+- `/textures/:hash` coexists with the `/:username` wildcard because Gin resolves the literal `textures` segment before the root wildcard
 - `/:username` handles the profile request and expects the path segment to end with `.json`, otherwise it answers `404`
 
 ## Related Pages
