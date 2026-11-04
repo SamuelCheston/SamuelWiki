@@ -121,7 +121,14 @@ export default defineConfig({
             {
               text: 'Service Orchestration',
               items: [
-                { text: 'HA Services Deployer', link: '/projects/ha-services-deployer/' },
+                {
+                  text: 'HA Services Deployer',
+                  collapsed: true,
+                  items: [
+                    { text: 'Overview', link: '/projects/ha-services-deployer/' },
+                    { text: 'Container Orchestration', link: '/projects/ha-services-deployer/container-orchestration' }
+                  ]
+                },
                 { text: 'HA Services Maintenance View', link: '/projects/ha-services-maintenanceview/' },
                 { text: 'HA WebUI SDK Handler', link: '/projects/ha-webui-sdkhandler/' }
               ]
@@ -284,7 +291,14 @@ export default defineConfig({
             {
               text: '服务编排',
               items: [
-                { text: 'HA 服务部署器', link: '/zh/projects/ha-services-deployer/' },
+                {
+                  text: 'HA 服务部署器',
+                  collapsed: true,
+                  items: [
+                    { text: '概览', link: '/zh/projects/ha-services-deployer/' },
+                    { text: '容器编排', link: '/zh/projects/ha-services-deployer/container-orchestration' }
+                  ]
+                },
                 { text: 'HA 服务运维视图', link: '/zh/projects/ha-services-maintenanceview/' },
                 { text: 'HA WebUI SDK 处理器', link: '/zh/projects/ha-webui-sdkhandler/' }
               ]

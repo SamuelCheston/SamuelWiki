@@ -2,6 +2,8 @@
 
 HA-Contract is the contract and documentation center of the CoreMatch HA system. It holds API standards, OpenAPI definitions, development guides, external protocol references, and CI helper scripts. No service implementation code lives here.
 
+It exists for **secondary development**: everything in it is written so that other services, clients, and integrations can be built against a stable contract. Deployment and operations documentation lives in this wiki instead of in the contract repository.
+
 ## What It Covers
 
 - The unified business API standard: response envelope, error codes, base path, pagination

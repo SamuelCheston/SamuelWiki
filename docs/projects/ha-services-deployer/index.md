@@ -115,6 +115,7 @@ The artifact path goes through `filepath.Clean` and a `..` prefix check before t
 
 ## Related Pages
 
+- [Container Orchestration](/projects/ha-services-deployer/container-orchestration): the Compose template that runs the whole platform
 - [HA Services MaintenanceView](/projects/ha-services-maintenanceview/): the frontend that consumes this manifest
 - [HA Contract](/projects/ha-contract/): the version manifest contract
 - [HRPAuth](/projects/hrpauth/): one of the services a manifest can describe

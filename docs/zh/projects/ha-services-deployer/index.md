@@ -115,6 +115,7 @@ go run .
 
 ## 相关页面
 
+- [容器编排](/zh/projects/ha-services-deployer/container-orchestration)：运行整个平台的 Compose 模板
 - [HA 服务维护视图](/zh/projects/ha-services-maintenanceview/)：消费这份清单的前端
 - [HA-Contract](/zh/projects/ha-contract/)：版本清单契约
 - [HRPAuth](/zh/projects/hrpauth/)：清单中可以描述的服务之一
