@@ -4,10 +4,10 @@
 
 ## HRPAuth
 
-配置结构版本 `11`。自 2026-10 拆分后，`yggdrasil.*` 块属于 HRPAuth-Yggdrasil-API 服务，核心新增了 `core_api`、`yggdrasil_api` 与 `sdk_packages`。完整参考：[配置与接口](/zh/projects/hrpauth/configuration)。
+配置结构版本 `12`。自 2026-10 拆分后，`yggdrasil.*` 块属于 HRPAuth-Yggdrasil-API 服务，核心新增了 `core_api`、`yggdrasil_api` 与 `sdk_packages`。完整参考：[配置与接口](/zh/projects/hrpauth/configuration)。
 
 ```yaml
-version: "11"
+version: "12"
 site:
     name: HRPAuth
     implementation: HRPAuth
@@ -20,7 +20,8 @@ callback:
 frontend:
     url: https://auth.example.com/ # 前端站点地址。
 database:
-    host: 127.0.0.1
+    host: 127.0.0.1 # v12 起只放主机名，端口有独立字段（旧的内联 ip:port 写法仍然兼容）。
+    port: 3306
     db_name: hrpauth
     user: hrpauth
     password: ""
@@ -80,15 +81,16 @@ Yggdrasil 协议服务。它的配置承接了原来的 `yggdrasil.*` 块，并�
 
 ## 皮肤库（HASkinLib）
 
-配置结构版本 `6`。
+配置结构版本 `7`。
 
 ```yaml
-version: "6"
+version: "7"
 server:
     port: ":2701"
     cors: "*" # 可保留 '*'，也可设为前端地址。
 database: # 通常与 HRPAuth 共用同一个 MySQL。
     host: 127.0.0.1
+    port: 3306 # v7 起有独立端口字段（旧的内联 ip:port 写法仍然兼容）。
     db_name: hrpauth
     user: hrpauth
     password: ""

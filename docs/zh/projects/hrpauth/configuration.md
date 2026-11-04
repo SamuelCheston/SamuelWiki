@@ -20,7 +20,7 @@
 
 ## Schema 版本
 
-顶层 `version` 字段是配置 schema 版本。升级按版本逐级链式迁移，每个版本一个迁移函数（`config/migrations.go`）。当前版本：**11**。
+顶层 `version` 字段是配置 schema 版本。升级按版本逐级链式迁移，每个版本一个迁移函数（`config/migrations.go`）。当前版本：**12**。
 
 | 版本 | 变化 |
 |---------|---------|
@@ -34,12 +34,13 @@
 | `8` | 拆分 yggdrasil：引入 `core_api` 与 `yggdrasil_api` 节用于服务间通信 |
 | `9` | 新增顶层 `sdk_packages` 节（编译期 SDK 聚合） |
 | `10` | 移除 `core_api` 与 `yggdrasil_api` 的静态 `internal_key`；内部服务鉴权改用 OAuth2 动态临时密钥 |
-| `11`（当前） | 新增数据库连接重试配置：`database.retry_interval_sec`（默认 3）、`database.max_retries`（默认 5）、`database.next_round_delay_min`（默认 5） |
+| `11` | 新增数据库连接重试配置：`database.retry_interval_sec`（默认 3）、`database.max_retries`（默认 5）、`database.next_round_delay_min`（默认 5） |
+| `12`（当前） | 新增可选 `database.port`；`database.host` 不再需要内联 `ip:port` 写法（旧的内联写法仍然兼容） |
 
 ## 完整 `config.yaml` 示例
 
 ```yaml
-version: "11"
+version: "12"
 site:
   name: "HRPAuth"
   implementation: "HRPAuth"
@@ -53,6 +54,7 @@ frontend:
   url: "https://auth.example.com/"
 database:
   host: "localhost"
+  port: 3306
   db_name: "hrpauth"
   user: "root"
   password: ""
@@ -105,13 +107,14 @@ sdk_packages:
 
 | 节 | 字段 | 类型 | 默认值 | 说明 |
 |-------|-------|------|---------|-------------|
-| 顶层 | `version` | string | — | 配置 schema 版本（当前 `"11"`） |
+| 顶层 | `version` | string | — | 配置 schema 版本（当前 `"12"`） |
 | `site` | `name` / `implementation` / `version` | string | `"HRPAuth"` / `"HRPAuth"` / `"1.0.0"` | 服务标识；出现在 `GET /status` 与 Yggdrasil `meta.serverName` |
 | `server` | `port` | string | `":2778"` | 监听端口（必须带冒号） |
 | `server` | `cors_origin` | string | `"*"` | 允许的 CORS 来源 |
 | `callback` | `url` | string | — | 后端回调地址（在 `GET /` 状态响应中显示为 `site.url`） |
 | `frontend` | `url` | string | — | 前端页面地址 |
 | `database` | `host` / `db_name` / `user` / `password` | string | — | MySQL 连接 |
+| `database` | `port` | int | `0` | MySQL 端口；`0` 保持旧行为，此时 `host` 可以内联 `ip:port`（旧的内联写法仍然兼容） |
 | `database` | `charset` | string | — | 字符集，建议 `utf8mb4` |
 | `database` | `retry_interval_sec` / `max_retries` / `next_round_delay_min` | int | `3` / `5` / `5` | 连接重试间隔、最大重试次数、下一轮重试前的延迟（分钟）；`0` 禁用后续重试轮次 |
 | `verification_code` | `code_ttl` | int | `600` | 邮箱验证码 TTL（秒） |

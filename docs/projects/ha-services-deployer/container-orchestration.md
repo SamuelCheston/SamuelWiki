@@ -107,7 +107,7 @@ MySQL and Redis are **not** started by the Compose stack. They are expected to e
 | `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` | MySQL connection |
 | `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, `REDIS_DB` | Redis connection |
 
-Note how each service consumes `DB_PORT`: `HRPAuth` has no separate port field, so its template embeds the port into the host value (`host: "${DB_HOST}:${DB_PORT}"`); `HRPAuth-Yggdrasil-API` has a dedicated `database.port` field since its config v4; `MatchCoreArena-Server` reads its own port setting. Only `HASkinLib` has no port field at all and always connects to the MySQL default port 3306.
+Note how `DB_PORT` is consumed: since the 2026-11-05 schema bumps (HRPAuth v12, HRPAuth-Yggdrasil-API v4, HASkinLib v7), all three services have a dedicated `database.port` field, and the templates render `host` and `port` separately. The legacy inline `ip:port` form inside `host` stays compatible — when `port` is set, the inline part is stripped. `MatchCoreArena-Server` reads its own port setting.
 
 Service-to-service wiring uses the Compose service names:
 
@@ -145,7 +145,7 @@ uploads, textures and service state and survive `down`.
 ## Limitations
 
 - The stack requires the sibling service repositories to be checked out next to the deployer repository; the build contexts are not downloadable artifacts.
-- The template renders configuration from environment variables only. Fields that a service hardcodes in its own schema (for example the missing MySQL port field of HASkinLib mentioned above) cannot be overridden.
+- The template renders configuration from environment variables only. Fields that a service hardcodes in its own schema cannot be overridden.
 - **HA WebUI SDK Handler** runs a full frontend build whenever the polled SDK list ETag changes (or a build is forced), so its container needs outbound network access to the template repository and the npm registry.
 
 ## Related Pages
