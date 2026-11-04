@@ -6,7 +6,7 @@ WinnerProxy is the join proxy of the HA ecosystem. It puts HRPAuth and official 
 
 - One Yggdrasil endpoint for both HRPAuth accounts and official Mojang accounts
 - A three-stage `hasJoined` flow: HRPAuth record, Mojang verification, proxy registration
-- Automatic proxy account creation in HRPAuth on the first join of a Mojang player
+- Automatic proxy account creation in HRPAuth on the first join of a Mojang player (currently blocked by an upstream contract drift, see [Architecture](/projects/winnerproxy/architecture#known-upstream-drift))
 - A stable HRPAuth UUID for every player, whatever login path they used
 - An in-process profile cache with a short TTL
 - Presence and relay registration so launchers and the WebUI can reach the proxy
@@ -80,5 +80,7 @@ See [Configuration](/projects/winnerproxy/configuration) for the field-by-field 
 ## Related Pages
 
 - [Architecture](/projects/winnerproxy/architecture): how a join query travels through the proxy
+- [Data Flow](/projects/winnerproxy/data-flow): the stage-by-stage request details
 - [Configuration](/projects/winnerproxy/configuration): the full configuration reference
+- [Troubleshooting](/projects/winnerproxy/troubleshooting): log lines and common failures
 - [HRPAuth](/projects/hrpauth/): the service behind the proxy

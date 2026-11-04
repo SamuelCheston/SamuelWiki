@@ -116,7 +116,9 @@ export default defineConfig({
                   items: [
                     { text: 'Overview', link: '/projects/winnerproxy/' },
                     { text: 'Architecture', link: '/projects/winnerproxy/architecture' },
-                    { text: 'Configuration', link: '/projects/winnerproxy/configuration' }
+                    { text: 'Data Flow', link: '/projects/winnerproxy/data-flow' },
+                    { text: 'Configuration', link: '/projects/winnerproxy/configuration' },
+                    { text: 'Troubleshooting', link: '/projects/winnerproxy/troubleshooting' }
                   ]
                 },
                 { text: 'HRPAuth Spigot', link: '/projects/hrpauth-spigot/' }
@@ -287,7 +289,9 @@ export default defineConfig({
                   items: [
                     { text: '概览', link: '/zh/projects/winnerproxy/' },
                     { text: '架构说明', link: '/zh/projects/winnerproxy/architecture' },
-                    { text: '配置说明', link: '/zh/projects/winnerproxy/configuration' }
+                    { text: '数据流转', link: '/zh/projects/winnerproxy/data-flow' },
+                    { text: '配置说明', link: '/zh/projects/winnerproxy/configuration' },
+                    { text: '故障排查', link: '/zh/projects/winnerproxy/troubleshooting' }
                   ]
                 },
                 { text: 'HRPAuth Spigot', link: '/zh/projects/hrpauth-spigot/' }

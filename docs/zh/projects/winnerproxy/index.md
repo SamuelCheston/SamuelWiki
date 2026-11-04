@@ -6,7 +6,7 @@ WinnerProxy 是 HA 生态的加入代理。它把 HRPAuth 与官方 Mojang 收�
 
 - 一个 Yggdrasil 入口，同时服务 HRPAuth 账号与官方 Mojang 账号
 - 三阶段 `hasJoined` 流程：HRPAuth 记录、Mojang 校验、代理注册
-- Mojang 玩家首次加入时自动在 HRPAuth 创建代理账号
+- Mojang 玩家首次加入时自动在 HRPAuth 创建代理账号（当前受上游契约漂移阻塞，见[架构说明](/zh/projects/winnerproxy/architecture#已知的上游漂移)）
 - 无论走哪条登录路径，游戏端看到的都是同一个稳定的 HRPAuth UUID
 - 短 TTL 的进程内资料缓存
 - Presence 与 relay 注册，让启动器和 WebUI 都能访问到代理
@@ -80,5 +80,7 @@ go build -o ./build/winnerproxy
 ## 相关页面
 
 - [架构说明](/zh/projects/winnerproxy/architecture)：一次加入查询在代理内部如何流转
+- [数据流转](/zh/projects/winnerproxy/data-flow)：逐阶段的请求细节
 - [配置](/zh/projects/winnerproxy/configuration)：完整的配置参考
+- [故障排查](/zh/projects/winnerproxy/troubleshooting)：日志与常见故障
 - [HRPAuth](/zh/projects/hrpauth/)：代理背后的服务
