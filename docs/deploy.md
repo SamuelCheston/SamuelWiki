@@ -1,6 +1,6 @@
 # Build and Deploy
 
-This site is a VitePress static site, published to GitHub Pages at `https://wiki.mcnb.dev/`.
+This site is a VitePress static site deployed to GitHub Pages by GitHub Actions. The target domain is `wiki.mcnb.dev` (`docs/public/CNAME`); the Pages origin currently serves `wiki.samuelcheston.com`, and the custom domain is pending DNS wiring — see the deployment section of [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md) for the owner decision.
 
 ## Continuous Deployment
 

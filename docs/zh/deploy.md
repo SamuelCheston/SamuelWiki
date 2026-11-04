@@ -1,6 +1,6 @@
 # 构建与部署
 
-本站是 VitePress 静态站点，发布到 `https://wiki.mcnb.dev/` 的 GitHub Pages。
+本站是由 GitHub Actions 部署到 GitHub Pages 的 VitePress 静态站点。目标域名为 `wiki.mcnb.dev`（`docs/public/CNAME`）；Pages 源站当前以 `wiki.samuelcheston.com` 提供服务，自定义域名仍在等待 DNS 接线——所有者决策项见 [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md) 的部署小节。
 
 ## 持续部署
 
