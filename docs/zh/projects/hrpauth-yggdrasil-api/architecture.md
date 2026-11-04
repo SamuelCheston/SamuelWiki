@@ -89,6 +89,13 @@ WebUI SDK 调用的部分，鉴权走 Bearer Token，这个令牌可以是核心
 - `/internal/heartbeat`
 - `/internal/proxy-register`
 
+### 管理层
+
+认领与修复代理注册的账号，由 HRPAuth Spigot 插件经核心 relay 携带带 scope 的服务令牌调用。
+
+- `/admin/claim-user`
+- `/admin/force-bind`
+
 ## 令牌与档案模型
 
 ### 账号与档案

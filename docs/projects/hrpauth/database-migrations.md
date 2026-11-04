@@ -1,30 +1,26 @@
 # Database Migrations
 
-Database schema is managed by SQL migrations ([golang-migrate](https://github.com/golang-migrate/migrate) format in `database/migrations/`); `AutoMigrate` is **not** executed at startup.
+Database schema is managed by SQL migrations ([golang-migrate](https://github.com/golang-migrate/migrate) format in `database/migrations/`), embedded into the binary. GORM's `AutoMigrate` is **not** used.
 
-## Layout and Entry Point
+## Startup Behavior
 
-- Entry point: `go run ./cmd/migrate ...` from the repository root (reuses the `database.*` settings of `config.yaml`).
+The service applies migrations itself once the database connection is established:
+
+1. It opens the database using the `database.*` settings of `config.yaml`, including the connection retry settings
+2. It ensures the `schema_migrations` bookkeeping table exists
+3. It runs all unapplied migration steps from the embedded files
+
+A database in a dirty state aborts the migration step; the startup logs a warning and the schema stays behind until the state is fixed and the version forced. When there is nothing to apply, the step is a no-op. There is no standalone migrate CLI anymore; the former `cmd/migrate` entry point was removed. The current version state lives in the `schema_migrations` table.
+
+## Layout
+
 - `000001_baseline` is the squashed core schema (`users`, `oauth2_clients`, `oauth2_authorization_codes`, `oauth2_access_tokens`, `oauth2_refresh_tokens`, `deleted_accounts`, `webauthn_credentials`). The historical steps `000002`–`000012` were squashed into the baseline on 2026-10-14 (`b8a745c`). Minecraft-specific tables live in HRPAuth-Yggdrasil-API (`000001_init`).
-
-## Commands
-
-```bash
-go run ./cmd/migrate version   # current migration version and dirty state
-go run ./cmd/migrate status    # same as version
-go run ./cmd/migrate up        # apply all unapplied migrations
-go run ./cmd/migrate up 1      # apply only N steps
-go run ./cmd/migrate down      # rollback 1 step (down N for N steps)
-go run ./cmd/migrate force 1   # mark the version without executing SQL
-```
-
-For a brand-new database run `go run ./cmd/migrate up`, then verify with `status`.
 
 ## Rules
 
-- Application startup never modifies tables; database initialization only establishes the connection.
 - All schema changes land through `database/migrations/`.
 - When modifying GORM models, evaluate whether a new migration is required.
+- A dirty migration state must be resolved manually (fix the state, force the version); the service warns about it on every startup until then.
 
 ## Related Pages
 

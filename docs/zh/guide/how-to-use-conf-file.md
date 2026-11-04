@@ -1,163 +1,168 @@
-# 配置文件使用指南
+# 配置文件使用
+
+每个读取 YAML 配置的服务都有一份快速上手示例。逐字段的完整参考在各项目的配置页，这里只展示当前结构。
 
 ## HRPAuth
-配置文件示例：
+
+配置结构版本 `11`。自 2026-10 拆分后，`yggdrasil.*` 块属于 HRPAuth-Yggdrasil-API 服务，核心新增了 `core_api`、`yggdrasil_api` 与 `sdk_packages`。完整参考：[配置与接口](/zh/projects/hrpauth/configuration)。
+
 ```yaml
-callback:
-    url: // 处理请求的后端 URL。
-database: // 数据库配置
-    charset: utf8mb4
-    db_name: hrpa
-    host: 127.0.0.1
-    password: hrpa
-    user: hrpa
-frontend:
-    url: // 前端 URL。
-keygen:
-    enable: 0
-manage:
-    token: // 管理令牌（旧版）。它将自动生成。
-oauth2:
-    access_token_ttl_sec: 3600
-    authorization_code_ttl_sec: 300
-    issuer:  // Oauth2 发行者。通常与 callback url 相同。
-    public_client_id: hrpauth-webui // Oauth2 公共客户端 ID。
-    public_redirect_uris:
-        -  // https://your-frontend-url/oauth/callback // Oauth2 重定向 URI。
-    refresh_token_ttl_sec: 2592000
-    super_client_extra_scopes: []
-    super_client_id: hrpauth-internal-super // Oauth2 超级客户端 ID。
-    super_client_secret: d2914e67d02616be853d7c067df440cc18475782c6d647fe4b712fb7fd78e493 // Oauth2 超级客户端密钥。微服务使用它来调用超级客户端 API。它将自动生成。
-redis:
-    db: 0
-    host: 127.0.0.1
-    password: ""
-    port: 6379
-    prefix: hrpauth_
-security:
-    captcha_ttl: 300
-    enable_captcha: true
-    password_cost: 10
-    rate_limit_max_attempts: 10
-    rate_limit_window_sec: 600
-server:
-    cors_origin: '*' // 您可以保持为 '*'。但我们建议您将其设置为您的前端 URL。
-    port: :2778
+version: "11"
 site:
-    implementation: HRPAuth zggdrasil-api 服务
     name: HRPAuth
-    version: "62526"
-smtp:
-    encryption: tls
-    from_email: no-reply@mcnb.dev
-    from_name: HRPAuth
+    implementation: HRPAuth
+    version: 1.0.0
+server:
+    port: ":2778"
+    cors_origin: "*" # 可以保留 '*'，但建议设为前端地址。
+callback:
+    url: https://backend.auth.example.com/ # 后端回调地址。
+frontend:
+    url: https://auth.example.com/ # 前端站点地址。
+database:
     host: 127.0.0.1
+    db_name: hrpauth
+    user: hrpauth
     password: ""
-    port: 25
-    username: ""
-storage:
-    orphan_file_expiry_days: 7
+    charset: utf8mb4
+    retry_interval_sec: 3
+    max_retries: 5
+    next_round_delay_min: 5
 verification_code:
     code_ttl: 600
     storage_dir: ./cache/verification_codes
-version: "7"
-yggdrasil:
-    feature_flags:
-        enable_mojang_anti_features: false
-        enable_profile_key: false
-        legacy_skin_api: true
-        no_mojang_namespace: false
-        non_email_login: true
-        username_check: true
-    security:
-        max_texture_file_size: 512000
-        max_texture_height: 1024
-        max_texture_width: 1024
-        max_tokens_per_user: 10
-        session_expiry_seconds: 28800
-        token_expiry_days: 15
-    server:
-        implementation: HRPAuth zggdrasil-api 服务
-        links:
-            homepage: ""
-            register: ""
-        name: HRPAuth
-        signature_private_key_path: private_key.pem
-        signature_public_key_path: public_key.pem
-        signature_public_key_path: public_key.pem
-        skin_domains: []
-        textures_storage: ./
-        version: "5526"
-
+redis:
+    host: 127.0.0.1
+    port: 6379
+    password: ""
+    db: 0
+    prefix: hrpauth_
+smtp:
+    host: smtp.example.com
+    port: 587
+    username: ""
+    password: ""
+    encryption: tls
+    from_email: no-reply@example.com
+    from_name: HRPAuth
+manage:
+    token: "" # 旧版管理令牌，首次启动自动生成。新集成请勿使用。
+security:
+    password_cost: 10
+    rate_limit_max_attempts: 10
+    rate_limit_window_sec: 600
+    enable_captcha: true
+    captcha_ttl: 300
+oauth2:
+    issuer: "" # 默认取 callback.url。
+    authorization_code_ttl_sec: 300
+    access_token_ttl_sec: 3600
+    refresh_token_ttl_sec: 2592000
+    super_client_id: hrpauth-internal-super # 密钥自动生成，卫星服务用它发起服务间调用。
+    super_client_extra_scopes: []
+    public_client_id: hrpauth-webui
+    public_redirect_uris:
+        - https://auth.example.com/oauth/callback
+core_api:
+    base_url: http://localhost:2778
+    client_id: hrpauth-internal-super
+    client_secret: "" # 自动生成。
+yggdrasil_api:
+    base_url: http://localhost:2779
+sdk_packages:
+    storage_dir: ./data/sdk_packages
+    max_package_size: 20971520
+    max_packages: 128
 ```
 
-## 皮肤库
-配置文件示例：
+## HRPAuth Yggdrasil API
+
+Yggdrasil 协议服务。它的配置承接了原来的 `yggdrasil.*` 块，并新增 relay 与核心连接相关设置；详见 [HRPAuth Yggdrasil API](/zh/projects/hrpauth-yggdrasil-api/)。
+
+## 皮肤库（HASkinLib）
+
+配置结构版本 `6`。
+
 ```yaml
-database: // 通常与 HRPAuth 相同。
-  charset: utf8mb4
-  db_name: hrpa
-  host: 127.0.0.1
-  password: hrpa
-  user: hrpa
+version: "6"
 server:
-  cors: "*" // 我们建议您保持为 '*'。但如果您不想共享皮肤库资源，可以将其设置为您的前端 URL。
-  port: :2701
+    port: ":2701"
+    cors: "*" # 可保留 '*'，也可设为前端地址。
+database: # 通常与 HRPAuth 共用同一个 MySQL。
+    host: 127.0.0.1
+    db_name: hrpauth
+    user: hrpauth
+    password: ""
+    charset: utf8mb4
+    table_prefix: ""
+core_api: # 皮肤库对接的 HRPAuth 核心。
+    base_url: http://127.0.0.1:2778
+    client_id: ""
+    client_secret: ""
 textures:
-  max_request_bytes: 2359296
-  max_upload_bytes: 2097152
-  preview_storage_dir: ./data/previews
-  rate_limit_per_minute: 5
-  rate_limit_window_seconds: 60
-  storage_dir: ./data/textures
-version: "4"
+    storage_dir: ./data/textures
+    preview_storage_dir: ./data/previews
+    max_upload_bytes: 2097152
+    max_request_bytes: 2359296
+    rate_limit_per_minute: 5
+    rate_limit_window_seconds: 60
 ```
 
 ## WinnerProxy
-配置文件示例：
+
+配置结构版本 `2`。完整参考：[WinnerProxy 配置](/zh/projects/winnerproxy/configuration)。
+
 ```yaml
+version: "2"
 server:
-    addr: :2777
+    addr: ":2777"
+    public_url: http://127.0.0.1:2777
     read_timeout_sec: 15
     write_timeout_sec: 15
 cache:
-    size: 104857600
+    size: 104857600 # 0 表示关闭缓存。
     ttl_sec: 300
 log:
     level: info
     format: text
-presence:
-    enabled: true
-    name: WinnerProxy
-    ttl_seconds: 0
 upstreams:
-    official: // 如果您不知道自己在做什么，请不要更改此项。
+    official: # 不清楚用途时不要改。
         url: https://api.minecraftservices.com
         timeout_sec: 10
         enabled: true
-    hrpauth: // 将此更改为您的 HRPAuth url 和超级客户端 ID/密钥。
-        url: http://127.0.0.1:2778
-        client_id: "hrpauth-internal-super"
-        client_secret: "d2914e67d02616be853d7c067df440cc18475782c6d647fe4b712fb7fd78e493"
+    hrpauth: # Yggdrasil 上游，注意 /yggdrasil-api/ relay 前缀。
+        url: http://127.0.0.1:2778/yggdrasil-api/
+        client_id: ""
+        client_secret: ""
         timeout_sec: 10
         enabled: true
+hrpauth: # HRPAuth 管理面根地址，用于 presence、relay 与 SDK 上传。
+    url: http://127.0.0.1:2778
+    client_id: "" # 留空时回落到 upstreams.hrpauth 的凭据。
+    client_secret: ""
+    presence:
+        enabled: true
+        name: WinnerProxy
+        ttl_seconds: 0
+    sdk:
+        enabled: true
+        url: ""
 site:
     name: WinnerProxy
     version: 0.2.0
-version: "2"
 ```
 
-## HASP
-配置文件示例：
+## HASkinProxy（HASP）
+
 ```yaml
-server: // HASP 服务器配置。
-    listen_addr: :2702
+server:
+    listen_addr: ":2702"
     public_url: http://localhost:2702
-upstream: // 将此更改为您的 HRPAuth URL 和管理令牌。（其所需的令牌将更改为 OAuth2 客户端 ID/密钥。）
+upstream: # HRPAuth 管理面根地址，使用 OAuth2 客户端凭据。
     base_url: http://localhost:2778
     timeout: 10
-    manage_token: ""
-    enable_manage: false
+    client_id: ""
+    client_secret: ""
 cache:
     profile_ttl: 3600
     texture_ttl: 86400
