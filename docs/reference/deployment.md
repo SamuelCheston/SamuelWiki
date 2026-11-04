@@ -1,39 +1,28 @@
 # Deployment
 
-VitePress produces static assets, so this site can be deployed to most static hosting platforms.
+This site is deployed to GitHub Pages at `https://wiki.mcnb.dev/` by the GitHub Actions workflow `.github/workflows/deploy.yml`, on every push to `main`. See [Build and Deploy](/deploy) for the pipeline detail.
 
 ## Build Command
 
 ```bash
+npm ci
 npm run docs:build
 ```
 
-The default output directory is:
+The output directory is:
 
 ```text
 docs/.vitepress/dist
 ```
 
-## Common Deployment Targets
+## How the Publishing Works
 
-- Nginx static hosting
-- GitHub Pages
-- Vercel
-- Netlify
-- Internal object storage or CDN
+- GitHub Pages source is set to **GitHub Actions**; the workflow uploads the dist directory and deploys it
+- The custom domain comes from `docs/public/CNAME` (`wiki.mcnb.dev`), copied into the output by VitePress
+- `sitemap.hostname` is set to `https://wiki.mcnb.dev`, so no `base` path configuration is needed
 
 ## Pre-Deployment Checks
 
 1. Run a local build
 2. Check that page links and navigation work
-3. Confirm whether you need a custom domain or base path
-4. Add a `base` config if the site will be served from a subpath
-
-## Good Next Steps
-
-If this site later becomes part of a formal release workflow, consider adding:
-
-- CI builds
-- PR preview environments
-- link checking
-- content review steps
+3. Confirm the `CNAME` file still matches the intended domain
