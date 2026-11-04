@@ -64,7 +64,7 @@ Redis is used for two things: the token verification cache and the UUID to UID c
 
 ### `auth.hrpauth`
 
-- `base_url`: the root address of HRPAuth, for example `http://localhost:8080`. The client appends the paths it needs, such as `/status`, `/oauth/login-ticket`, `/totp/verify`, `/oauth/token`, `/oauth/revoke`, `/user`, `/user/lookup-uuid`
+- `base_url`: the root address of HRPAuth, for example `http://localhost:2778`. The client appends the paths it needs, such as `/status`, `/oauth/login-ticket`, `/totp/verify`, `/oauth/token`, `/oauth/revoke`, `/user`, `/user/lookup-uuid`
 - `public_client_id`: the OAuth2 public client ID, the default is `hrpauth-webui`
 
 ### `auth.maintenance_token`
@@ -96,7 +96,7 @@ The file has no version and no migration. Entries are added by hand.
 
 - A config that is migrated from `1.1.0` or older ends up with an empty `auth.hrpauth.base_url`, because the value is taken from the old `issuer` field and that field was usually empty. Fill it in, the validation rejects an empty base URL
 - A `version` newer than the binary is a hard error, not a warning. Upgrade the program instead of downgrading the file
-- The generated file and `config/config.example.yaml` disagree on `auth.hrpauth.base_url`. The generated file uses `http://localhost:2778`, the template uses `http://localhost:8080`. Check which one you actually have before debugging the auth proxy
+- `config/config.example.yaml` previously used `http://localhost:8080` for `auth.hrpauth.base_url` while the generated file used `http://localhost:2778`; the template was corrected to `2778` (HRPAuth's default port) on 2026-11-05, so the two now agree
 - `config/tokens.yaml` is committed to the repository, while `config/config.yaml` is gitignored. The committed file holds a placeholder token, but any real token written there ends up in the git history
 - `server.read_timeout_seconds` and `server.write_timeout_seconds` are loaded and validated but never applied. The server starts through `r.Run(addr)`, which sets no timeouts
 - The Docker image ships without a config file, `.dockerignore` excludes `config.yaml` and `config.example.yaml`. The container generates `config/config.yaml` on first start inside `/app/config`
