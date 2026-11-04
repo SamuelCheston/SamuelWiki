@@ -4,11 +4,11 @@ HA WebUI SDK 处理器是前端的编译期 SDK 聚合器。它从 HRPAuth 主�
 
 ## 覆盖范围
 
-- 用基于 ETag 的增量请求轮询 HRPAuth 主服务的 SDK 包列表
-- 下载 SDK 源码压缩包并解包到一次性工作目录
+- 用基于 ETag 的增量请求轮询 HRPAuth 主服务的 SDK 包列表，ETag 取整个列表内容的 sha256 摘要
+- 仅在列表 ETag 变化时下载 SDK 源码压缩包，并解包到每次构建全新的工作目录
 - 为前端生成 SDK 清单、路由、导航栏、控制台与资料卡片文件
 - 把 SDK 依赖深合并进模板的 `package.json`
-- 在超时保护下执行 `npm install`、`tsc -b` 与 `vite build`，随后原子发布产物
+- 在超时保护下执行 `npm install`、`tsc -b` 与 `vite build`，随后以整目录替换的方式发布产物
 
 ## 技术栈
 
@@ -24,7 +24,7 @@ internal/config/             # 配置加载、v3 到 v4 迁移、原子保存与
 internal/broker/broker.go    # HRPAuth 客户端：OAuth2 取 token，用 ETag 轮询 /services/sdk-packages
 internal/inject/             # 解包、路径安全检查、依赖合并、生成前端文件
 internal/build/build.go      # npm install、tsc -b、vite build
-internal/publish/publish.go  # 构建产物的原子发布
+internal/publish/publish.go  # 构建产物发布（临时目录复制 + 整目录替换）
 internal/state/state.go      # 构建历史
 ```
 
@@ -73,29 +73,31 @@ go build -o ./build/sdkhandler .
 - `hrpauth.client_id`：OAuth2 客户端 ID，必填，缺失时服务直接启动失败
 - `hrpauth.client_secret`：OAuth2 客户端密钥，必填
 - `hrpauth.poll_interval_seconds`：SDK 列表轮询间隔，`60`
+- `hrpauth.internal_key`：主端口所有 `/api/*` 路由要求的 `X-Internal-Key` 请求头取值。留空即 fail-closed：这些路由一律返回 `401`，`/health` 不受影响
 - `build.template_dir`：前端模板路径
 - `build.template_git_url`：模板仓库，模板目录为空时自动克隆
-- `build.work_dir`：工作目录，每次运行都会重建
-- `build.artifacts_dir`：带版本号的产物根目录
-- `build.current_link`：当前生效产物的指针
+- `build.work_dir`：工作目录，每次构建都会在其下新建 `run-<build-id>` 子目录
+- `build.artifacts_dir`：已发布产物目录，发布时整目录原地替换，不保留逐次构建的历史
+- `build.current_link`：当前生效产物的指针，供 `/api/revision` 与静态托管使用
 - `build.npm_command`：npm 可执行文件，`npm`
 - `build.ignore_scripts_default`：默认以 `--ignore-scripts` 安装，除非包自己声明需要执行脚本，`true`
 - `build.npm_blacklist`：精确包名，命中即本次构建失败
 - `build.template_poll_interval_seconds`：自动拉取模板的间隔，`0` 表示不自动拉取
 - `build.build_timeout_seconds`：单次构建整体超时，`1200`
 - `state_dir`：状态目录，存放 `builds.json` 与下载缓存
-- `serve_artifacts`：是否由本服务托管已发布产物，默认关闭
+- `serve_artifacts`：是否由本服务托管已发布产物，默认关闭。默认关闭时本服务只提供 API，已发布产物由外部 Web 服务器托管
 
 相对路径以配置文件所在目录为基准解析，而不是以启动时的当前目录为基准。示例文件与代码默认值在 `build.artifacts_dir` 和 `build.current_link` 上并不一致，发布前请以实际使用的文件为准。
 
 ## 构建管线
 
-- 模板被完整复制到全新的工作目录，模板本身保持只读
-- SDK 压缩包解包到该工作目录，并做路径检查，拒绝越出目标目录的条目
+- 只有轮询到的列表 ETag 变化（或通过 `/api/build/trigger` 强制触发）才会启动构建；列表未变时既不下载也不构建
+- 每次构建都在独立上下文中进行：在 `build.work_dir` 下新建 `run-<build-id>` 目录，模板被完整复制进去，模板本身保持只读
+- SDK 压缩包下载到状态目录的缓存中，经 sha256 校验后解包到该工作目录，并做路径检查，拒绝越出目标目录的条目
 - SDK 依赖被深合并进模板的 `package.json`
 - 构建依次执行 `npm install`、`tsc -b` 与 `vite build`；如果模板声明了自己的 `build` 脚本则走该脚本
 - 依赖命中 `build.npm_blacklist` 时构建直接失败，与脚本策略无关
-- 产物先复制到临时目录再 rename 覆盖目标目录，因此构建失败时上一版仍然在线
+- 发布时先把 `dist` 复制到目标旁的临时目录，再删除旧产物目录并把临时目录 rename 就位。构建失败不会触碰已发布产物，但删除与 rename 之间存在一个产物目录不存在的短暂空窗，托管它的外部 Web 服务器必须能容忍这一瞬间
 
 ## HTTP 接口
 
@@ -105,6 +107,8 @@ go build -o ./build/sdkhandler .
 - `GET /api/build/status`
 - `POST /api/build/trigger`
 - `GET /api/revision`
+
+主端口的每个 `/api/*` 路由都要求 `X-Internal-Key` 请求头与 `hrpauth.internal_key` 一致；配置留空时一律返回 `401`（fail-closed），只有 `/health` 豁免。
 
 开启 `serve_artifacts` 后，本服务还会托管已发布的静态产物。
 
