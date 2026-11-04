@@ -83,7 +83,7 @@ Rare; `crypto/rand` failed. This is an OS-level problem (missing entropy source,
 The historical `POST /user/declare-email` and the `mbe` opt-in flow no longer exist. The current paths:
 
 - **Claim flow (player)**: the player runs `/ha reg <email> <password>` on the Velocity proxy. The [HRPAuth Spigot](/projects/hrpauth-spigot/) plugin calls `POST /admin/claim-user` on HRPAuth Yggdrasil API (through the core's `/yggdrasil-api` relay) and the proxy-registered account becomes a normal account with an email and a password.
-- **Force bind (operator)**: `/ha forcebind <email> <password>` calls `POST /admin/force-bind`, transferring the Mojang UUID from the proxy account to the target account. It needs the manage token configured in the plugin.
+- **Force bind (operator)**: `/ha forcebind <email> <password>` calls `POST /admin/force-bind`, transferring the Mojang UUID from the proxy account to the target account. Like claim, it authenticates with a scoped OAuth2 service token (`user.force-bind.as-service`); the historical manage token is retired.
 - **Self-service bind switches**: HRPAuth Yggdrasil API exposes `POST /player/mojang-bind-enable` and `POST /player/mojang-bind-disable` (player Bearer token). Enabling starts a 15-minute countdown that clears the flag again if the binding never happens.
 
 ## Testing without real Mojang

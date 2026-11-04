@@ -83,7 +83,7 @@ curl -sI 'https://sessionserver.mojang.com/session/minecraft/hasJoined?username=
 历史上的 `POST /user/declare-email` 与 `mbe` 开关流程已不存在。当前路径：
 
 - **认领流程（玩家）**：玩家在 Velocity 代理上执行 `/ha reg <email> <password>`，[HRPAuth Spigot](/zh/projects/hrpauth-spigot/) 插件通过核心的 `/yggdrasil-api` relay 调用 HRPAuth Yggdrasil API 的 `POST /admin/claim-user`，代理注册的账号变成带邮箱和密码的普通账号。
-- **强制绑定（运维）**：`/ha forcebind <email> <password>` 调用 `POST /admin/force-bind`，把 Mojang UUID 从代理账号转移到目标账号。需要插件里配置的 manage token。
+- **强制绑定（运维）**：`/ha forcebind <email> <password>` 调用 `POST /admin/force-bind`，把 Mojang UUID 从代理账号转移到目标账号。与认领一样走带 scope 的 OAuth2 服务令牌（`user.force-bind.as-service`）鉴权；历史上的管理令牌已废弃。
 - **自助绑定开关**：HRPAuth Yggdrasil API 提供 `POST /player/mojang-bind-enable` 与 `POST /player/mojang-bind-disable`（玩家 Bearer 令牌）。开启后会挂一个 15 分钟倒计时，绑定未完成时标记会被自动清掉。
 
 ## 不用真实 Mojang 测试
