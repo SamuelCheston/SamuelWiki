@@ -64,11 +64,10 @@ oauth2:
     public_redirect_uris:
         - https://auth.example.com/oauth/callback
 core_api:
-    base_url: http://localhost:2778
-    client_id: hrpauth-internal-super
-    client_secret: "" # Auto-generated.
+    internal_key: "" # Auto-generated on first startup. The core reads no core_api value.
 yggdrasil_api:
-    base_url: http://localhost:2779
+    base_url: http://localhost:2770 # Used by the core for the /internal/heartbeat ping.
+    internal_key: "" # Auto-generated on first startup.
 sdk_packages:
     storage_dir: ./data/sdk_packages
     max_package_size: 20971520

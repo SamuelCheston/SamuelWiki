@@ -1,6 +1,6 @@
 # Deployment
 
-This site is deployed to GitHub Pages at `https://wiki.mcnb.dev/` by the GitHub Actions workflow `.github/workflows/deploy.yml`, on every push to `main`. See [Build and Deploy](/deploy) for the pipeline detail.
+This site is deployed to GitHub Pages by the GitHub Actions workflow `.github/workflows/deploy.yml`, on every push to `main`. The target domain is `wiki.mcnb.dev`; the Pages origin currently serves `wiki.samuelcheston.com` while the custom domain awaits DNS wiring. See [Build and Deploy](/deploy) for the pipeline detail and [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md) for the pending owner decision.
 
 ## Build Command
 
