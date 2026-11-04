@@ -1,6 +1,6 @@
 # Architecture
 
-HRPAuth serves two families of APIs from a single process. Knowing which family a route belongs to is the fastest way to read the codebase.
+HRPAuth is the business core of the system. Since the 2026-10 service split it serves the business API and the microservice extension layer itself, while the Yggdrasil protocol surface lives in the [HRPAuth Yggdrasil API](/projects/hrpauth-yggdrasil-api/) service, which the core relays under the `/yggdrasil-api` prefix.
 
 ## Request Layers
 
@@ -8,54 +8,49 @@ HRPAuth serves two families of APIs from a single process. Knowing which family 
 
 Everything the Web UI and third-party clients use. It runs on OAuth2 bearer tokens.
 
-- `/oauth/*`: authorization, token issue, refresh, revoke
-- `/register`, `/login`, `/logout`, `/forgot-password`, `/reset-password`
-- `/user`, `/change-username`, `/user/security/*`
+- `/oauth/*`: authorization, login ticket, token issue, refresh, revoke
+- `/register`, `/logout`, `/forgot-password`, `/reset-password`
+- `/user`, `/user/lookup`, `/user/deleted`, `/change-username`, `/user/security/*`
 - `/webauthn/*`: passkey registration and login
 - `/email-verification`, `/email-2fa/*`, `/totp/*`, `/captcha/*`
-- `/texture/*`
-- `/internal/*`: credential and token verification for satellites
+- `/internal/*`: credential verification, token verification, and account claiming for satellites
+
+Login is an OAuth2 authorization-code flow (with PKCE for the first-party WebUI); there is no standalone `/login` route.
 
 ### Yggdrasil API
 
-Everything a Minecraft client talks to. It runs on `accessToken` plus `clientToken`.
-
-- `/authserver/*`: authenticate, refresh, validate, signout
-- `/sessionserver/*`: join, hasJoined, profile
-- `/api/profiles/minecraft`
-- `/textures/:hash`, `/skins/MinecraftSkins/:username`
-- `/minecraftservices/*`: certificates and public keys for chat signing
+Everything a Minecraft client talks to — `accessToken` plus `clientToken`, `/authserver/*`, `/sessionserver/*`, `/api/profiles/minecraft`, texture routes, and `/minecraftservices/*`. Since the split these routes are served by the [HRPAuth Yggdrasil API](/projects/hrpauth-yggdrasil-api/) service; the core only relays the `/yggdrasil-api` prefix to it. See that project's pages for the route detail.
 
 ### Microservice Extension Layer
 
 How satellites plug into the Web UI. The main service flow itself is not extensible; only the steps before and after it are.
 
 - `POST /services/presence`: register a heartbeat, declare region, SDK address, and auth level
-- `GET /services/list`: discover services relevant to the current region
-- `GET /services/sdk/:name`: load the SDK usage notes
-- `POST /services/relay`: declare relay rules for frontend-accessible paths
-- `POST /services/sdk-packages`: upload a compile-time SDK package
+- `POST /services/auth-key`: issue the temporary internal key used for `X-Internal-Key` authentication between services
+- `POST /services/route` and `POST /services/hook`: register extension routes and hooks
+- `POST /services/relay`: declare relay rules for frontend-accessible paths; `GET /services/relay` lists them
+- `/services/sdk-packages`: upload, list, fetch, download, and delete compile-time SDK packages
 
 ## Two Main Flows
 
 ```text
-浏览器 / WebUI
-  -> JSON 或表单请求
-  -> Auth / User / TOTP / Texture / Captcha Controller
+Browser / WebUI
+  -> JSON or form request
+  -> Auth / User / TOTP / Captcha Controller
   -> Service
-  -> MySQL / Redis / 文件存储
+  -> MySQL / Redis
 ```
 
 ```text
-Minecraft 客户端 / Authlib-Injector
-  -> Yggdrasil Controller
-  -> AuthService / TextureService
-  -> MySQL / 文件存储
+Minecraft client / authlib-injector
+  -> core relay (/yggdrasil-api prefix)
+  -> HRPAuth Yggdrasil API service
+  -> its own MySQL / file storage
 ```
 
 ## Two Token Systems
 
-This is the single most important thing to understand about the service.
+This is the single most important thing to understand about the platform.
 
 ### Business tokens
 
@@ -66,20 +61,14 @@ This is the single most important thing to understand about the service.
 ### Yggdrasil tokens
 
 - `accessToken` and `clientToken`
-- Recorded in the `tokens` table
+- Recorded in the `tokens` table of the [HRPAuth Yggdrasil API](/projects/hrpauth-yggdrasil-api/) service
 - Three states: `valid`, `temporarily_invalid`, `invalid`
 
 The two systems are fully isolated. A business access token will not work against a Yggdrasil route, and a Yggdrasil token will not work against a business route.
 
 ## Background Tasks
 
-Five periodic tasks start with the service.
-
-1. Yggdrasil token cleanup, every hour
-2. OAuth2 token cleanup, every 24 hours
-3. Bot user cleanup, every 24 hours
-4. Session cleanup, every 24 hours
-5. Texture cleanup, every hour
+Two periodic cleanup tasks start with the core: the deleted-accounts cleanup (every 5 days) and the OAuth2 token cleanup (every 24 hours). The Yggdrasil-side sweeps (session tokens, bot users, mbe timeouts) run in the HRPAuth Yggdrasil API service instead.
 
 ## Startup Behaviour
 
@@ -87,20 +76,14 @@ The service prefers to do whatever it can automatically at startup.
 
 - generates `config.yaml` when it is missing
 - migrates an older configuration to the current version
-- prepares the signing key paths
-- applies the database migrations
+- applies the pending database migrations once the database connection is up
+- ensures the built-in OAuth2 clients (the internal super client and the first-party WebUI client)
 
 That makes the first deployment straightforward, but it also means you should read the startup log carefully.
 
 ## Texture Storage
 
-The business route `/texture/*` and the Yggdrasil texture routes operate on the same underlying data.
-
-- files live in `textures_storage`
-- records live in `profile_properties`
-- both are served through `/textures/:hash`
-
-A skin uploaded from the Web UI therefore shows up in Yggdrasil profile lookups as well.
+Texture uploads and delivery are part of the Yggdrasil surface and live in the [HRPAuth Yggdrasil API](/projects/hrpauth-yggdrasil-api/) service since the split; see that project's pages for the storage detail.
 
 ## Related Pages
 

@@ -203,15 +203,15 @@ These switches live under `yggdrasil.feature_flags` in the HRPAuth-Yggdrasil-API
 
 ### Business routes
 
-`/oauth/*`, `/register`, `/login`, `/logout`, `/forgot-password`, `/reset-password`, `/user`, `/change-username`, `/user/security/*`, `/webauthn/*`, `/email-verification`, `/email-2fa/*`, `/totp/*`, `/captcha/*`, `/texture/*`, `/internal/*`.
+`/oauth/*`, `/register`, `/logout`, `/forgot-password`, `/reset-password`, `/user`, `/user/lookup`, `/user/deleted`, `/change-username`, `/user/security/*`, `/webauthn/*`, `/email-verification`, `/email-2fa/*`, `/totp/*`, `/captcha/*`, `/internal/*`.
 
 ### Yggdrasil routes
 
-`/authserver/*`, `/sessionserver/*`, `/api/profiles/minecraft`, `/api/user/profile/:uuid/:textureType`, `/textures/:hash`, `/skins/MinecraftSkins/:username`, `/minecraftservices/*`.
+`/authserver/*`, `/sessionserver/*`, `/api/profiles/minecraft`, texture routes, `/minecraftservices/*`. Since the 2026-10 split these are served by the [HRPAuth-Yggdrasil-API](/projects/hrpauth-yggdrasil-api/) service; the core only relays the `/yggdrasil-api` prefix to it.
 
 ### Extension routes
 
-`/services/presence`, `/services/list`, `/services/sdk/:name`, `/services/relay`, `/services/sdk-packages`.
+`/services/presence`, `/services/auth-key`, `/services/route`, `/services/hook`, `/services/relay`, `/services/sdk-packages`.
 
 ## Easily Misread Points
 

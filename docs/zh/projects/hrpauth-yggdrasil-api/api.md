@@ -352,9 +352,17 @@ Content-Type: application/json
 }
 ```
 
-用同一个 `mojang_uuid` 再次登记会返回已有账号，而不是新建一个。
+用同一个 `mojang_uuid` 再次登记会返回已有账号，而不是新建一个。当用户名与一个开着 Mojang 绑定窗口（`mbe=1`）的账号撞名时，请求会改为完成该绑定流程：写入 `mojang_uuid`、重置 `mbe`，并保留已有账号的身份。
 
 `POST /register` 是这条路由的业务对应版本。它接受 `identifier`、`password` 与可选的 `mojang_uuid`，先向核心校验凭据，再在一个事务里创建账号与默认档案。
+
+## 管理端点
+
+两条路由作用于代理注册的账号。两者都要求带专用 scope 的 OAuth2 服务令牌 Bearer，且都由 [HRPAuth Spigot](/zh/projects/hrpauth-spigot/) 插件经核心的 `/yggdrasil-api` relay 调用。
+
+`POST /admin/claim-user` 为玩家认领一个代理注册的游戏账号（`cbh=0`）。请求体带游戏档案名 `username`、`email` 与 `password`；服务通过核心的 `POST /internal/claim-user` 创建核心用户，把它关联到游戏账号，并置 `cbh=1`。要求 `user.claim.as-service` scope。特征错误码：`user_not_found`（404）、`user_not_claimable` / `email_already_registered` / `username_already_bound`（409）。
+
+`POST /admin/force-bind` 把 `mojang_uuid` 从代理注册账号（按档案名匹配）转移到由目标 `email` + `password` 标识的账号（向核心校验凭据），然后删除代理账号。要求 `user.force-bind.as-service` scope；历史上的 `manage_token` 请求体字段已废弃，不再被接受。特征错误码：`no_mojang_uuid`（400）、`invalid_credentials`（403）、`user_not_found`（404）、`mojang_uuid_already_bound`（409）。
 
 ## 错误响应
 

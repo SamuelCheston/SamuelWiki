@@ -352,9 +352,17 @@ Content-Type: application/json
 }
 ```
 
-Registering the same `mojang_uuid` again returns the existing account instead of creating a second one.
+Registering the same `mojang_uuid` again returns the existing account instead of creating a second one. When the username collides with an account whose Mojang bind window is open (`mbe=1`), the request completes that bind flow instead of creating a new account: it sets the `mojang_uuid`, resets `mbe`, and keeps the existing account's identity.
 
 `POST /register` is the business counterpart of this route. It takes an `identifier`, a `password`, and an optional `mojang_uuid`, verifies the credentials against the core, and creates the account and the default profile in one transaction.
+
+## Admin Endpoints
+
+Two routes operate on proxy-registered accounts. Both require an OAuth2 service token Bearer with a dedicated scope, and both are called by the [HRPAuth Spigot](/projects/hrpauth-spigot/) plugin through the core's `/yggdrasil-api` relay.
+
+`POST /admin/claim-user` claims a proxy-registered game account (`cbh=0`) for the player. The body carries the game profile `username`, an `email`, and a `password`; the service provisions the core user through the core's `POST /internal/claim-user`, links it to the game account, and sets `cbh=1`. Requires the `user.claim.as-service` scope. Specific errors: `user_not_found` (404), `user_not_claimable` / `email_already_registered` / `username_already_bound` (409).
+
+`POST /admin/force-bind` transfers the `mojang_uuid` from a proxy-registered account (matched by profile name) to the account identified by the target `email` + `password`, verified against the core, then deletes the proxy account. Requires the `user.force-bind.as-service` scope; the historical `manage_token` body field is retired and no longer accepted. Specific errors: `no_mojang_uuid` (400), `invalid_credentials` (403), `user_not_found` (404), `mojang_uuid_already_bound` (409).
 
 ## Error Responses
 

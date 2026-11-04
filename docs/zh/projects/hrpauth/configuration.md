@@ -203,15 +203,15 @@ sdk_packages:
 
 ### 业务路由
 
-`/oauth/*`、`/register`、`/login`、`/logout`、`/forgot-password`、`/reset-password`、`/user`、`/change-username`、`/user/security/*`、`/webauthn/*`、`/email-verification`、`/email-2fa/*`、`/totp/*`、`/captcha/*`、`/texture/*`、`/internal/*`。
+`/oauth/*`、`/register`、`/logout`、`/forgot-password`、`/reset-password`、`/user`、`/user/lookup`、`/user/deleted`、`/change-username`、`/user/security/*`、`/webauthn/*`、`/email-verification`、`/email-2fa/*`、`/totp/*`、`/captcha/*`、`/internal/*`。
 
 ### Yggdrasil 路由
 
-`/authserver/*`、`/sessionserver/*`、`/api/profiles/minecraft`、`/api/user/profile/:uuid/:textureType`、`/textures/:hash`、`/skins/MinecraftSkins/:username`、`/minecraftservices/*`。
+`/authserver/*`、`/sessionserver/*`、`/api/profiles/minecraft`、纹理路由、`/minecraftservices/*`。自 2026-10 拆分后，这些路由由 [HRPAuth-Yggdrasil-API](/zh/projects/hrpauth-yggdrasil-api/) 服务提供，核心只把 `/yggdrasil-api` 前缀中继过去。
 
 ### 扩展路由
 
-`/services/presence`、`/services/list`、`/services/sdk/:name`、`/services/relay`、`/services/sdk-packages`。
+`/services/presence`、`/services/auth-key`、`/services/route`、`/services/hook`、`/services/relay`、`/services/sdk-packages`。
 
 ## 容易误解的点
 

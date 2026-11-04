@@ -89,6 +89,13 @@ Only the core talks to these, and only with the internal key.
 - `/internal/heartbeat`
 - `/internal/proxy-register`
 
+### Admin layer
+
+Claiming and repairing proxy-registered accounts, called by the HRPAuth Spigot plugin through the core relay with a scoped service token.
+
+- `/admin/claim-user`
+- `/admin/force-bind`
+
 ## Token and Profile Model
 
 ### Accounts and profiles
