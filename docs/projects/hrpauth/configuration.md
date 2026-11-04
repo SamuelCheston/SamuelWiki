@@ -1,6 +1,6 @@
 # Configuration & API
 
-The service reads a single `config.yaml` from the project root. A complete annotated sample lives in the [Configuration Guide](/guide/how-to-use-conf-file); this page explains how the file is handled and documents every field.
+The service reads a single `config.yaml` from the project root. This page explains how the file is handled and documents every field.
 
 ## Configuration Lifecycle
 
