@@ -43,9 +43,9 @@ curl -sI 'https://sessionserver.mojang.com/session/minecraft/hasJoined?username=
 
 在此之前，Mojang 玩家需要一个 HRPAuth 账号并以 HRPAuth 方式登录才能进服。
 
-## 批量查询返回 500
+## 批量查询返回 502
 
-代理上的 `POST /api/profiles/minecraft` 目前在当前上游下会失败：客户端请求 `{base}/yggdrasil/api/profiles/minecraft`，relay 剥掉 `/yggdrasil-api` 后，上游收到的是 `/yggdrasil/api/profiles/minecraft`，不是已注册的路由。上游路由是 `POST /api/profiles/minecraft`。这是第二个已记录的漂移项，应与注册漂移一并修复。
+原先的漂移——客户端曾请求 `{base}/yggdrasil/api/profiles/minecraft`，relay 剥掉 `/yggdrasil-api` 后上游收到 `/yggdrasil/api/profiles/minecraft`（不是已注册的路由），回答 `500`——已于 2026-11-05 修复（WinnerProxy `4ded866`）。代理现在以无前缀形式请求 `POST /api/profiles/minecraft`。如今批量查询仅在上游回答 `404`（`{"error": "hrpauth batch endpoint missing"}`）或不可达（`{"error": "hrpauth upstream unavailable"}`）时以 `502` 失败；请检查 relay 是否注册了 `/api/profiles/minecraft` 路由、HRPAuth Yggdrasil API 服务是否在线。
 
 ## 玩家在 Mojang 改名后，游戏内 UUID 变了
 

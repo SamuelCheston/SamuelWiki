@@ -43,9 +43,9 @@ This is the current, documented upstream drift: hasJoined stage 3 posts `{userna
 
 Until then, Mojang players need an HRPAuth account and a normal HRPAuth login to join.
 
-## Batch lookups fail with 500
+## Batch lookups fail with 502
 
-`POST /api/profiles/minecraft` on the proxy currently fails against the upstream: the client posts to `{base}/yggdrasil/api/profiles/minecraft`, and after the relay strips `/yggdrasil-api` the upstream receives `/yggdrasil/api/profiles/minecraft`, which is not a registered route. The upstream route is `POST /api/profiles/minecraft`. This is the second documented drift item; fix it together with the registration drift.
+The former drift — the client posted to `{base}/yggdrasil/api/profiles/minecraft`, which after the relay stripped `/yggdrasil-api` arrived at the upstream as `/yggdrasil/api/profiles/minecraft` (not a registered route) and answered `500` — was fixed on 2026-11-05 (WinnerProxy `4ded866`). The proxy now posts prefix-less to `POST /api/profiles/minecraft`. A batch lookup now fails with `502` only when the upstream answers `404` (`{"error": "hrpauth batch endpoint missing"}`) or is unreachable (`{"error": "hrpauth upstream unavailable"}`); check that the relay registers the `/api/profiles/minecraft` route and that the HRPAuth Yggdrasil API service is up.
 
 ## Player renamed on Mojang — in-game UUID changed
 
