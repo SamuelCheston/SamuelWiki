@@ -32,7 +32,7 @@ GET /sessionserver/session/minecraft/hasJoined
        200 -> return the HRPAuth profile, done
   -> stage 2  Mojang hasJoined
        200 -> keep the Mojang UUID and the Mojang skin
-  -> stage 3  POST /register on HRPAuth
+  -> stage 3  POST /register on the HRPAuth upstream
        200 -> return the HRPAuth profile_id with the Mojang skin
 ```
 
@@ -52,9 +52,11 @@ A `200` gives you the Mojang UUID and the Mojang skin. The result is cached unde
 
 The proxy creates the HRPAuth-side account on demand.
 
-- The player name and the Mojang UUID are sent to `POST /register` on HRPAuth, together with a random password the player never sees
+- The player name and the Mojang UUID are sent to `POST /register` on the HRPAuth upstream (the URL of `upstreams.hrpauth`), together with a random 22-character password the player never sees
 - On success, the response carries the HRPAuth `profile_id`, which becomes the identity returned to the game server
 - The skin still comes from Mojang, so the player keeps their official look
+
+**Current drift**: the upstream `POST /register` now requires an `identifier` field, while the proxy still sends `username`, so the request is rejected with `400` and stage 3 does not succeed against the current upstream. Mojang players therefore get `503` at join time. The contract-sanctioned endpoint for this flow is `POST /internal/proxy-register` on [HRPAuth Yggdrasil API](/projects/hrpauth-yggdrasil-api/), authenticated with an `X-Internal-Key` obtained from `POST /services/auth-key`; the proxy has not been switched over yet. The drift is documented in HA-Contract's `docs/dev/WinnerProxy/README.md` outbound call table.
 
 ### Failure modes
 
@@ -62,7 +64,7 @@ The proxy creates the HRPAuth-side account on demand.
 - HRPAuth answered `5xx` or the network failed: a warning is logged and the flow continues at stage 2
 - Mojang answered `5xx` or the network failed: the proxy answers `204 No Content`
 - Registration returned `409` with `username_already_bound`: a warning is logged and the proxy answers `204 No Content`, because the name is already taken by an account that cannot be bound
-- Registration failed for any other reason: the proxy answers `503` with `{"error": "auth backend unavailable"}`
+- Registration failed for any other reason: the proxy answers `503` with `{"error": "auth backend unavailable"}`. This is what the current upstream drift produces for every Mojang player
 
 A `204` here means "this join is not allowed", which is the answer a Yggdrasil client expects.
 
@@ -85,7 +87,7 @@ The difference is intentional. An HRPAuth account shows the skin stored in HA, a
 
 ### The Mojang link
 
-`users.mojang_uuid` exists inside HRPAuth, not inside the proxy. It answers two questions: which Mojang player equals which HRPAuth player, and whether a player name is already bound to an account. WinnerProxy only supplies the value, through the `mojang_uuid` field of the registration request.
+The Mojang UUID binding lives in the `accounts` table of [HRPAuth Yggdrasil API](/projects/hrpauth-yggdrasil-api/), not inside the proxy. It answers two questions: which Mojang player equals which HRPAuth player, and whether a player name is already bound to an account. WinnerProxy only supplies the value, through the `mojang_uuid` field of the registration request.
 
 ## Cache Layer
 
@@ -142,6 +144,15 @@ The destination is `<prefix><path>`, the source is `<server.public_url><path>`. 
 
 The Yggdrasil group is bound twice, at `/` and at `/winnerproxy`. Launchers and legacy probes use the prefix-less form, HA's own clients use the prefixed form.
 
+## Known Upstream Drift
+
+Two outbound calls are known not to succeed against the current upstream. Both are documented in HA-Contract's WinnerProxy dev contract (`docs/dev/WinnerProxy/README.md`) and are drift, not outages of the proxy itself.
+
+- **Proxy registration** (hasJoined stage 3): the proxy posts `{username, password, email, mojang_uuid}` to `POST /register`, but the upstream route now requires `identifier`. The call fails `400`, stage 3 fails, and Mojang players receive `503`. The contract-sanctioned replacement is `POST /internal/proxy-register` with an `X-Internal-Key` header; the key comes from `POST /services/auth-key` on the HRPAuth core
+- **Batch query**: the proxy posts to `{base}/yggdrasil/api/profiles/minecraft`, which after the relay prefix stripping arrives at the upstream as `/yggdrasil/api/profiles/minecraft` — not a registered route. The upstream route is `POST /api/profiles/minecraft`. The handler answers `500`
+
+Monitoring should not treat `500` on the batch route or `503` for Mojang players at join time as failures of the proxy process.
+
 ## What WinnerProxy Deliberately Does Not Do
 
 - It does not store player data. There is no database and no Redis, and every piece of identity lives in HRPAuth
@@ -154,5 +165,7 @@ The Yggdrasil group is bound twice, at `/` and at `/winnerproxy`. Launchers and 
 ## Related Pages
 
 - [Overview](/projects/winnerproxy/)
+- [Data Flow](/projects/winnerproxy/data-flow): the stage-by-stage request details
+- [Troubleshooting](/projects/winnerproxy/troubleshooting): log lines and common failures
 - [Configuration](/projects/winnerproxy/configuration)
 - [HRPAuth Architecture](/projects/hrpauth/architecture)

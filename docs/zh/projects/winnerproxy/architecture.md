@@ -32,7 +32,7 @@ GET /sessionserver/session/minecraft/hasJoined
        200 -> 返回 HRPAuth 资料，流程结束
   -> 阶段二  Mojang hasJoined
        200 -> 记下 Mojang UUID 与 Mojang 皮肤
-  -> 阶段三  在 HRPAuth 上 POST /register
+  -> 阶段三  向 HRPAuth 上游 POST /register
        200 -> 返回 HRPAuth 的 profile_id，皮肤仍然是 Mojang 的
 ```
 
@@ -52,9 +52,11 @@ HRPAuth 没有记录时，同样的参数会发往官方 Mojang sessionserver。
 
 代理按需创建 HRPAuth 侧的账号。
 
-- 玩家名与 Mojang UUID 随一个随机密码一起发给 HRPAuth 的 `POST /register`，这个密码玩家永远看不到
+- 玩家名与 Mojang UUID 随一个随机的 22 字符密码一起发往 HRPAuth 上游（`upstreams.hrpauth` 的地址）的 `POST /register`，这个密码玩家永远看不到
 - 成功后响应里带回 HRPAuth 的 `profile_id`，它就是返回给游戏端的身份
 - 皮肤仍来自 Mojang，玩家保留官方外观
+
+**当前漂移**：上游的 `POST /register` 现在要求 `identifier` 字段，而代理仍然发送 `username`，请求因此被上游以 `400` 拒绝，阶段三在当前上游下无法成功，Mojang 玩家在加入时会收到 `503`。该流程的契约正解是 [HRPAuth Yggdrasil API](/zh/projects/hrpauth-yggdrasil-api/) 的 `POST /internal/proxy-register`，以 `POST /services/auth-key` 获取的 `X-Internal-Key` 鉴权；代理尚未切换过去。漂移状态同步记录在 HA-Contract 的 `docs/dev/WinnerProxy/README.md` 出站调用表中。
 
 ### 失败模式
 
@@ -62,7 +64,7 @@ HRPAuth 没有记录时，同样的参数会发往官方 Mojang sessionserver。
 - HRPAuth 回答 `5xx` 或网络失败：记录一条 WARN 日志，流程从阶段二继续
 - Mojang 回答 `5xx` 或网络失败：代理回答 `204 No Content`
 - 注册返回 `409` 且错误码为 `username_already_bound`：记录一条 WARN 日志并回答 `204 No Content`，因为该用户名已绑定在一个不可绑定的账号上
-- 注册以其它原因失败：代理回答 `503`，响应体为 `{"error": "auth backend unavailable"}`
+- 注册以其它原因失败：代理回答 `503`，响应体为 `{"error": "auth backend unavailable"}`。当前的上游漂移对每个 Mojang 玩家产生的正是这条
 
 这里的 `204` 表示"这次加入不被允许"，正是 Yggdrasil 客户端预期的语义。
 
@@ -85,7 +87,7 @@ Minecraft 服务端看到的永远是 HRPAuth 的 `profiles.id`。Mojang UUID �
 
 ### Mojang 关联字段
 
-`users.mojang_uuid` 存在于 HRPAuth 内部，不在代理里。它解决两个问题：哪个 Mojang 玩家等同于哪个 HRPAuth 玩家，以及某个玩家名是否已被绑定。WinnerProxy 只负责提供这个值，也就是注册请求里的 `mojang_uuid` 字段。
+Mojang UUID 绑定存放在 [HRPAuth Yggdrasil API](/zh/projects/hrpauth-yggdrasil-api/) 的 `accounts` 表里，不在代理里。它解决两个问题：哪个 Mojang 玩家等同于哪个 HRPAuth 玩家，以及某个玩家名是否已被绑定。WinnerProxy 只负责提供这个值，也就是注册请求里的 `mojang_uuid` 字段。
 
 ## 缓存层
 
@@ -142,6 +144,15 @@ Minecraft 服务端看到的永远是 HRPAuth 的 `profiles.id`。Mojang UUID �
 
 Yggdrasil 这一组路由会绑定两次，分别在 `/` 和 `/winnerproxy` 下。启动器与旧式探针使用无前缀形式，HA 自己的客户端使用带前缀的形式。
 
+## 已知的上游漂移
+
+有两个出站调用在当前上游下无法成功。两者都记录在 HA-Contract 的 WinnerProxy 开发契约（`docs/dev/WinnerProxy/README.md`）里，属于漂移，不是代理本身的故障。
+
+- **代理注册**（hasJoined 阶段三）：代理向 `POST /register` 发送 `{username, password, email, mojang_uuid}`，但上游路由现在要求 `identifier`。调用以 `400` 失败，阶段三失败，Mojang 玩家收到 `503`。契约认可的替代路径是带 `X-Internal-Key` 请求头的 `POST /internal/proxy-register`，密钥来自 HRPAuth 核心的 `POST /services/auth-key`
+- **批量查询**：代理请求 `{base}/yggdrasil/api/profiles/minecraft`，relay 剥掉前缀后上游收到的是 `/yggdrasil/api/profiles/minecraft`——不是已注册的路由。上游路由是 `POST /api/profiles/minecraft`。处理器回答 `500`
+
+监控不应把批量路由的 `500` 或加入时 Mojang 玩家的 `503` 当作代理进程的故障。
+
 ## 明确不做的事
 
 - 不保存玩家数据。没有数据库，也没有 Redis，所有身份信息都在 HRPAuth 里
@@ -154,5 +165,7 @@ Yggdrasil 这一组路由会绑定两次，分别在 `/` 和 `/winnerproxy` 下�
 ## 相关页面
 
 - [概览](/zh/projects/winnerproxy/)
+- [数据流转](/zh/projects/winnerproxy/data-flow)：hasJoined 的逐阶段请求细节
+- [故障排查](/zh/projects/winnerproxy/troubleshooting)：日志与常见故障
 - [配置](/zh/projects/winnerproxy/configuration)
 - [HRPAuth 架构说明](/zh/projects/hrpauth/architecture)
