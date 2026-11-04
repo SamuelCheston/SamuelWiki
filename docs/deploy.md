@@ -19,7 +19,7 @@ No secrets are required: the deployment uses the built-in `GITHUB_TOKEN` with `p
 
 The custom domain comes from `docs/public/CNAME` (`wiki.mcnb.dev`), which VitePress copies into the build output; GitHub Pages picks it up from the deployed artifact. DNS must point `wiki.mcnb.dev` at the GitHub Pages endpoints (A/AAAA records or a CNAME to `SamuelCheston.github.io`).
 
-Note: the Pages custom domain is set to `wiki.mcnb.dev`, but `wiki.mcnb.dev` DNS is proxied through Cloudflare, so GitHub Pages reports `status: errored` until the DNS/origin wiring is fixed. The current pipeline state and the owner decision items are tracked in [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md).
+Note: the Pages custom domain stays `wiki.samuelcheston.com` for now. Setting it to `wiki.mcnb.dev` before the DNS fix makes the deploy job stall in `updating_pages` until timeout (GitHub's domain check fails against Cloudflare-proxied DNS). The `CNAME` file in the artifact keeps declaring the target domain `wiki.mcnb.dev`. Current state and owner decision items are tracked in [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md).
 
 ## Manual Build
 

@@ -19,7 +19,7 @@
 
 自定义域名来自 `docs/public/CNAME`（`wiki.mcnb.dev`），VitePress 会把它复制进构建产物，GitHub Pages 从部署的产物中读取。DNS 需要把 `wiki.mcnb.dev` 指向 GitHub Pages（A/AAAA 记录，或指向 `SamuelCheston.github.io` 的 CNAME）。
 
-注意：Pages 自定义域名已设为 `wiki.mcnb.dev`，但 `wiki.mcnb.dev` 的 DNS 经 Cloudflare 代理，GitHub Pages 会一直报 `status: errored`，直到 DNS/回源接线修复。当前状态与需要所有者决策的事项见 [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md)。
+注意：Pages 自定义域名暂保持 `wiki.samuelcheston.com`。在 DNS 修复前把它设为 `wiki.mcnb.dev` 会让部署任务卡在 `updating_pages` 直到超时（GitHub 的域名检查对 Cloudflare 代理的 DNS 不通过）。产物中的 `CNAME` 文件仍声明目标域名 `wiki.mcnb.dev`。当前状态与所有者决策项见 [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md)。
 
 ## 手动构建
 
