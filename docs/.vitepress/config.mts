@@ -67,7 +67,8 @@ export default defineConfig({
                   items: [
                     { text: 'Overview', link: '/projects/hrpauth/' },
                     { text: 'Architecture', link: '/projects/hrpauth/architecture' },
-                    { text: 'Configuration & API', link: '/projects/hrpauth/configuration' }
+                    { text: 'Configuration & API', link: '/projects/hrpauth/configuration' },
+                    { text: 'Database Migrations', link: '/projects/hrpauth/database-migrations' }
                   ]
                 },
                 {
@@ -237,7 +238,8 @@ export default defineConfig({
                   items: [
                     { text: '概览', link: '/zh/projects/hrpauth/' },
                     { text: '架构说明', link: '/zh/projects/hrpauth/architecture' },
-                    { text: '配置与接口', link: '/zh/projects/hrpauth/configuration' }
+                    { text: '配置与接口', link: '/zh/projects/hrpauth/configuration' },
+                    { text: '数据库迁移', link: '/zh/projects/hrpauth/database-migrations' }
                   ]
                 },
                 {

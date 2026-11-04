@@ -5,7 +5,7 @@ WinnerProxy reads a single `config.yml` from the directory that holds the execut
 ## File Location and Version
 
 - The file name is `config.yml`, with a `.yml` extension, next to the executable and not in the project root
-- When the file is missing, the service writes a default one and logs that it has to be edited before a restart
+- When the file is missing, the service writes a default one and logs that it has to be edited before a restart; when stdin is a TTY it also prompts for the OAuth2 client secret
 - When the file exists, the values are read over the built-in defaults, so a key you leave out keeps its default value
 - The file carries `version: "2"`, the schema version of the configuration. WinnerProxy does not migrate older files, it only fills in the missing keys with the current defaults
 
