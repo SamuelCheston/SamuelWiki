@@ -7,9 +7,9 @@ HA-Contract 是 CoreMatch HA 体系的契约与文档中心。它存放 API 规�
 ## 覆盖范围
 
 - 统一的业务接口规范：响应封装、错误码、base path、分页
-- 面向 HRPAuth、HRPAuth-Yggdrasil-API、MatchCoreArena 的机器可读 OpenAPI 3 契约
+- 面向 HRPAuth、HRPAuth-Yggdrasil-API、MatchCoreArena、HASkinLib 与 Cascade 后端的机器可读 OpenAPI 3 契约
 - 所有业务接口共用的全局错误码注册表
-- 面向 HRPAuth、HRPAuth-Yggdrasil-API、HASkinProxy、HA 服务部署器的开发指南
+- 面向 HRPAuth、HRPAuth-Yggdrasil-API、HASkinProxy、HA 服务部署器、WinnerProxy 与 Cascade 的开发指南
 - CustomSkinAPI、authlib-injector 等外部协议标准的只读副本
 - 检查路由漂移与非法相对链接的 CI 辅助脚本
 
@@ -52,12 +52,7 @@ scripts/           # CI 辅助脚本
 
 `check-readme-links.sh` 会拒绝那些被作为独立仓库发布的子目录 README 中的 `](../` 链接。这些目录在本仓库中已经不存在，所以这个脚本目前不做任何实际检查就通过了。
 
-`check-business-api-drift.sh` 会从服务源码里提取路由，再与 OpenAPI 文件的路径清单做比对。它现在会失败，有两个已知原因。
-
-- 它读取 `$ROOT/HRPAuth/main.go` 与 `$ROOT/HASkinLib/main.go`，这两个路径属于已废弃的单体仓库布局，并在 2026-11-03 被移除
-- 它读取 `docs/api/openapi/haskinlib-business.yaml`，这个文件从未存在过，因此脚本在该文件上失败
-
-在这两点修好之前，不要把这个脚本的结果当作可信结论。
+`check-business-api-drift.sh` 会从服务源码里提取路由，再与 OpenAPI 文件的路径清单做双向比对。它覆盖 HRPAuth 核心对 `hrpauth-business.yaml`、HASkinLib 对 `haskinlib-business.yaml`、HRPAuth-Yggdrasil-API 对 `hrpauth-yggdrasil-business.yaml`。实现仓库通过 `HRPAUTH_REPO_DIR` / `HASKINLIB_REPO_DIR` / `YGGDRASIL_REPO_DIR` 环境变量定位，找不到时依次回退到契约仓库的同级目录与 `~/Desktop/HA`；仓库或契约文件缺失会直接报错，而不是悄悄通过。脚本在当前拆分布局下可以通过。
 
 ### 使用方式
 
@@ -79,8 +74,8 @@ scripts/           # CI 辅助脚本
 ## 与其它项目的关系
 
 - **是唯一事实源**，API 契约、错误码和规范都在这里，各个服务仓库的 README 都指回这里
-- **定义业务接口**，[HRPAuth](/zh/projects/hrpauth/)、[HRPAuth Yggdrasil API](/zh/projects/hrpauth-yggdrasil-api/)、[MatchCoreArena 服务端](/zh/projects/matchcorearena-server/) 都按它实现
-- **将要定义业务接口**，[HASkinLib](/zh/projects/haskinlib/) 与 [HASkinProxy](/zh/projects/haskinproxy/) 的规范仍在待办中，HASkinLib 当前的接口文档还放在服务仓库里
+- **定义业务接口**，[HRPAuth](/zh/projects/hrpauth/)、[HRPAuth Yggdrasil API](/zh/projects/hrpauth-yggdrasil-api/)、[MatchCoreArena 服务端](/zh/projects/matchcorearena-server/) 与 [HASkinLib](/zh/projects/haskinlib/) 都按它实现
+- **将要定义业务接口**，[HASkinProxy](/zh/projects/haskinproxy/) 的规范仍在待办中，当前的接口文档还放在服务仓库里。[WinnerProxy](/zh/projects/winnerproxy/) 也没有 OpenAPI 文件，其接口面以开发契约表格的形式记录在 `docs/dev/WinnerProxy/README.md`
 - **改动 HRPAuth 模型前必须先看这里**，因为 [HASkinLib](/zh/projects/haskinlib/) 共用同一个 MySQL，库表变更会直接把它弄坏
 - **被代理与 CI 消费**，这也是校验脚本和 `agents.md` 放在仓库里而不是放在 wiki 里的原因
 
