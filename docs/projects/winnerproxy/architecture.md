@@ -150,8 +150,6 @@ One outbound call is known not to succeed against the current upstream. It is do
 
 - **Proxy registration** (hasJoined stage 3): the proxy posts `{username, password, email, mojang_uuid}` to `POST /register`, but the upstream route now requires `identifier`. The call fails `400`, stage 3 fails, and Mojang players receive `503`. The contract-sanctioned replacement is `POST /internal/proxy-register` with an `X-Internal-Key` header; the key comes from `POST /services/auth-key` on the HRPAuth core
 
-The former **batch query** drift was fixed on 2026-11-05 (WinnerProxy `4ded866`): the extra `/yggdrasil` path segment is gone, so the proxy now posts prefix-less to `POST /api/profiles/minecraft`, and upstream failures surface as `502` with an explicit `{"error": ...}` reason instead of a bare `500`.
-
 Monitoring should not treat `503` for Mojang players at join time as a failure of the proxy process.
 
 ## What WinnerProxy Deliberately Does Not Do

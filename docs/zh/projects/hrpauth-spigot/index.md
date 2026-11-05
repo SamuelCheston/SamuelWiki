@@ -80,7 +80,7 @@ log:
 
 - `hrpauth.url`：HRPAuth 核心地址
 - `hrpauth.client-id` 与 `hrpauth.client-secret`：OAuth2 客户端凭据。生成的注释指向核心配置里的 `oauth2.super_client_id` 与 `oauth2.super_client_secret`，也可以用 `grant_type=client_credentials` 单独创建一个 OAuth2 客户端
-- `hrpauth.manage-token`：旧版管理令牌。强绑命令仍会发送它，但服务端切换到 scope 鉴权后不再使用
+- `hrpauth.manage-token`：随强绑请求发送；服务端忽略该字段
 - `hrpauth.timeout-sec` 与 `hrpauth.verify-tls`：HTTP 超时与 TLS 校验开关
 - `presence.*`：会被读入配置对象，但没有任何代码路径用它在核心上注册服务在线状态
 - `site.*`：命令横幅里展示的名称与版本
@@ -120,7 +120,7 @@ Authorization: Bearer <service_token>
 {"username":"<player name>","email":"<email>","password":"<password>","manage_token":"<manage_token>"}
 ```
 
-目标账号的凭据会向核心校验。鉴权使用服务令牌的 `user.force-bind.as-service` scope；插件仍会发送的旧 `manage_token` 请求体字段会被服务端忽略。
+目标账号的凭据会向核心校验。鉴权使用服务令牌的 `user.force-bind.as-service` scope；请求体中的 `manage_token` 字段会被服务端忽略。
 
 ### 服务令牌
 
@@ -150,7 +150,6 @@ grant_type=client_credentials&client_id=<client_id>&client_secret=<client_secret
 - `user_not_found`：没有与玩家名匹配的代理侧注册账号
 - `target_not_found`：目标账号不存在
 - `invalid_credentials`：目标账号的邮箱或密码不正确
-- `invalid_manage_token`：遗留错误码，插件仍会解析，但服务端不再返回
 - `no_mojang_uuid`：代理侧注册账号没有可迁移的 Mojang UUID
 
 ## 当前状态
@@ -159,7 +158,6 @@ grant_type=client_credentials&client_id=<client_id>&client_secret=<client_secret
 
 - 两条路由均已在 [HRPAuth Yggdrasil API](/zh/projects/hrpauth-yggdrasil-api/) 实现，认领与强绑功能于 2026-11-05 落地，HA-Contract 路线图中对应条目标记为已实现。HA-Contract 的 OpenAPI（`hrpauth-yggdrasil-business.yaml`）定义了两条路径及其请求体。
 - 两条命令都使用服务令牌的 scope 鉴权：认领需要 `user.claim.as-service`，强绑需要 `user.force-bind.as-service`。插件使用的 OAuth2 客户端必须被授予这些 scope。
-- 历史上为代理账号补邮箱的 `POST /user/declare-email` 流程已被移除，`/ha reg`（认领）是它的替代。
 - 这个仓库没有详细的设计文档，README 只是一份简短摘要，上面的内容全部由源码反推。
 - 命名不一致的地方容易踩坑。仓库名叫 HRPAuth-Spigot，但插件本身是 Velocity 插件，不是 Spigot 或 Bukkit 插件。插件 id 是 `hrpauth-proxy`，而 Gradle 根项目名是 `HRPAuth-Proxy`。
 

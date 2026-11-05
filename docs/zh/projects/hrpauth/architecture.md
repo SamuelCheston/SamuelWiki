@@ -15,7 +15,7 @@ Web UI 和第三方客户端使用的部分，鉴权走 OAuth2 Bearer Token。
 - `/email-verification`、`/email-2fa/*`、`/totp/*`、`/captcha/*`
 - `/internal/*`：供卫星服务调用的凭据校验、令牌校验与账号认领
 
-登录是一次 OAuth2 授权码流程（第一方 WebUI 使用 PKCE），不存在独立的 `/login` 路由。
+登录是一次 OAuth2 授权码流程（第一方 WebUI 使用 PKCE）。
 
 ### Yggdrasil 接口
 

@@ -45,7 +45,7 @@ curl -sI 'https://sessionserver.mojang.com/session/minecraft/hasJoined?username=
 
 ## 批量查询返回 502
 
-原先的漂移——客户端曾请求 `{base}/yggdrasil/api/profiles/minecraft`，relay 剥掉 `/yggdrasil-api` 后上游收到 `/yggdrasil/api/profiles/minecraft`（不是已注册的路由），回答 `500`——已于 2026-11-05 修复（WinnerProxy `4ded866`）。代理现在以无前缀形式请求 `POST /api/profiles/minecraft`。如今批量查询仅在上游回答 `404`（`{"error": "hrpauth batch endpoint missing"}`）或不可达（`{"error": "hrpauth upstream unavailable"}`）时以 `502` 失败；请检查 relay 是否注册了 `/api/profiles/minecraft` 路由、HRPAuth Yggdrasil API 服务是否在线。
+代理以无前缀形式请求 `POST /api/profiles/minecraft`。批量查询仅在上游回答 `404`（`{"error": "hrpauth batch endpoint missing"}`）或不可达（`{"error": "hrpauth upstream unavailable"}`）时以 `502` 失败；请检查 relay 是否注册了 `/api/profiles/minecraft` 路由、HRPAuth Yggdrasil API 服务是否在线。
 
 ## 玩家在 Mojang 改名后，游戏内 UUID 变了
 
@@ -80,10 +80,10 @@ curl -sI 'https://sessionserver.mojang.com/session/minecraft/hasJoined?username=
 
 ## 玩家怎么把 Mojang 账号绑到 HRPAuth？
 
-历史上的 `POST /user/declare-email` 与 `mbe` 开关流程已不存在。当前路径：
+路径：
 
 - **认领流程（玩家）**：玩家在 Velocity 代理上执行 `/ha reg <email> <password>`，[HRPAuth Spigot](/zh/projects/hrpauth-spigot/) 插件通过核心的 `/yggdrasil-api` relay 调用 HRPAuth Yggdrasil API 的 `POST /admin/claim-user`，代理注册的账号变成带邮箱和密码的普通账号。
-- **强制绑定（运维）**：`/ha forcebind <email> <password>` 调用 `POST /admin/force-bind`，把 Mojang UUID 从代理账号转移到目标账号。与认领一样走带 scope 的 OAuth2 服务令牌（`user.force-bind.as-service`）鉴权；历史上的管理令牌已废弃。
+- **强制绑定（运维）**：`/ha forcebind <email> <password>` 调用 `POST /admin/force-bind`，把 Mojang UUID 从代理账号转移到目标账号。与认领一样走带 scope 的 OAuth2 服务令牌（`user.force-bind.as-service`）鉴权。
 - **自助绑定开关**：HRPAuth Yggdrasil API 提供 `POST /player/mojang-bind-enable` 与 `POST /player/mojang-bind-disable`（玩家 Bearer 令牌）。开启后会挂一个 15 分钟倒计时，绑定未完成时标记会被自动清掉。
 
 ## 不用真实 Mojang 测试

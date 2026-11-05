@@ -112,10 +112,6 @@ Responses: `400` for a malformed body, `500` when the upstream call fails. The c
 
 On the Mojang path of `hasJoined`, `properties` carries the Mojang-signed textures while `id` and `name` stay the HRPAuth-side identity.
 
-## Historical note
-
-The v0.1 cache endpoints (`GET /cache/:key`, `POST /cache`, `DELETE /cache/:key`, `GET /cache/stats`) were removed; the cache is internal-only.
-
 ## Related Pages
 
 - [Data Flow](/projects/winnerproxy/data-flow): the stage-by-stage logic behind `hasJoined`

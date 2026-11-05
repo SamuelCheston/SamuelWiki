@@ -20,22 +20,7 @@ Migration behavior details:
 
 ## Schema Versions
 
-The top-level `version` field is the configuration schema version. Upgrades are chain-linked, one migration function per version (`config/migrations.go`). Current version: **12**.
-
-| Version | Changes |
-|---------|---------|
-| `1.0` | Initial YAML configuration (`memcache` captcha, no redis) |
-| `2` | Added `redis`; renamed `memcache` to `verification_code` |
-| `3` | Moved `security` fields (including captcha) from `yggdrasil.security` to the top-level `security`; added `manage.token`; default `redis.prefix` is `hrpauth_` |
-| `4` | Added `oauth2` section for site-side OAuth2 authorization |
-| `5` | Added `yggdrasil.security.max_texture_file_size` for texture upload file size limit (default 512000) |
-| `6` | Added top-level `storage` section with `orphan_file_expiry_days` (default 7) |
-| `7` | Added `oauth2.super_client_extra_scopes` for database scope delegation |
-| `8` | Decouple yggdrasil: introduced `core_api` and `yggdrasil_api` sections for service-to-service communication |
-| `9` | Added top-level `sdk_packages` section for compile-time SDK aggregation |
-| `10` | Removed static `internal_key` from `core_api` and `yggdrasil_api`; internal service authentication now uses dynamic temporary keys via OAuth2 |
-| `11` | Added database connection retry settings: `database.retry_interval_sec` (default 3), `database.max_retries` (default 5), `database.next_round_delay_min` (default 5) |
-| `12` (Current) | Added the optional `database.port`; `database.host` no longer needs the inline `ip:port` form (the inline form stays compatible) |
+The top-level `version` field is the configuration schema version. Upgrades are chain-linked, one migration function per version (`config/migrations.go`). Current version: **12** — `database.port` is optional; `database.host` carries the hostname, and the inline `ip:port` form in `host` stays compatible (when `port` is set, the inline part is stripped).
 
 ## Complete `config.yaml` Example
 
@@ -136,8 +121,8 @@ sdk_packages:
 | `oauth2` | `super_client_id` / `super_client_secret` | string | `hrpauth-internal-super` / generated | Built-in low-friction service client |
 | `oauth2` | `super_client_extra_scopes` | array | `[]` | Additional scopes for the built-in super client; only `db.*` scopes are accepted, others silently ignored |
 | `oauth2` | `public_client_id` / `public_redirect_uris` | — | `hrpauth-webui` / `["<frontend>/oauth/callback"]` | Built-in public client for the first-party WebUI |
-| `manage` | `token` | string | auto-generated | **Legacy Manage Token (M-T)**, kept only for backward compatibility; do not use in new integrations |
-| `core_api` | `internal_key` | string | generated | Decoupling leftover: the core reads no `core_api` value at all. Satellites configure their own `core_api` block in their own configuration files |
+| `manage` | `token` | string | auto-generated | **Manage Token (M-T)**: accepted as a management credential; for service-to-service calls prefer the OAuth2 super client |
+| `core_api` | `internal_key` | string | generated | The core reads no `core_api` value at all; satellites configure their own `core_api` block in their own configuration files |
 | `yggdrasil_api` | `base_url` | string | `http://localhost:2770` | Base URL of the HRPAuth-Yggdrasil-API service; the core uses it for the `/internal/heartbeat` ping. The generated `internal_key` in this block is not read by the core either |
 | `sdk_packages` | `storage_dir` / `max_package_size` / `max_packages` | — | `"./data/sdk_packages"` / `20971520` / `128` | Compile-time SDK package store |
 
@@ -145,7 +130,7 @@ Notes:
 
 - First-party WebUI login uses `authorization_code + PKCE`; service-to-service integration uses `client_credentials` with the built-in super client or an independent service client.
 - Internal callback authentication uses dynamic temporary keys issued via `POST /services/auth-key`, not static configuration values.
-- The OAuth2 built-in super client secret carries the main service-to-service power; protect it at the same level as the historical M-T.
+- The OAuth2 built-in super client secret carries the main service-to-service power; protect it as a service-level credential.
 - During BlessingSkin import, bcrypt hashes may be copied directly while non-bcrypt sources are converted into the fixed marker `BS2HA$RESET_REQUIRED` and must use password reset later.
 - After modifying `config.yaml`, the **service must be restarted** to take effect (no hot reloading).
 

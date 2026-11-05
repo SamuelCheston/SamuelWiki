@@ -362,7 +362,7 @@ Two routes operate on proxy-registered accounts. Both require an OAuth2 service 
 
 `POST /admin/claim-user` claims a proxy-registered game account (`cbh=0`) for the player. The body carries the game profile `username`, an `email`, and a `password`; the service provisions the core user through the core's `POST /internal/claim-user`, links it to the game account, and sets `cbh=1`. Requires the `user.claim.as-service` scope. Specific errors: `user_not_found` (404), `user_not_claimable` / `email_already_registered` / `username_already_bound` (409).
 
-`POST /admin/force-bind` transfers the `mojang_uuid` from a proxy-registered account (matched by profile name) to the account identified by the target `email` + `password`, verified against the core, then deletes the proxy account. Requires the `user.force-bind.as-service` scope; the historical `manage_token` body field is retired and no longer accepted. Specific errors: `no_mojang_uuid` (400), `invalid_credentials` (403), `user_not_found` (404), `mojang_uuid_already_bound` (409).
+`POST /admin/force-bind` transfers the `mojang_uuid` from a proxy-registered account (matched by profile name) to the account identified by the target `email` + `password`, verified against the core, then deletes the proxy account. Requires the `user.force-bind.as-service` scope. Specific errors: `no_mojang_uuid` (400), `invalid_credentials` (403), `user_not_found` (404), `mojang_uuid_already_bound` (409).
 
 ## Error Responses
 

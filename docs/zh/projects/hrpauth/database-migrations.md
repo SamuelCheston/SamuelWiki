@@ -10,11 +10,11 @@
 2. 确保 `schema_migrations` 记账表存在
 3. 执行内嵌迁移文件中所有尚未应用的步骤
 
-数据库处于 dirty 状态时迁移步骤中止，启动日志会记一条 WARN，schema 保持落后，直到状态被修复并强制指定版本。没有可应用的迁移时该步骤是空操作。独立的 migrate CLI 已不存在，旧的 `cmd/migrate` 入口已被移除。当前版本状态存放在 `schema_migrations` 表中。
+数据库处于 dirty 状态时迁移步骤中止，启动日志会记一条 WARN，schema 保持落后，直到状态被修复并强制指定版本。没有可应用的迁移时该步骤是空操作。没有独立的 migrate CLI；版本状态存放在 `schema_migrations` 表中。
 
 ## 布局
 
-- `000001_baseline` 是压缩后的核心 schema（`users`、`oauth2_clients`、`oauth2_authorization_codes`、`oauth2_access_tokens`、`oauth2_refresh_tokens`、`deleted_accounts`、`webauthn_credentials`）。历史步骤 `000002`–`000012` 已于 2026-10-14 压缩进 baseline（`b8a745c`）。Minecraft 专属表位于 HRPAuth-Yggdrasil-API（`000001_init`）。
+- `000001_baseline` 是压缩后的核心 schema（`users`、`oauth2_clients`、`oauth2_authorization_codes`、`oauth2_access_tokens`、`oauth2_refresh_tokens`、`deleted_accounts`、`webauthn_credentials`）。Minecraft 专属表位于 HRPAuth-Yggdrasil-API（`000001_init`）。
 
 ## 规则
 

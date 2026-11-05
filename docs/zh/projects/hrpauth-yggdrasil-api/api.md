@@ -362,7 +362,7 @@ Content-Type: application/json
 
 `POST /admin/claim-user` 为玩家认领一个代理注册的游戏账号（`cbh=0`）。请求体带游戏档案名 `username`、`email` 与 `password`；服务通过核心的 `POST /internal/claim-user` 创建核心用户，把它关联到游戏账号，并置 `cbh=1`。要求 `user.claim.as-service` scope。特征错误码：`user_not_found`（404）、`user_not_claimable` / `email_already_registered` / `username_already_bound`（409）。
 
-`POST /admin/force-bind` 把 `mojang_uuid` 从代理注册账号（按档案名匹配）转移到由目标 `email` + `password` 标识的账号（向核心校验凭据），然后删除代理账号。要求 `user.force-bind.as-service` scope；历史上的 `manage_token` 请求体字段已废弃，不再被接受。特征错误码：`no_mojang_uuid`（400）、`invalid_credentials`（403）、`user_not_found`（404）、`mojang_uuid_already_bound`（409）。
+`POST /admin/force-bind` 把 `mojang_uuid` 从代理注册账号（按档案名匹配）转移到由目标 `email` + `password` 标识的账号（向核心校验凭据），然后删除代理账号。要求 `user.force-bind.as-service` scope。特征错误码：`no_mojang_uuid`（400）、`invalid_credentials`（403）、`user_not_found`（404）、`mojang_uuid_already_bound`（409）。
 
 ## 错误响应
 

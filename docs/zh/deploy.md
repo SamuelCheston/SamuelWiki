@@ -30,11 +30,6 @@ npm run docs:build
 
 产物目录：`docs/.vitepress/dist`。本地预览：`npm run docs:preview`。
 
-## 历史遗留
-
-- `gh-pages` 分支保存旧发布流水线的产物，本工作流不再更新它。
-- `htaccess.example` 是 Apache 部署的遗留文件；GitHub Pages 直接托管静态产物。
-
 ## 待办事项
 
 见仓库根目录的 [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md)。

@@ -15,7 +15,7 @@ Everything the Web UI and third-party clients use. It runs on OAuth2 bearer toke
 - `/email-verification`, `/email-2fa/*`, `/totp/*`, `/captcha/*`
 - `/internal/*`: credential verification, token verification, and account claiming for satellites
 
-Login is an OAuth2 authorization-code flow (with PKCE for the first-party WebUI); there is no standalone `/login` route.
+Login is an OAuth2 authorization-code flow (with PKCE for the first-party WebUI).
 
 ### Yggdrasil API
 

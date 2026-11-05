@@ -50,7 +50,7 @@ scripts/           # CI 辅助脚本
 ./scripts/check-readme-links.sh
 ```
 
-`check-readme-links.sh` 会拒绝那些被作为独立仓库发布的子目录 README 中的 `](../` 链接。这些目录在本仓库中已经不存在，所以这个脚本目前不做任何实际检查就通过了。
+`check-readme-links.sh` 会拒绝那些被作为独立仓库发布的子目录 README 中的 `](../` 链接。契约仓库里没有这类子目录，所以脚本通过且没有可检查的内容。
 
 `check-business-api-drift.sh` 会从服务源码里提取路由，再与 OpenAPI 文件的路径清单做双向比对。它覆盖 HRPAuth 核心对 `hrpauth-business.yaml`、HASkinLib 对 `haskinlib-business.yaml`、HRPAuth-Yggdrasil-API 对 `hrpauth-yggdrasil-business.yaml`。实现仓库通过 `HRPAUTH_REPO_DIR` / `HASKINLIB_REPO_DIR` / `YGGDRASIL_REPO_DIR` 环境变量定位，找不到时依次回退到契约仓库的同级目录与 `~/Desktop/HA`；仓库或契约文件缺失会直接报错，而不是悄悄通过。脚本在当前拆分布局下可以通过。
 

@@ -85,7 +85,7 @@ src/generated/services/haskinproxy/      # CustomSkinLoader 配置页
 - `sdk-profile-cards` 由 `Profile` 读取
 - `sdk-critical-operations` 由 `AccountSecurity` 读取
 
-运行期发现机制已经移除。前端不再请求 `GET /services/list`，`src/api/services.ts` 只保留 presence、route、relay 这几条旁路接口。
+`src/api/services.ts` 保留 presence、route、relay 这几条旁路接口。
 
 ## 国际化
 

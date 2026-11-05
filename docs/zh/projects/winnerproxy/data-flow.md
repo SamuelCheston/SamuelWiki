@@ -163,8 +163,6 @@ Mojang 的成功应答按玩家名写入缓存（`mojang:hasjoined:<name>`），
 - 玩家在 Velocity 代理上执行 `/ha reg <email> <password>`，[HRPAuth Spigot](/zh/projects/hrpauth-spigot/) 插件调用 HRPAuth Yggdrasil API 的 `POST /admin/claim-user`
 - 运维可以用 `/ha forcebind` 把 Mojang UUID 转移到另一个账号，对应 `POST /admin/force-bind`
 
-历史上的 `POST /user/declare-email` 端点已在整个系统中删除，除上述认领流程外没有继任者。
-
 ## 为什么是三个阶段而不是一个？
 
 - **为什么先问 HRPAuth？** 更快（局域网/本机），而且 HRPAuth 玩家是这套设计的顺路径。
