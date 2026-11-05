@@ -4,20 +4,25 @@ Unattended maintenance pass, 2026-11-05. Items below need a human decision or fo
 
 ## Deployment
 
-- [ ] **Domain wiring needs the owner (manual Cloudflare/DNS step).** Verified state on 2026-11-05:
-  - The Actions pipeline deploys successfully; the Pages origin serves the current build at `wiki.samuelcheston.com`.
-  - `docs/public/CNAME` and `sitemap.hostname` keep `wiki.mcnb.dev` as the target domain (unchanged on purpose).
-  - Setting the Pages custom domain to `wiki.mcnb.dev` makes GitHub Pages stall in `updating_pages` until the deploy times out (its DNS check fails because `wiki.mcnb.dev` resolves to Cloudflare, not GitHub Pages). The Pages domain setting was therefore reverted to `wiki.samuelcheston.com` to keep the pipeline green; set it back to `wiki.mcnb.dev` only after the DNS/origin fix below.
-  - `https://wiki.mcnb.dev/` currently serves a **stale** build (last-modified 2026-11-03) from whatever origin Cloudflare is using — not the current Pages deployment.
+- [ ] **Domain wiring needs the owner (manual Cloudflare/DNS step).** Verified state on 2026-11-06 (API values):
+  - The Pages custom domain is set to `wiki.mcnb.dev` per the owner's instruction and will not be rolled back. Pages API: `{"build_type":"workflow","cname":"wiki.mcnb.dev","status":"errored"}` — GitHub's DNS check fails because `wiki.mcnb.dev` resolves to Cloudflare, not GitHub Pages; direct TLS to the GitHub Pages IPs fails too (their certificate does not cover this domain).
+  - Every Actions run deploys successfully, and the latest Pages artifact is verified correct (contains `sitemap.xml` and the newest content).
+  - However, live `https://wiki.mcnb.dev/` serves a **stale** build (the 2026-11-05 09:48 UTC deployment): `/sitemap.xml` is missing there (so the `robots.txt` declaration 404s) and the newest content is absent; `cf-cache-status: DYNAMIC` proves this is a stale origin behind Cloudflare, not caching.
+  - `docs/public/CNAME` and `sitemap.hostname` keep `wiki.mcnb.dev` (unchanged on purpose).
 
   Options (pick one; all are owner actions outside this repository):
   1. **Repoint the Cloudflare origin** for `wiki.mcnb.dev` to `SamuelCheston.github.io` (origin rule or CNAME record, proxy can stay on). Impact: smallest change, keeps Cloudflare TLS/CDN; Pages keeps serving the artifact's `CNAME` domain.
   2. **Point DNS at GitHub Pages directly**: set `wiki.mcnb.dev` A records to `185.199.108.153`–`185.199.111.153` (and/or AAAA `2606:50c0:8000::153`–`2606:50c0:8003::153`) and disable the Cloudflare proxy for that name. Impact: GitHub terminates TLS and passes its own domain check, Pages status turns healthy; Cloudflare features are lost for this hostname.
   3. **Fall back to `wiki.samuelcheston.com`**: keep the domain Pages already serves, and only then update `docs/public/CNAME` and `sitemap.hostname` in this repository to match. Impact: abandons `wiki.mcnb.dev` as the canonical domain; every external reference to the wiki URL must follow.
 
-  Ordering rule: **do not change `docs/public/CNAME` or `sitemap.hostname` before the DNS/origin change is done** — the repository files declare the target domain (`wiki.mcnb.dev` stays the target until the owner decides otherwise); changing them early would desynchronize the Pages deployment from the intended domain. Likewise, do not set the Pages custom domain to `wiki.mcnb.dev` before the DNS fix — it stalls the deploy job (observed 2026-11-05, run 41891459432).
+  Ordering rule: **do not change `docs/public/CNAME` or `sitemap.hostname` before the DNS/origin change is done** — the repository files declare the target domain (`wiki.mcnb.dev` stays the target until the owner decides otherwise); changing them early would desynchronize the Pages deployment from the intended domain. The Pages custom domain already points at `wiki.mcnb.dev`; deployments currently complete green despite the errored domain status.
 - [ ] Decide whether the legacy `gh-pages` branch (last deploy 2026-08-18) can be deleted once the Actions pipeline has proven itself.
 - [ ] `htaccess.example` is an Apache leftover; delete it if no Apache deployment is planned.
+
+## Link / content decisions needed (2026-11-06 night check)
+
+- [ ] Portal `src/projects.ts:102` links the **private** repo `GoFish-CaliforniaVersion` (visitors get 404; `gh api` reports `private=true`). Decide: make the repo public or remove the entry. An earlier owner rule says private repos must not appear in the portal; the 2026-11-06 night-check discipline was record-only, so the entry stays pending this decision.
+- [ ] `projects/bedwarsrel-mca/index.md` (en+zh) uses `https://api.matchcorearena.com/api/matches` in its configuration example; the domain has no DNS records at all. Decide: keep it as the intended future address or replace it with a placeholder.
 
 ## Documentation centralization
 
