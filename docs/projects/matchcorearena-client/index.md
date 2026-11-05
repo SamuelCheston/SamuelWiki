@@ -92,7 +92,7 @@ CI runs `go test ./...`, `npm run typecheck`, `npm run lint`, `npm run build`, a
 
 The client keeps its settings in `~/.matchcorearena/config.json`. The template lives in `config.example.json`.
 
-- `server_url`: base URL of the MatchCoreArena server, default `https://arena.mcnb.dev/`
+- `server_url`: base URL of the MatchCoreArena server, default `https://arena.mcnb.dev/` (example default address)
 - `debug`: debug flag, default `false`
 
 `.env.example` and `docker-compose.yml` also declare `SERVER_URL` and `DEBUG`. The loader in `internal/config/config.go` reads the JSON file only, so those two variables do not reach the application in the current build.

@@ -92,7 +92,7 @@ CI 会跑 `go test ./...`、`npm run typecheck`、`npm run lint`、`npm run buil
 
 配置保存在 `~/.matchcorearena/config.json`，模板是 `config.example.json`。
 
-- `server_url`：MatchCoreArena 服务端地址，默认 `https://arena.mcnb.dev/`
+- `server_url`：MatchCoreArena 服务端地址，默认 `https://arena.mcnb.dev/`（示例默认地址）
 - `debug`：调试开关，默认 `false`
 
 `.env.example` 与 `docker-compose.yml` 里也声明了 `SERVER_URL` 和 `DEBUG`。但 `internal/config/config.go` 的加载器只读 JSON 文件，因此当前版本里这两个环境变量不会生效。
