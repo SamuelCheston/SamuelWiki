@@ -42,7 +42,7 @@ run the release again.
 ```
 
 ## Run WinnerProxy
-Winnerproxy provides you the feature of kkeep both HRPAuth player and Mojang player.  
+WinnerProxy provides you the feature of keep both HRPAuth player and Mojang player.  
 All mojang players' uuid will be reserved as HRPAuth player's uuid.  
 More details in [WinnerProxy](https://github.com/CoreMatch/WinnerProxy).
 
