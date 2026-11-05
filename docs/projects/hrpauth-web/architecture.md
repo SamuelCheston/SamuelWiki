@@ -85,7 +85,7 @@ src/generated/services/haskinproxy/      # CustomSkinLoader setup page
 - `sdk-profile-cards` is read by `Profile`
 - `sdk-critical-operations` is read by `AccountSecurity`
 
-Runtime discovery is gone. The frontend no longer calls `GET /services/list`; `src/api/services.ts` keeps only the presence, route, and relay side channels.
+`src/api/services.ts` keeps the presence, route, and relay side channels.
 
 ## Internationalization
 

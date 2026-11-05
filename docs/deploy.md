@@ -30,11 +30,6 @@ npm run docs:build
 
 Output: `docs/.vitepress/dist`. Preview locally with `npm run docs:preview`.
 
-## Legacy Notes
-
-- The `gh-pages` branch holds artifacts of the previous deploy pipeline and is no longer updated by this workflow.
-- `htaccess.example` is a leftover from Apache deployments; GitHub Pages serves the static output directly.
-
 ## Open Items
 
 Tracked in [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md) at the repository root.

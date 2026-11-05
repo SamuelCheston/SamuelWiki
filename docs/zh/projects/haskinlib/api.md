@@ -50,7 +50,7 @@ HASkinLib 暴露八个路由，没有 `/api` 前缀。其中两个用于分发�
 Authorization: Bearer <access_token>
 ```
 
-令牌在 HRPAuth 核心接口处校验。旧的 `remember_token` 与 `rt` 表单字段已经移除，不再接受。
+令牌在 HRPAuth 核心接口处校验。
 
 ## 上传
 

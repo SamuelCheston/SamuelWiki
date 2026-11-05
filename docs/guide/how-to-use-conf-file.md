@@ -47,7 +47,7 @@ smtp:
     from_email: no-reply@example.com
     from_name: HRPAuth
 manage:
-    token: "" # Legacy manage token, auto-generated on first startup. Do not use for new integrations.
+    token: "" # Manage token, auto-generated on first startup. Accepted as a management credential; prefer the OAuth2 super client for service-to-service calls.
 security:
     password_cost: 10
     rate_limit_max_attempts: 10
@@ -77,7 +77,7 @@ sdk_packages:
 
 ## HRPAuth Yggdrasil API
 
-The Yggdrasil protocol service. Its configuration carries the former `yggdrasil.*` blocks plus the relay and core-connection settings; see [HRPAuth Yggdrasil API](/projects/hrpauth-yggdrasil-api/) for the details.
+The Yggdrasil protocol service. Its configuration contains the `yggdrasil.*` blocks plus the relay and core-connection settings; see [HRPAuth Yggdrasil API](/projects/hrpauth-yggdrasil-api/) for the details.
 
 ## Skin library (HASkinLib)
 

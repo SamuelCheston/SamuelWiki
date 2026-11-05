@@ -47,7 +47,7 @@ smtp:
     from_email: no-reply@example.com
     from_name: HRPAuth
 manage:
-    token: "" # 旧版管理令牌，首次启动自动生成。新集成请勿使用。
+    token: "" # 管理令牌，首次启动自动生成。可作为管理凭据使用；服务间调用请优先使用 OAuth2 super client。
 security:
     password_cost: 10
     rate_limit_max_attempts: 10
@@ -77,7 +77,7 @@ sdk_packages:
 
 ## HRPAuth Yggdrasil API
 
-Yggdrasil 协议服务。它的配置承接了原来的 `yggdrasil.*` 块，并新增 relay 与核心连接相关设置；详见 [HRPAuth Yggdrasil API](/zh/projects/hrpauth-yggdrasil-api/)。
+Yggdrasil 协议服务。它的配置包含 `yggdrasil.*` 块，以及 relay 与核心连接相关设置；详见 [HRPAuth Yggdrasil API](/zh/projects/hrpauth-yggdrasil-api/)。
 
 ## 皮肤库（HASkinLib）
 

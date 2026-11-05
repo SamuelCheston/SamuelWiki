@@ -50,7 +50,7 @@ Protected routes read the token from the header.
 Authorization: Bearer <access_token>
 ```
 
-The token is verified against the HRPAuth core API. The old `remember_token` and `rt` form fields were removed and are not accepted any more.
+The token is verified against the HRPAuth core API.
 
 ## Upload
 

@@ -9,7 +9,7 @@ Documentation for the HA system is centralized in two places, one per audience.
 - `HA-Contract/docs/`: the authoritative contract source, and the place AI agents are expected to read
 - This wiki (`wiki.mcnb.dev`, repository `SamuelCheston/SamuelWiki`): the single home for human-facing documentation, including deployment and operations content
 
-`CoreMatch/HRPAuth-Wiki` is no longer an independent content repository; its content is frozen and has been consolidated into this wiki. Contract work belongs in `HA-Contract`, and deployment or operations documentation belongs in this wiki — service repositories keep neither.
+Contract work belongs in `HA-Contract`, and deployment or operations documentation belongs in this wiki — service repositories keep neither.
 
 ## `docs/api/`
 
@@ -45,7 +45,7 @@ Development guides for the individual services. They explain implementation deta
 - `WinnerProxy/`: the WinnerProxy service contract (inbound routes, outbound calls, configuration notes)
 - `Cascade/`: the Cascade backend contract
 
-Configuration and database-migration guides for HRPAuth used to live here as well; they moved out of the contract repository and are now maintained in this wiki, on the [Configuration & API](/projects/hrpauth/configuration) and [Database Migrations](/projects/hrpauth/database-migrations) pages. The old copies are kept in `archive/docs/HRPAuth/`.
+HRPAuth's configuration and database-migration guides are maintained in this wiki, on the [Configuration & API](/projects/hrpauth/configuration) and [Database Migrations](/projects/hrpauth/database-migrations) pages.
 
 ## `docs/references/`
 

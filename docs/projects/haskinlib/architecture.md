@@ -49,17 +49,16 @@ A few details that change how you read the code.
 - preview: `textures.preview_storage_dir/<sha256>_<type>.webp`
 - metadata: `<prefix>texture_list_skin` and `<prefix>texture_list_cape`, both unique on `(uid, hash)`
 
-## From A Shared Database To A Dedicated One
+## Database
 
-Earlier versions shared the HRPAuth database and read the `users`, `oauth2_access_tokens`, and `profiles` tables directly. The service now runs against its own database and reaches HRPAuth over HTTP.
+HASkinLib runs against its own database and reaches HRPAuth over HTTP.
 
-- The two list tables carry the `hasl_` prefix, so they no longer collide with the HRPAuth tables.
-- The prefix is applied to the embedded migration SQL at startup, so the same migration files serve any prefix.
-- Authentication moved to the HRPAuth core API, so no token table is read here any more.
-- `startup_controller.go` requires a standard `schema_migrations` table. A leftover `service` column from the shared era makes the process refuse to start and point you at a dedicated database.
-- The shared migration history cannot be reused, so a dedicated database starts from the baseline migration.
+- The two list tables carry the `hasl_` prefix; the prefix is applied to the embedded migration SQL at startup, so the same migration files serve any prefix
+- Authentication goes through the HRPAuth core API; the service reads no token tables of its own
+- `startup_controller.go` requires a standard `schema_migrations` table; when it finds a `service` column there, the process refuses to start and points you at a dedicated database
+- A fresh database starts from the baseline migration
 
-The old coupling is still a risk when you change tables. A deployment that still points at the HRPAuth database and one that points at a dedicated database do not see the same data.
+A deployment that points at the HRPAuth database and one that points at a dedicated database do not see the same data; make table changes against the database the service actually uses.
 
 ## Authentication
 

@@ -20,22 +20,7 @@
 
 ## Schema 版本
 
-顶层 `version` 字段是配置 schema 版本。升级按版本逐级链式迁移，每个版本一个迁移函数（`config/migrations.go`）。当前版本：**12**。
-
-| 版本 | 变化 |
-|---------|---------|
-| `1.0` | 初始 YAML 配置（`memcache` 验证码，无 redis） |
-| `2` | 新增 `redis`；`memcache` 更名为 `verification_code` |
-| `3` | `security` 字段（含验证码）从 `yggdrasil.security` 移到顶层 `security`；新增 `manage.token`；`redis.prefix` 默认 `hrpauth_` |
-| `4` | 新增 `oauth2` 节（站内 OAuth2 授权） |
-| `5` | 新增 `yggdrasil.security.max_texture_file_size`（贴图上传大小上限，默认 512000） |
-| `6` | 新增顶层 `storage` 节，含 `orphan_file_expiry_days`（默认 7） |
-| `7` | 新增 `oauth2.super_client_extra_scopes`（数据库 scope 委托） |
-| `8` | 拆分 yggdrasil：引入 `core_api` 与 `yggdrasil_api` 节用于服务间通信 |
-| `9` | 新增顶层 `sdk_packages` 节（编译期 SDK 聚合） |
-| `10` | 移除 `core_api` 与 `yggdrasil_api` 的静态 `internal_key`；内部服务鉴权改用 OAuth2 动态临时密钥 |
-| `11` | 新增数据库连接重试配置：`database.retry_interval_sec`（默认 3）、`database.max_retries`（默认 5）、`database.next_round_delay_min`（默认 5） |
-| `12`（当前） | 新增可选 `database.port`；`database.host` 不再需要内联 `ip:port` 写法（旧的内联写法仍然兼容） |
+顶层 `version` 字段是配置 schema 版本。升级按版本逐级链式迁移，每个版本一个迁移函数（`config/migrations.go`）。当前版本：**12**——`database.port` 可选；`database.host` 只放主机名，内联 `ip:port` 写法仍然兼容（设置了 `port` 时，内联部分会被剥掉）。
 
 ## 完整 `config.yaml` 示例
 
@@ -136,22 +121,22 @@ sdk_packages:
 | `oauth2` | `super_client_id` / `super_client_secret` | string | `hrpauth-internal-super` / 生成 | 内置低运维成本服务客户端 |
 | `oauth2` | `super_client_extra_scopes` | array | `[]` | 内置 super client 的附加 scope；只接受 `db.*`，其余静默忽略 |
 | `oauth2` | `public_client_id` / `public_redirect_uris` | — | `hrpauth-webui` / `["<frontend>/oauth/callback"]` | 第一方 WebUI 的内置公开客户端 |
-| `manage` | `token` | string | 首次启动自动生成 | **旧版 Manage Token（M-T）**，仅为向后兼容保留，新集成不要使用 |
-| `core_api` | `internal_key` | string | 自动生成 | 拆分遗留：核心不读取任何 `core_api` 值。卫星服务在各自的配置文件中维护自己的 `core_api` 块 |
+| `manage` | `token` | string | 首次启动自动生成 | **Manage Token（M-T）**：可作为管理凭据使用；服务间调用请优先使用 OAuth2 super client |
+| `core_api` | `internal_key` | string | 自动生成 | 核心不读取任何 `core_api` 值；卫星服务在各自的配置文件中维护自己的 `core_api` 块 |
 | `yggdrasil_api` | `base_url` | string | `http://localhost:2770` | HRPAuth-Yggdrasil-API 服务地址，核心用它发起 `/internal/heartbeat` 探活。该块中的 `internal_key` 同样不被核心读取 |
 | `sdk_packages` | `storage_dir` / `max_package_size` / `max_packages` | — | `"./data/sdk_packages"` / `20971520` / `128` | 编译期 SDK 包存储 |
 
 说明：
 
 - 第一方 WebUI 登录使用 `authorization_code + PKCE`；服务间集成使用 `client_credentials`（内置 super client 或独立的服务客户端）。
-- 内部回调鉴权使用 `POST /services/auth-key` 动态签发的临时密钥，不再使用静态配置值。
-- OAuth2 内置 super client secret 承载了主要的服务间权限，请按历史 M-T 的级别保护它。
+- 内部回调鉴权使用 `POST /services/auth-key` 动态签发的临时密钥（无静态配置值）。
+- OAuth2 内置 super client secret 承载了主要的服务间权限，请按服务级凭据的级别保护它。
 - BlessingSkin 导入时，bcrypt 哈希可能直接复制，非 bcrypt 来源会被转换为固定标记 `BS2HA$RESET_REQUIRED`，用户须通过重置密码找回访问。
 - 修改 `config.yaml` 后必须**重启服务**才生效（无热加载）。
 
 ## Yggdrasil 协议配置块（HRPAuth-Yggdrasil-API 服务）
 
-2026-10 服务拆分后，`yggdrasil.*` 配置块属于 [HRPAuth-Yggdrasil-API](/zh/projects/hrpauth-yggdrasil-api/) 服务，不再属于 HRPAuth 核心。此处保留供参考。
+自 2026-10 拆分起，`yggdrasil.*` 配置块属于 [HRPAuth-Yggdrasil-API](/zh/projects/hrpauth-yggdrasil-api/) 服务。此处列出供参考。
 
 ### `yggdrasil.server`
 

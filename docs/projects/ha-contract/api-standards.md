@@ -115,24 +115,17 @@ Before you submit a change that touches business routes, run the check.
 ./scripts/check-business-api-drift.sh
 ```
 
-It extracts the route list from the service sources, normalizes the path parameters, and reports every route that is missing from the OpenAPI path list.
+It extracts the route list from the service sources, normalizes the path parameters, and reports every route that is missing from the OpenAPI path list, in both directions. It covers the HRPAuth core against `hrpauth-business.yaml`, HASkinLib against `haskinlib-business.yaml`, and HRPAuth-Yggdrasil-API against `hrpauth-yggdrasil-business.yaml`. The implementation repositories are located through the `HRPAUTH_REPO_DIR` / `HASKINLIB_REPO_DIR` / `YGGDRASIL_REPO_DIR` environment variables, falling back to a sibling directory of the contract repository and then to `~/Desktop/HA`; a missing repository or contract file is a hard error rather than a silent pass. The script passes against the current split layout.
 
 The script needs `rg` (ripgrep) and Bash.
 
-You also need to know that it does not currently run to completion. Two things stand in its way.
-
-- it reads `$ROOT/HRPAuth/main.go` and `$ROOT/HASkinLib/main.go`, which belonged to the old monorepo layout and were removed on 2026-11-03
-- it reads `docs/api/openapi/haskinlib-business.yaml`, which has never existed, so the script fails on that file
-
-Treat the result as unreliable until both are fixed.
-
-The second script has a different job and does pass.
+The second script has a different job and passes as well.
 
 ```bash
 ./scripts/check-readme-links.sh
 ```
 
-It rejects `](../` relative links in the READMEs of sub-directories that are published as independent repositories. Those directories no longer exist here, so it currently finds nothing to check.
+It rejects `](../` relative links in the READMEs of sub-directories that are published as independent repositories. The contract repository has no such sub-directories, so the script passes without finding anything to check.
 
 ## Related Pages
 

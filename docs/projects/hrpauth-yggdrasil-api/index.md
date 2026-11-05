@@ -74,7 +74,7 @@ The Docker image ships without a `config.yaml`. Mount yours at `/app/config.yaml
 
 ## Configuration
 
-`config.yaml` lives in the same directory as the binary. It is generated with defaults on the first run. When its `version` is older than the binary supports, the file is backed up and migrated step by step up to the current version, which is `4` (v4 added `database.port`; a historical v4 `manage.token` step was reverted, and a leftover `manage` section in the file is ignored).
+`config.yaml` lives in the same directory as the binary. It is generated with defaults on the first run. When its `version` is older than the binary supports, the file is backed up and migrated step by step up to the current version, which is `4` (v4 added `database.port`; a `manage` section in the file is ignored).
 
 - `server`: listen port and CORS origin
 - `site`: the name and version shown in the metadata

@@ -165,8 +165,6 @@ A proxy-registered account has no email and no player-known password. The player
 - The player runs `/ha reg <email> <password>` on the Velocity proxy; the [HRPAuth Spigot](/projects/hrpauth-spigot/) plugin calls `POST /admin/claim-user` on HRPAuth Yggdrasil API
 - Operators can transfer the Mojang UUID to another account with `/ha forcebind`, which calls `POST /admin/force-bind`
 
-The historical `POST /user/declare-email` endpoint no longer exists anywhere in the system and has no successor other than this claim flow.
-
 ## Why three stages and not a single one?
 
 - **Why HRPAuth first?** Faster (LAN/localhost), and HRPAuth players are the happy path of this design.

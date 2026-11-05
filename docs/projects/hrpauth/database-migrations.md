@@ -10,11 +10,11 @@ The service applies migrations itself once the database connection is establishe
 2. It ensures the `schema_migrations` bookkeeping table exists
 3. It runs all unapplied migration steps from the embedded files
 
-A database in a dirty state aborts the migration step; the startup logs a warning and the schema stays behind until the state is fixed and the version forced. When there is nothing to apply, the step is a no-op. There is no standalone migrate CLI anymore; the former `cmd/migrate` entry point was removed. The current version state lives in the `schema_migrations` table.
+A database in a dirty state aborts the migration step; the startup logs a warning and the schema stays behind until the state is fixed and the version forced. When there is nothing to apply, the step is a no-op. There is no standalone migrate CLI; the version state lives in the `schema_migrations` table.
 
 ## Layout
 
-- `000001_baseline` is the squashed core schema (`users`, `oauth2_clients`, `oauth2_authorization_codes`, `oauth2_access_tokens`, `oauth2_refresh_tokens`, `deleted_accounts`, `webauthn_credentials`). The historical steps `000002`–`000012` were squashed into the baseline on 2026-10-14 (`b8a745c`). Minecraft-specific tables live in HRPAuth-Yggdrasil-API (`000001_init`).
+- `000001_baseline` is the squashed core schema (`users`, `oauth2_clients`, `oauth2_authorization_codes`, `oauth2_access_tokens`, `oauth2_refresh_tokens`, `deleted_accounts`, `webauthn_credentials`). Minecraft-specific tables live in HRPAuth-Yggdrasil-API (`000001_init`).
 
 ## Rules
 

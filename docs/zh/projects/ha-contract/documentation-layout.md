@@ -9,7 +9,7 @@ HA 体系的文档按受众统一收口在两个地方。
 - `HA-Contract/docs/`：权威契约源，也是 AI 代理应当读取的地方
 - 本 Wiki（`wiki.mcnb.dev`，仓库 `SamuelCheston/SamuelWiki`）：面向人类的文档的唯一收口，包括部署与运维内容
 
-`CoreMatch/HRPAuth-Wiki` 不再是独立内容仓库，其内容已冻结并并入本 Wiki。契约相关的工作属于 `HA-Contract`，部署与运维文档属于本 Wiki——服务仓库两者都不保留。
+契约相关的工作属于 `HA-Contract`，部署与运维文档属于本 Wiki——服务仓库两者都不保留。
 
 ## `docs/api/`
 
@@ -45,7 +45,7 @@ Yggdrasil 协议面刻意不放进 `hrpauth-business.yaml`。它单独记录在 
 - `WinnerProxy/`：WinnerProxy 服务契约（入站路由、出站调用、配置说明）
 - `Cascade/`：Cascade 后端契约
 
-HRPAuth 的配置与数据库迁移指南过去也放在这里，现已移出契约仓库，改由本 Wiki 的[配置与接口](/zh/projects/hrpauth/configuration)与[数据库迁移](/zh/projects/hrpauth/database-migrations)页维护；旧副本保留在 `archive/docs/HRPAuth/`。
+HRPAuth 的配置与数据库迁移指南由本 Wiki 的[配置与接口](/zh/projects/hrpauth/configuration)与[数据库迁移](/zh/projects/hrpauth/database-migrations)页维护。
 
 ## `docs/references/`
 

@@ -49,17 +49,16 @@ POST /texture/upload
 - 预览图：`textures.preview_storage_dir/<sha256>_<type>.webp`
 - 元数据：`<prefix>texture_list_skin` 与 `<prefix>texture_list_cape`，两张表都对 `(uid, hash)` 建了唯一约束
 
-## 从共享数据库到独立数据库
+## 数据库
 
-早期版本与 HRPAuth 共用同一个库，并直接读取 `users`、`oauth2_access_tokens`、`profiles` 三张表。现在服务跑在自己的数据库上，通过 HTTP 访问 HRPAuth。
+HASkinLib 跑在自己的数据库上，通过 HTTP 访问 HRPAuth。
 
-- 两张列表表带上 `hasl_` 前缀，不再与 HRPAuth 的表冲突。
-- 前缀在启动时套用到内嵌的迁移 SQL 上，同一套迁移文件可以适配任意前缀。
-- 鉴权改走 HRPAuth 核心接口，这里不再读取任何令牌表。
-- `startup_controller.go` 要求 `schema_migrations` 是标准表结构。检测到共享时期遗留的 `service` 列时，进程直接报错退出，并提示切换到独立数据库。
-- 共享时期的迁移历史无法复用，独立数据库从基准迁移重新开始。
+- 两张列表表带上 `hasl_` 前缀；前缀在启动时套用到内嵌的迁移 SQL 上，同一套迁移文件可以适配任意前缀。
+- 鉴权走 HRPAuth 核心接口，本服务不读取任何自己的令牌表。
+- `startup_controller.go` 要求 `schema_migrations` 是标准表结构；检测到 `service` 列时，进程直接报错退出，并提示切换到独立数据库。
+- 全新数据库从基准迁移开始。
 
-改表时，旧耦合仍然是风险点。指向 HRPAuth 数据库的部署和指向独立数据库的部署，看到的不是同一份数据。
+指向 HRPAuth 数据库的部署和指向独立数据库的部署，看到的不是同一份数据；改表请针对服务实际使用的数据库进行。
 
 ## 鉴权方式
 

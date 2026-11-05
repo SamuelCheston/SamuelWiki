@@ -115,24 +115,17 @@ Yggdrasil 协议面不属于 `hrpauth-business.yaml`。那个文件只覆盖 HRP
 ./scripts/check-business-api-drift.sh
 ```
 
-它从服务源码里提取路由列表，归一化路径参数，然后报告所有没有出现在 OpenAPI 路径清单里的路由。
+它从服务源码里提取路由列表，归一化路径参数，然后双向报告所有没有出现在 OpenAPI 路径清单里的路由。覆盖范围为 HRPAuth 核心对 `hrpauth-business.yaml`、HASkinLib 对 `haskinlib-business.yaml`、HRPAuth-Yggdrasil-API 对 `hrpauth-yggdrasil-business.yaml`。实现仓库通过 `HRPAUTH_REPO_DIR` / `HASKINLIB_REPO_DIR` / `YGGDRASIL_REPO_DIR` 环境变量定位，找不到时依次回退到契约仓库的同级目录与 `~/Desktop/HA`；仓库或契约文件缺失会直接报错，而不是悄悄通过。脚本在当前拆分布局下可以通过。
 
 脚本依赖 `rg`（ripgrep）和 Bash。
 
-你也需要知道它现在跑不完，有两处挡住了它。
-
-- 它读取 `$ROOT/HRPAuth/main.go` 与 `$ROOT/HASkinLib/main.go`，这两个路径属于已废弃的单体仓库布局，并在 2026-11-03 被移除
-- 它读取 `docs/api/openapi/haskinlib-business.yaml`，这个文件从未存在过，脚本在该文件上失败
-
-在这两点修好之前，不要把它的结果当作可信结论。
-
-另一个脚本职责不同，目前可以通过。
+另一个脚本职责不同，同样可以通过。
 
 ```bash
 ./scripts/check-readme-links.sh
 ```
 
-它拒绝那些被作为独立仓库发布的子目录 README 中的 `](../` 相对链接。这些目录在这里已经不存在，所以它当前没有可检查的内容。
+它拒绝那些被作为独立仓库发布的子目录 README 中的 `](../` 相对链接。契约仓库里没有这类子目录，所以脚本通过且没有可检查的内容。
 
 ## 相关页面
 

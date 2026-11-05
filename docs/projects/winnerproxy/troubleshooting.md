@@ -45,7 +45,7 @@ Until then, Mojang players need an HRPAuth account and a normal HRPAuth login to
 
 ## Batch lookups fail with 502
 
-The former drift — the client posted to `{base}/yggdrasil/api/profiles/minecraft`, which after the relay stripped `/yggdrasil-api` arrived at the upstream as `/yggdrasil/api/profiles/minecraft` (not a registered route) and answered `500` — was fixed on 2026-11-05 (WinnerProxy `4ded866`). The proxy now posts prefix-less to `POST /api/profiles/minecraft`. A batch lookup now fails with `502` only when the upstream answers `404` (`{"error": "hrpauth batch endpoint missing"}`) or is unreachable (`{"error": "hrpauth upstream unavailable"}`); check that the relay registers the `/api/profiles/minecraft` route and that the HRPAuth Yggdrasil API service is up.
+The proxy posts prefix-less to `POST /api/profiles/minecraft`. A batch lookup fails with `502` only when the upstream answers `404` (`{"error": "hrpauth batch endpoint missing"}`) or is unreachable (`{"error": "hrpauth upstream unavailable"}`); check that the relay registers the `/api/profiles/minecraft` route and that the HRPAuth Yggdrasil API service is up.
 
 ## Player renamed on Mojang — in-game UUID changed
 
@@ -80,10 +80,10 @@ Rare; `crypto/rand` failed. This is an OS-level problem (missing entropy source,
 
 ## How do players bind their Mojang account to HRPAuth?
 
-The historical `POST /user/declare-email` and the `mbe` opt-in flow no longer exist. The current paths:
+The paths:
 
 - **Claim flow (player)**: the player runs `/ha reg <email> <password>` on the Velocity proxy. The [HRPAuth Spigot](/projects/hrpauth-spigot/) plugin calls `POST /admin/claim-user` on HRPAuth Yggdrasil API (through the core's `/yggdrasil-api` relay) and the proxy-registered account becomes a normal account with an email and a password.
-- **Force bind (operator)**: `/ha forcebind <email> <password>` calls `POST /admin/force-bind`, transferring the Mojang UUID from the proxy account to the target account. Like claim, it authenticates with a scoped OAuth2 service token (`user.force-bind.as-service`); the historical manage token is retired.
+- **Force bind (operator)**: `/ha forcebind <email> <password>` calls `POST /admin/force-bind`, transferring the Mojang UUID from the proxy account to the target account. Like claim, it authenticates with a scoped OAuth2 service token (`user.force-bind.as-service`).
 - **Self-service bind switches**: HRPAuth Yggdrasil API exposes `POST /player/mojang-bind-enable` and `POST /player/mojang-bind-disable` (player Bearer token). Enabling starts a 15-minute countdown that clears the flag again if the binding never happens.
 
 ## Testing without real Mojang

@@ -95,7 +95,7 @@ The `sdk/` tree is embedded into the binary with `embed.FS`, so no extra files n
 
 At boot the tree is packed into an in-memory `tar.gz` with `manifest.json` at the archive root and uploaded to HRPAuth. The [HA WebUI SDK Handler](/projects/ha-webui-sdkhandler/) then aggregates the package into the Web UI build.
 
-`GET /customskinloader` is no longer a runtime route of the proxy. The page is now served by the Web UI itself.
+The `/customskinloader` page is served by the Web UI itself, not a runtime route of the proxy.
 
 ## Authentication Boundary
 

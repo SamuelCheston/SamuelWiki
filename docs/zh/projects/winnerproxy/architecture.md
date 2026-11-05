@@ -150,8 +150,6 @@ Yggdrasil 这一组路由会绑定两次，分别在 `/` 和 `/winnerproxy` 下�
 
 - **代理注册**（hasJoined 阶段三）：代理向 `POST /register` 发送 `{username, password, email, mojang_uuid}`，但上游路由现在要求 `identifier`。调用以 `400` 失败，阶段三失败，Mojang 玩家收到 `503`。契约认可的替代路径是带 `X-Internal-Key` 请求头的 `POST /internal/proxy-register`，密钥来自 HRPAuth 核心的 `POST /services/auth-key`
 
-原先的**批量查询**漂移已于 2026-11-05 修复（WinnerProxy `4ded866`）：多余的 `/yggdrasil` 路径段已移除，代理现在以无前缀形式请求 `POST /api/profiles/minecraft`；上游故障以带明确 `{"error": ...}` 原因的 `502` 呈现，不再是裸 `500`。
-
 监控不应把加入时 Mojang 玩家的 `503` 当作代理进程的故障。
 
 ## 明确不做的事

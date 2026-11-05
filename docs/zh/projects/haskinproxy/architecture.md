@@ -95,7 +95,7 @@ GET /Player.json
 
 启动时这棵源码树被打成内存中的 `tar.gz`，归档根目录是 `manifest.json`，随后上传到 HRPAuth。[HA WebUI SDK 处理器](/zh/projects/ha-webui-sdkhandler/) 会把它聚合进 Web UI 构建。
 
-`GET /customskinloader` 已经不是代理的运行时路由，这个页面现在由 Web UI 自己提供。
+`/customskinloader` 页面由 Web UI 自身提供，不是代理的运行时路由。
 
 ## 鉴权边界
 

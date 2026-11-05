@@ -50,7 +50,7 @@ scripts/           # CI helper scripts
 ./scripts/check-readme-links.sh
 ```
 
-`check-readme-links.sh` rejects `](../` links in the READMEs of sub-directories that are published as independent repositories. Those directories no longer exist in this repository, so the script currently passes without inspecting anything.
+`check-readme-links.sh` rejects `](../` links in the READMEs of sub-directories that are published as independent repositories. The contract repository has no such sub-directories, so the script passes without finding anything to check.
 
 `check-business-api-drift.sh` extracts the route list from the service sources and compares it with the path list of the OpenAPI files, in both directions. It covers the HRPAuth core against `hrpauth-business.yaml`, HASkinLib against `haskinlib-business.yaml`, and HRPAuth-Yggdrasil-API against `hrpauth-yggdrasil-business.yaml`. The implementation repositories are located through the `HRPAUTH_REPO_DIR` / `HASKINLIB_REPO_DIR` / `YGGDRASIL_REPO_DIR` environment variables, falling back to a sibling directory of the contract repository and then to `~/Desktop/HA`; a missing repository or contract file is a hard error rather than a silent pass. The script passes against the current split layout.
 

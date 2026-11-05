@@ -112,10 +112,6 @@ Minecraft 服务端调用的会话检查，是带三阶段逻辑的主端点，�
 
 `hasJoined` 走 Mojang 路径时，`properties` 是 Mojang 签名的纹理，而 `id` 与 `name` 仍是 HRPAuth 侧身份。
 
-## 历史说明
-
-v0.1 的缓存端点（`GET /cache/:key`、`POST /cache`、`DELETE /cache/:key`、`GET /cache/stats`）已移除，缓存仅内部使用。
-
 ## 相关页面
 
 - [数据流转](/zh/projects/winnerproxy/data-flow)：`hasJoined` 的逐阶段逻辑

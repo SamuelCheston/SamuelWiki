@@ -96,7 +96,7 @@ Redis 只有两个用途：令牌校验缓存，以及 UUID 到 UID 的缓存。
 
 - 从 `1.1.0` 或更早版本迁移上来的配置，最终 `auth.hrpauth.base_url` 会是空值，因为这个值取自旧的 `issuer` 字段，而那个字段通常是空的。需要手工补上，校验不接受空的 base URL
 - `version` 高于二进制版本是硬错误，不是告警。应该升级程序，而不是降级文件
-- 自动生成的配置文件与 `config/config.example.yaml` 曾在 `auth.hrpauth.base_url` 上不一致：生成的文件用 `http://localhost:2778`，模板曾用 `http://localhost:8080`。2026-11-05 已把模板纠正为 `2778`（HRPAuth 默认端口），两者现一致
+- `config/config.example.yaml` 与自动生成的文件在 `auth.hrpauth.base_url` 上一致，均为 `http://localhost:2778`（HRPAuth 默认端口）
 - `config/tokens.yaml` 被提交进仓库，而 `config/config.yaml` 在 gitignore 中。仓库里那份带的是占位令牌，但任何写进去的真实令牌都会进入 git 历史
 - `server.read_timeout_seconds` 与 `server.write_timeout_seconds` 会被读取和校验，但从未生效。服务通过 `r.Run(addr)` 启动，没有设置任何超时
 - Docker 镜像不带配置文件，`.dockerignore` 排除了 `config.yaml` 与 `config.example.yaml`。容器首次启动时会在 `/app/config` 下生成 `config/config.yaml`
