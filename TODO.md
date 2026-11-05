@@ -39,9 +39,7 @@ Unattended maintenance pass, 2026-11-05. Items below need a human decision or fo
 
 ## Upstream drift documented (not fixed) here
 
-- WinnerProxy hasJoined stage 3 (`POST /register` body mismatch) and the batch query double prefix are documented as drift on the WinnerProxy pages; the code fix is tracked in HA-Contract's `docs/dev/WinnerProxy/README.md` and WinnerProxy's knowledge base.
 - The HRPAuth-Spigot plugin still sends the retired `manage_token` field on force-bind; harmless (ignored server-side) until the plugin is updated.
-- MatchCoreArena-Server's auth client calls `POST /user/lookup-uuid` (found during the 2026-11-05 content spot check), but the HRPAuth core only registers `/user/lookup`; the contract has no `lookup-uuid` either. The wiki documents the MCA client as implemented; the endpoint mismatch is code-side drift to resolve in MCA or HRPAuth.
 
 ## Verification log
 
