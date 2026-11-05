@@ -107,7 +107,7 @@ MySQL and Redis are **not** started by the Compose stack. They are expected to e
 | `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` | MySQL connection |
 | `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, `REDIS_DB` | Redis connection |
 
-Note how `DB_PORT` is consumed: since the 2026-11-05 schema bumps (HRPAuth v12, HRPAuth-Yggdrasil-API v4, HASkinLib v7), all three services have a dedicated `database.port` field, and the templates render `host` and `port` separately. The legacy inline `ip:port` form inside `host` stays compatible — when `port` is set, the inline part is stripped. `MatchCoreArena-Server` reads its own port setting.
+Note how `DB_PORT` is consumed: all three services have a dedicated `database.port` field, and the templates render `host` and `port` separately. The inline `ip:port` form inside `host` stays compatible — when `port` is set, the inline part is stripped. `MatchCoreArena-Server` reads its own port setting.
 
 Service-to-service wiring uses the Compose service names:
 
