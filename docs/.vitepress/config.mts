@@ -7,7 +7,8 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   sitemap: {
-    hostname: 'https://wiki.mcnb.dev'
+    hostname: 'https://wiki.mcnb.dev',
+    transformItems: (items) => items.filter((item) => item.url !== '404' && item.url !== '/404')
   },
   locales: {
     root: {

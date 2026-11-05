@@ -21,7 +21,6 @@ Unattended maintenance pass, 2026-11-05. Items below need a human decision or fo
 
 ## Link / content decisions needed (2026-11-06 night check)
 
-- [ ] Portal `src/projects.ts:102` links the **private** repo `GoFish-CaliforniaVersion` (visitors get 404; `gh api` reports `private=true`). Decide: make the repo public or remove the entry. An earlier owner rule says private repos must not appear in the portal; the 2026-11-06 night-check discipline was record-only, so the entry stays pending this decision.
 - [ ] `projects/bedwarsrel-mca/index.md` (en+zh) uses `https://api.matchcorearena.com/api/matches` in its configuration example; the domain has no DNS records at all. Decide: keep it as the intended future address or replace it with a placeholder.
 
 ## Documentation centralization
