@@ -20,12 +20,12 @@
 
 ## Schema 版本
 
-顶层 `version` 字段是配置 schema 版本。升级按版本逐级链式迁移，每个版本一个迁移函数（`config/migrations.go`）。当前版本：**12**——`database.port` 可选；`database.host` 只放主机名，内联 `ip:port` 写法仍然兼容（设置了 `port` 时，内联部分会被剥掉）。
+顶层 `version` 字段是配置 schema 版本。升级按版本逐级链式迁移，每个版本一个迁移函数（`config/migrations.go`）。当前版本：**13**——`oauth2.service_clients` 为可选列表，启动时据此种子 OAuth2 服务客户端（缺省或空列表不产生任何登记）；`database.port` 可选；`database.host` 只放主机名，内联 `ip:port` 写法仍然兼容（设置了 `port` 时，内联部分会被剥掉）。
 
 ## 完整 `config.yaml` 示例
 
 ```yaml
-version: "12"
+version: "13"
 site:
   name: "HRPAuth"
   implementation: "HRPAuth"
@@ -77,6 +77,8 @@ webauthn:
   rp_id: ""                      # 默认取 rp_origins 推导出的域名
   rp_origins: []                 # 默认取 callback/frontend URL
   session_ttl_sec: 300
+oauth2:
+  service_clients: []            # 可选；启动时种子。每项：client_id、client_secret、可选 name。空列表/缺省不产生任何登记
 core_api:
   internal_key: "<首次启动自动生成>"
 yggdrasil_api:
@@ -92,7 +94,7 @@ sdk_packages:
 
 | 节 | 字段 | 类型 | 默认值 | 说明 |
 |-------|-------|------|---------|-------------|
-| 顶层 | `version` | string | — | 配置 schema 版本（当前 `"12"`） |
+| 顶层 | `version` | string | — | 配置 schema 版本（当前 `"13"`） |
 | `site` | `name` / `implementation` / `version` | string | `"HRPAuth"` / `"HRPAuth"` / `"1.0.0"` | 服务标识；出现在 `GET /status` 与 Yggdrasil `meta.serverName` |
 | `server` | `port` | string | `":2778"` | 监听端口（必须带冒号） |
 | `server` | `cors_origin` | string | `"*"` | 允许的 CORS 来源 |
@@ -121,6 +123,7 @@ sdk_packages:
 | `oauth2` | `super_client_id` / `super_client_secret` | string | `hrpauth-internal-super` / 生成 | 内置低运维成本服务客户端 |
 | `oauth2` | `super_client_extra_scopes` | array | `[]` | 内置 super client 的附加 scope；只接受 `db.*`，其余静默忽略 |
 | `oauth2` | `public_client_id` / `public_redirect_uris` | — | `hrpauth-webui` / `["<frontend>/oauth/callback"]` | 第一方 WebUI 的内置公开客户端 |
+| `oauth2` | `service_clients` | array | `[]` | 可选的 OAuth2 服务客户端种子列表；每项包含 `client_id`、`client_secret` 与可选的 `name`（缺省回落到 `client_id`）。缺省或空列表不产生任何登记 |
 | `manage` | `token` | string | 首次启动自动生成 | **Manage Token（M-T）**：可作为管理凭据使用；服务间调用请优先使用 OAuth2 super client |
 | `core_api` | `internal_key` | string | 自动生成 | 核心不读取任何 `core_api` 值；卫星服务在各自的配置文件中维护自己的 `core_api` 块 |
 | `yggdrasil_api` | `base_url` | string | `http://localhost:2770` | HRPAuth-Yggdrasil-API 服务地址，核心用它发起 `/internal/heartbeat` 探活。该块中的 `internal_key` 同样不被核心读取 |
@@ -129,6 +132,7 @@ sdk_packages:
 说明：
 
 - 第一方 WebUI 登录使用 `authorization_code + PKCE`；服务间集成使用 `client_credentials`（内置 super client 或独立的服务客户端）。
+- `oauth2.service_clients` 在启动时幂等种子：缺失的行会被创建为 `client_credentials` 机密客户端（`is_super=false`，其令牌解析为服务令牌，满足 ops 级鉴权）；已存在的行绝不被修改——手工轮换过的 secret 不会被覆盖——配置与数据库不一致时只产生警告。
 - 内部回调鉴权使用 `POST /services/auth-key` 动态签发的临时密钥（无静态配置值）。
 - OAuth2 内置 super client secret 承载了主要的服务间权限，请按服务级凭据的级别保护它。
 - BlessingSkin 导入时，bcrypt 哈希可能直接复制，非 bcrypt 来源会被转换为固定标记 `BS2HA$RESET_REQUIRED`，用户须通过重置密码找回访问。

@@ -4,10 +4,10 @@ Quick-start samples for every service that reads a YAML file. The per-project co
 
 ## HRPAuth
 
-Schema version `12`. Since the 2026-10 split the `yggdrasil.*` blocks live in the HRPAuth-Yggdrasil-API service, and the core gained `core_api`, `yggdrasil_api` and `sdk_packages`. Full reference: [Configuration & API](/projects/hrpauth/configuration).
+Schema version `13`. Since the 2026-10 split the `yggdrasil.*` blocks live in the HRPAuth-Yggdrasil-API service, and the core gained `core_api`, `yggdrasil_api` and `sdk_packages`. Full reference: [Configuration & API](/projects/hrpauth/configuration).
 
 ```yaml
-version: "12"
+version: "13"
 site:
     name: HRPAuth
     implementation: HRPAuth
@@ -20,7 +20,7 @@ callback:
 frontend:
     url: https://auth.example.com/ # The frontend site url.
 database:
-    host: 127.0.0.1 # Host only; the port has its own field since v12 (the old inline ip:port form still works).
+    host: 127.0.0.1 # Host only; the port has its own field (the old inline ip:port form still works).
     port: 3306
     db_name: hrpauth
     user: hrpauth
@@ -64,6 +64,7 @@ oauth2:
     public_client_id: hrpauth-webui
     public_redirect_uris:
         - https://auth.example.com/oauth/callback
+    service_clients: [] # Optional; each entry: client_id, client_secret, optional name. Seeded idempotently at startup; empty or missing seeds nothing.
 core_api:
     internal_key: "" # Auto-generated on first startup. The core reads no core_api value.
 yggdrasil_api:

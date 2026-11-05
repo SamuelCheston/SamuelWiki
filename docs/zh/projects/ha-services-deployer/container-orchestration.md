@@ -107,7 +107,7 @@ MySQL 与 Redis **不在** Compose 栈内启动，预期它们已经存在，并
 | `DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASSWORD`、`DB_NAME` | MySQL 连接 |
 | `REDIS_HOST`、`REDIS_PORT`、`REDIS_PASSWORD`、`REDIS_DB` | Redis 连接 |
 
-`DB_PORT` 的消费方式：自 2026-11-05 的配置结构升级（HRPAuth v12、HRPAuth-Yggdrasil-API v4、HASkinLib v7）起，三个服务都有了独立的 `database.port` 字段，模板把 `host` 与 `port` 分开渲染。旧的内联 `ip:port` 写法仍然兼容——设置了 `port` 时，内联部分会被剥掉。`MatchCoreArena-Server` 读取自己的端口设置。
+`DB_PORT` 的消费方式：三个服务都有独立的 `database.port` 字段，模板把 `host` 与 `port` 分开渲染。内联 `ip:port` 写法仍然兼容——设置了 `port` 时，内联部分会被剥掉。`MatchCoreArena-Server` 读取自己的端口设置。
 
 服务之间的互联使用 Compose 服务名：
 

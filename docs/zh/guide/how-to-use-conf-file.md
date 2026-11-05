@@ -4,10 +4,10 @@
 
 ## HRPAuth
 
-配置结构版本 `12`。自 2026-10 拆分后，`yggdrasil.*` 块属于 HRPAuth-Yggdrasil-API 服务，核心新增了 `core_api`、`yggdrasil_api` 与 `sdk_packages`。完整参考：[配置与接口](/zh/projects/hrpauth/configuration)。
+配置结构版本 `13`。自 2026-10 拆分后，`yggdrasil.*` 块属于 HRPAuth-Yggdrasil-API 服务，核心新增了 `core_api`、`yggdrasil_api` 与 `sdk_packages`。完整参考：[配置与接口](/zh/projects/hrpauth/configuration)。
 
 ```yaml
-version: "12"
+version: "13"
 site:
     name: HRPAuth
     implementation: HRPAuth
@@ -20,7 +20,7 @@ callback:
 frontend:
     url: https://auth.example.com/ # 前端站点地址。
 database:
-    host: 127.0.0.1 # v12 起只放主机名，端口有独立字段（旧的内联 ip:port 写法仍然兼容）。
+    host: 127.0.0.1 # 只放主机名，端口有独立字段（旧的内联 ip:port 写法仍然兼容）。
     port: 3306
     db_name: hrpauth
     user: hrpauth
@@ -64,6 +64,7 @@ oauth2:
     public_client_id: hrpauth-webui
     public_redirect_uris:
         - https://auth.example.com/oauth/callback
+    service_clients: [] # 可选；每项：client_id、client_secret、可选 name。启动时幂等种子；空列表或缺省不产生任何登记。
 core_api:
     internal_key: "" # 首次启动自动生成。核心不读取任何 core_api 值。
 yggdrasil_api:
