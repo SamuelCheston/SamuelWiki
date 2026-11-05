@@ -72,7 +72,7 @@ There is no Makefile, no Dockerfile and no docker-compose in this repository.
 
 `config.yaml` is read by `internal/config.LoadConfig`. When the file is missing the defaults are used instead, so the console starts even without a config file.
 
-- `upstream_url`: the server address, the default is `https://arena.mcnb.dev/`
+- `upstream_url`: the server address, the default is `https://arena.mcnb.dev/` (example default address)
 - `management_token`: the operator credential, it must match the server side `auth.maintenance_token`
 - `database.dsn`: the default is `root:@tcp(127.0.0.1:3306)/matchcorearena?parseTime=true`
 - `redis.addr`, `redis.password`, `redis.db`: the Redis connection, direct access is disabled

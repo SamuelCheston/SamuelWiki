@@ -69,7 +69,7 @@ bash build.sh
 
 ```yaml
 match-reporting:
-    api-url: "https://api.matchcorearena.com/api/matches"
+    api-url: "https://api.matchcorearena.com/api/matches" # 示例地址
     access-token: "your-access-token-here"
 ```
 

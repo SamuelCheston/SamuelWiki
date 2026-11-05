@@ -72,7 +72,7 @@ Wails 调试服务监听 `http://localhost:34115`。配置文件按相对路径�
 
 `config.yaml` 由 `internal/config.LoadConfig` 读取。文件缺失时会退回默认值，因此没有配置文件也能启动。
 
-- `upstream_url`：服务端地址，默认 `https://arena.mcnb.dev/`
+- `upstream_url`：服务端地址，默认 `https://arena.mcnb.dev/`（示例默认地址）
 - `management_token`：运维凭据，必须与服务端的 `auth.maintenance_token` 一致
 - `database.dsn`：默认 `root:@tcp(127.0.0.1:3306)/matchcorearena?parseTime=true`
 - `redis.addr`、`redis.password`、`redis.db`：Redis 连接，直连已禁用
