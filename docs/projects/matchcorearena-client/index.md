@@ -95,7 +95,7 @@ The client keeps its settings in `~/.matchcorearena/config.json`. The template l
 - `server_url`: base URL of the MatchCoreArena server, default `https://arena.mcnb.dev/` (example default address)
 - `debug`: debug flag, default `false`
 
-`.env.example` and `docker-compose.yml` also declare `SERVER_URL` and `DEBUG`. The loader in `internal/config/config.go` reads the JSON file only, so those two variables do not reach the application in the current build.
+`server_url` has a settled precedence (2026-11-08): an explicit non-empty `server_url` in the config file wins first; otherwise the `MCA_SERVER_URL` environment variable applies; otherwise the built-in default. `.env.example` documents `MCA_SERVER_URL` accordingly.
 
 ## Relationship With Other Projects
 

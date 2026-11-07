@@ -95,7 +95,7 @@ CI 会跑 `go test ./...`、`npm run typecheck`、`npm run lint`、`npm run buil
 - `server_url`：MatchCoreArena 服务端地址，默认 `https://arena.mcnb.dev/`（示例默认地址）
 - `debug`：调试开关，默认 `false`
 
-`.env.example` 与 `docker-compose.yml` 里也声明了 `SERVER_URL` 和 `DEBUG`。但 `internal/config/config.go` 的加载器只读 JSON 文件，因此当前版本里这两个环境变量不会生效。
+`server_url` 已有明确优先级（2026-11-08 定稿）：配置文件中显式非空的 `server_url` 最优先；其次为环境变量 `MCA_SERVER_URL`；最后为内置默认值。`.env.example` 已按 `MCA_SERVER_URL` 文档化。
 
 ## 与其它项目的关系
 
