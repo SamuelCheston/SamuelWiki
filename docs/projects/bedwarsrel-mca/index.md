@@ -69,7 +69,7 @@ The configuration inherits every key from the upstream `config.yml` and adds one
 
 ```yaml
 match-reporting:
-    api-url: "https://api.matchcorearena.com/api/matches" # example address
+    api-url: "https://arena.mcnb.dev/api/matches" # match-reporting endpoint
     access-token: "your-access-token-here"
 ```
 

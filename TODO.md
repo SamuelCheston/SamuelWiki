@@ -21,7 +21,7 @@ Unattended maintenance pass, 2026-11-05. Items below need a human decision or fo
 
 ## Link / content decisions needed (2026-11-06 night check)
 
-- [ ] `projects/bedwarsrel-mca/index.md` (en+zh) uses `https://api.matchcorearena.com/api/matches` in its configuration example; the domain has no DNS records at all. Decide: keep it as the intended future address or replace it with a placeholder.
+- [x] `projects/bedwarsrel-mca/index.md` (en+zh) used `https://api.matchcorearena.com/api/matches` in its configuration example. Resolved 2026-11-08: `matchcorearena.com` is unregistered (whois "No match"; no NS/SOA/A at all), so it is not a future address. Replaced with the live MCA endpoint `https://arena.mcnb.dev/api/matches` — verified via MatchCoreArena-Client built-in `server_url` default (`internal/config/config.go`), TLS SAN `*.mcnb.dev`, and `/api/matches` answering the 401 `oauth_login_required` envelope.
 
 ## Documentation centralization
 
