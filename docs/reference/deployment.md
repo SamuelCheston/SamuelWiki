@@ -1,6 +1,6 @@
 # Deployment
 
-This site is deployed to GitHub Pages by the GitHub Actions workflow `.github/workflows/deploy.yml`, on every push to `main`. The target domain is `wiki.mcnb.dev`; the Pages origin currently serves `wiki.samuelcheston.com` while the custom domain awaits DNS wiring. See [Build and Deploy](/deploy) for the pipeline detail and [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md) for the pending owner decision.
+This site is deployed to GitHub Pages by the GitHub Actions workflow `.github/workflows/deploy.yml`, on every push to `main`. The target domain is `wiki.mcnb.dev`; the Pages custom domain is set to it, but its DNS points at Cloudflare, so GitHub's domain check is errored and the live site serves a stale build (verified 2026-11-08); `wiki.samuelcheston.com` no longer serves the site. See [Build and Deploy](/deploy) for the pipeline detail and [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md) for the pending owner decision.
 
 ## Build Command
 

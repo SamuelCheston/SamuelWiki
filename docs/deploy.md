@@ -1,6 +1,6 @@
 # Build and Deploy
 
-This site is a VitePress static site deployed to GitHub Pages by GitHub Actions. The target domain is `wiki.mcnb.dev` (`docs/public/CNAME`); the Pages origin currently serves `wiki.samuelcheston.com`, and the custom domain is pending DNS wiring — see the deployment section of [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md) for the owner decision.
+This site is a VitePress static site deployed to GitHub Pages by GitHub Actions. The target domain is `wiki.mcnb.dev` (`docs/public/CNAME`). The Pages custom domain is already set to `wiki.mcnb.dev`; because the domain's DNS points at Cloudflare rather than GitHub Pages, GitHub's domain check stays errored and `https://wiki.mcnb.dev/` currently serves a stale build through Cloudflare (verified 2026-11-08: live `/sitemap.xml` 404s; `wiki.samuelcheston.com` no longer serves the site). See the deployment section of [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md) for the verified state and the owner decision.
 
 ## Continuous Deployment
 
@@ -19,7 +19,7 @@ No secrets are required: the deployment uses the built-in `GITHUB_TOKEN` with `p
 
 The custom domain comes from `docs/public/CNAME` (`wiki.mcnb.dev`), which VitePress copies into the build output; GitHub Pages picks it up from the deployed artifact. DNS must point `wiki.mcnb.dev` at the GitHub Pages endpoints (A/AAAA records or a CNAME to `SamuelCheston.github.io`).
 
-Note: the Pages custom domain stays `wiki.samuelcheston.com` for now. Setting it to `wiki.mcnb.dev` before the DNS fix makes the deploy job stall in `updating_pages` until timeout (GitHub's domain check fails against Cloudflare-proxied DNS). The `CNAME` file in the artifact keeps declaring the target domain `wiki.mcnb.dev`. Current state and owner decision items are tracked in [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md).
+Note: the Pages custom domain is set to `wiki.mcnb.dev` (owner decision; it will not be rolled back). Deploys still complete green while GitHub's domain check is errored, but until the DNS/origin question is settled the live site serves the last good build through Cloudflare. Current state and owner decision items are tracked in [TODO.md](https://github.com/SamuelCheston/SamuelWiki/blob/main/TODO.md).
 
 ## Manual Build
 

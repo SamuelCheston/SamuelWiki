@@ -23,6 +23,7 @@ export default defineConfig({
           { text: 'Projects', link: '/projects/' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Changelog', link: '/changelog' },
+          { text: 'Deploy', link: '/deploy' },
           { text: 'About', link: '/about' }
         ],
         sidebar: {
@@ -195,6 +196,7 @@ export default defineConfig({
           { text: '项目', link: '/zh/projects/' },
           { text: 'FAQ', link: '/zh/faq' },
           { text: '更新记录', link: '/zh/changelog' },
+          { text: '部署', link: '/zh/deploy' },
           { text: '关于', link: '/zh/about' }
         ],
         sidebar: {
