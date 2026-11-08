@@ -1,13 +1,11 @@
 # HA 服务维护视图
 
-HA 服务维护视图是 HA 部署管理 WebUI 的浏览器侧宿主。它托管 React 前端、代理部署器（含其编排面），并负责各服务的首次配置初始化。
+HA 服务维护视图是 HA 部署管理 WebUI 的浏览器侧宿主。它托管 React 前端、代理部署器，并负责各服务的首次配置初始化。
 
 ## 覆盖范围
 
 - 从 `frontend/dist` 提供编译好的 React 前端
 - 把版本与产物查询代理到 HA 服务部署器
-- 把部署器的编排面（清单、校验、状态、运行记录、部署、回滚）代理给浏览器，部署凭据由服务端持有，浏览器接触不到
-- 运维人员会话登录，复用现有运维身份（部署令牌）；未配置令牌时保持免登录模式
 - 把各项目的部署设置（部署目录、端口）保存在本地 JSON 文件里
 - 把远端清单与本地部署状态合并成一份项目列表
 - 通过运行目标二进制并改写生成的 YAML 来完成服务初始化
@@ -15,7 +13,7 @@ HA 服务维护视图是 HA 部署管理 WebUI 的浏览器侧宿主。它托管
 ## 技术栈
 
 - 后端：Go 1.25、Gin、goccy/go-yaml，用 `os/exec` 调用目标二进制
-- 前端：React 19、TypeScript、Vite 7，不使用 UI 库与路由库；界面由少量视图组成（`App.tsx`、`BootstrapView.tsx`、`OrchestrationView.tsx`）
+- 前端：React 19、TypeScript、Vite 7，不使用 UI 库与路由库，全部界面集中在 `App.tsx`
 - 无数据库，状态落在 `data/projects.json`
 
 ## 目录结构
@@ -87,7 +85,6 @@ Vite 开发服务器监听 `5173` 端口，并把 `/api` 与 `/healthz` 代理�
 - `server.public_base_url`：浏览器访问本服务使用的地址
 - `server.frontend_dist`：前端构建产物目录，`./frontend/dist`。目录缺失时服务返回 `503`，并提示先构建前端
 - `deployer.base_url`：部署器地址，`http://127.0.0.1:18080`
-- `deployer.token`：部署器部署令牌，同时作为面板登录密码。令牌由服务端持有：代理在转发变更请求时注入它。留空时面板保持免登录行为，部署/回滚触发一律 fail-closed（503）
 - `state.projects_path`：本地设置文件路径，`./data/projects.json`
 
 端口必须落在 1 到 65535 之间，并且在全部项目之间唯一。唯一性检查同时覆盖本地已保存的项目与部署器上报的项目。
@@ -96,30 +93,15 @@ Vite 开发服务器监听 `5173` 端口，并把 `/api` 与 `/healthz` 代理�
 
 - `GET /healthz`
 - `GET /api/healthz`
-- `GET /api/session` · `POST /api/session/login` · `POST /api/session/logout`
-- `GET /api/config`（已脱敏：不返回令牌内容）
+- `GET /api/config`
 - `GET /api/projects`：远端清单与本地部署设置的合并结果
 - `PUT /api/projects/:name/deployment`：保存部署目录与端口
 - `POST /api/projects/:name/precheck`：初始化前检查部署目录与端口
 - `POST /api/projects/:name/initialize`：生成首次配置
 - `GET /api/deployer/healthz`
 - `GET /api/deployer/manifest`
-- `GET /api/request-log`
-- `GET /api/orchestration/manifest` · `GET /api/orchestration/validation` · `GET /api/orchestration/status`
-- `GET /api/orchestration/runs` · `GET /api/orchestration/runs/:id`
-- `POST /api/orchestration/deploy` · `POST /api/orchestration/rollback`
-
-注册在会话中间件之后的路由，在配置了 `deployer.token` 时要求有效会话。这里代理的编排结构遵循部署器的编排契约；未配置 `deployer.token` 时，变更类路由返回 503。
 
 没有命中任何路由的路径会先在 `frontend/dist` 里按静态文件查找，找不到则回退到 `index.html`，由单页前端自行处理路由。
-
-## 编排区
-
-编排区展示什么，完全由各项目的 `deploy-manifest.yaml` 声明决定，经部署器聚合：
-
-- 项目列表就是聚合后的清单；清单装载错误以警告横幅原文显示，不被隐藏。
-- 一个项目是否可部署纯看清单声明：由 Tinyvisor 管理进程且种类不是 external（`frontend/src/api.ts::isDeployable`）。面板管理、人工管理与 external 条目作为只读事实展示。
-- 没有任何清单声明 = 编排区为空；浏览器端不发明任何内容。
 
 ## 初始化支持
 
@@ -139,7 +121,6 @@ Vite 开发服务器监听 `5173` 端口，并把 `/api` 与 `/healthz` 代理�
 
 ## 相关页面
 
-- [运维面板](/zh/game/operations-panel)：本服务的运维视角页面
 - [HA 服务部署器](/zh/projects/ha-services-deployer/)：它所代理的清单与产物后端
 - [HRPAuth](/zh/projects/hrpauth/)：它能够初始化的项目之一
 - [HASkinProxy](/zh/projects/haskinproxy/)：它能够初始化的项目之一

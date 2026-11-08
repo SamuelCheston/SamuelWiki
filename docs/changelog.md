@@ -1,14 +1,5 @@
 # Changelog
 
-## 2026-11-08
-
-### Game Services Section
-
-- Added a `game/` section covering the current state of the game stack: mod assembly, the zero-mod lobby and routing, plugin tiers, deployment orchestration, the operations panel, and the regression script.
-- Added the Game Services entry to the navigation and a dedicated sidebar, in both locales.
-- Updated the HA Services Deployer page to reflect its orchestration capability (manifest model, runs, rollbacks, deploy endpoints).
-- Updated the HA Services MaintenanceView page to cover the orchestration area, session login, and the deploy token handling.
-
 ## 2026-11-04
 
 ### Expanded to the Whole Ecosystem
