@@ -1,14 +1,15 @@
 # HA Services Deployer
 
-HA Services Deployer is the version manifest and artifact delivery backend for the HA platform. It tells the operations frontend which service releases exist and which binary to download, in a machine-readable form.
+HA Services Deployer is the rollout backend for the HA platform. It tells the operations frontend which service releases exist and which binary to download, in a machine-readable form, and — when orchestration is enabled — it executes deployments itself: version switching, process restarts through Tinyvisor, health and smoke verification, and rollback.
 
 ## What It Covers
 
 - A version manifest listing every service release and its artifacts
 - Artifact download from a local storage directory
-- A small read-only HTTP API for the operations frontend
 - Manifest validation before any data is served
-- Nothing beyond that: no deployment, no process control, no configuration rendering
+- Opt-in bare-metal and container orchestration driven by per-project `deploy-manifest.yaml` files: preflight checks, deploy runs, rollbacks, and run records
+- A read-only HTTP API for the operations frontend, plus authenticated mutation endpoints for runs and rollbacks
+- Configuration rendering is not part of this service; the Compose template under `deploy/` handles it for containerized stacks
 
 ## Tech Stack
 
@@ -106,15 +107,27 @@ Every response uses the envelope `{success, message, data}`.
 
 The artifact path goes through `filepath.Clean` and a `..` prefix check before the file is opened, so a request cannot walk out of the service artifact root.
 
+When orchestration is enabled, the following are added. The read-only endpoints are unauthenticated; the mutation endpoints require the `X-Deploy-Token` header and fail closed (503) when no token is configured.
+
+- `GET /api/v1/deploy/manifests`: aggregated project manifests
+- `GET /api/v1/deploy/validate`: aggregate validation report
+- `GET /api/v1/deploy/status`: declared versus live status
+- `GET /api/v1/deploy/preflight`: one-pass graded preflight report
+- `GET /api/v1/deploy/runs`, `GET /api/v1/deploy/runs/:id`: run records
+- `POST /api/v1/deploy/run`: start a deploy run
+- `POST /api/v1/deploy/rollback`: one-click rollback
+
 ## Relationship With Other Projects
 
 - **Is consumed by** [HA Services MaintenanceView](/projects/ha-services-maintenanceview/) through its `deployer.base_url`
+- **Drives** Tinyvisor during bare-metal runs; processes stay supervised by Tinyvisor, not by this service
 - **Does not use** the HRPAuth microservice extension layer, it only reads its own `data/manifest.json`
-- **Follows** the version manifest contract in [HA Contract](/projects/ha-contract/), documented at `docs/dev/HA-Services-Deployer/version-manifest.md`
+- **Follows** the version manifest contract in [HA Contract](/projects/ha-contract/); the contract record lives in this repository's `knowledge/0006-version-manifest.md`
 - Manifest v1 explicitly does not cover first-deployment initialization or config template rendering
 
 ## Related Pages
 
+- [Deployment Orchestration](/game/deployment): the manifest model, both runtimes, rollback and credential semantics
 - [Container Orchestration](/projects/ha-services-deployer/container-orchestration): the Compose template that runs the whole platform
 - [HA Services MaintenanceView](/projects/ha-services-maintenanceview/): the frontend that consumes this manifest
 - [HA Contract](/projects/ha-contract/): the version manifest contract

@@ -21,6 +21,7 @@ export default defineConfig({
           { text: 'Getting Started', link: '/guide/' },
           { text: 'Reference', link: '/reference/' },
           { text: 'Projects', link: '/projects/' },
+          { text: 'Game Services', link: '/game/' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Changelog', link: '/changelog' },
           { text: 'Deploy', link: '/deploy' },
@@ -46,6 +47,20 @@ export default defineConfig({
                 { text: 'Content Model', link: '/reference/content-model' },
                 { text: 'Writing Conventions', link: '/reference/writing-docs' },
                 { text: 'Deployment', link: '/reference/deployment' }
+              ]
+            }
+          ],
+          '/game/': [
+            {
+              text: 'Game Services',
+              items: [
+                { text: 'Overview', link: '/game/' },
+                { text: 'Mod Assembly', link: '/game/mod-assembly' },
+                { text: 'Zero-Mod Lobby and Routing', link: '/game/lobby-and-routing' },
+                { text: 'Plugin Tiers', link: '/game/plugins' },
+                { text: 'Deployment Orchestration', link: '/game/deployment' },
+                { text: 'Operations Panel', link: '/game/operations-panel' },
+                { text: 'Regression Script', link: '/game/regression' }
               ]
             }
           ],
@@ -194,6 +209,7 @@ export default defineConfig({
           { text: '开始使用', link: '/zh/guide/' },
           { text: '参考资料', link: '/zh/reference/' },
           { text: '项目', link: '/zh/projects/' },
+          { text: '游戏服务', link: '/zh/game/' },
           { text: 'FAQ', link: '/zh/faq' },
           { text: '更新记录', link: '/zh/changelog' },
           { text: '部署', link: '/zh/deploy' },
@@ -219,6 +235,20 @@ export default defineConfig({
                 { text: '内容模型', link: '/zh/reference/content-model' },
                 { text: '文档编写规范', link: '/zh/reference/writing-docs' },
                 { text: '部署说明', link: '/zh/reference/deployment' }
+              ]
+            }
+          ],
+          '/zh/game/': [
+            {
+              text: '游戏服务',
+              items: [
+                { text: '概览', link: '/zh/game/' },
+                { text: '模组装配', link: '/zh/game/mod-assembly' },
+                { text: '零模组大厅与分流', link: '/zh/game/lobby-and-routing' },
+                { text: '插件三档', link: '/zh/game/plugins' },
+                { text: '部署编排', link: '/zh/game/deployment' },
+                { text: '运维面板', link: '/zh/game/operations-panel' },
+                { text: '回归脚本', link: '/zh/game/regression' }
               ]
             }
           ],

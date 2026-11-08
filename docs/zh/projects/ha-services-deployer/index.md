@@ -1,14 +1,15 @@
 # HA 服务部署器
 
-HA 服务部署器是 HA 平台的版本清单与产物分发后端。它用机器可读的方式告诉运维前端：当前有哪些服务版本可升、该下载哪个二进制。
+HA 服务部署器是 HA 平台的发布后端。它用机器可读的方式告诉运维前端：当前有哪些服务版本可升、该下载哪个二进制；启用编排后，它还亲自执行部署：版本切换、经 Tinyvisor 重启进程、健康与冒烟验证、回滚。
 
 ## 覆盖范围
 
 - 一份列出全部服务版本及其产物的版本清单
 - 从本地存储目录分发产物
-- 一组只读的 HTTP 接口，供运维前端调用
 - 数据返回之前先做清单校验
-- 仅此而已：不做部署、不控制进程、不渲染配置模板
+- 可选启用的裸金属与容器编排，由各项目的 `deploy-manifest.yaml` 驱动：前置检查、部署运行、回滚与运行记录
+- 一组供运维前端调用的只读 HTTP 接口，外加需要鉴权的部署/回滚变更端点
+- 配置模板渲染不属于本服务；容器化栈的配置渲染由 `deploy/` 下的 Compose 模板负责
 
 ## 技术栈
 
@@ -106,15 +107,27 @@ go run .
 
 产物路径在打开文件前会经过 `filepath.Clean` 与 `..` 前缀检查，因此请求无法越出该服务的产物根目录。
 
+启用编排后，新增以下接口。只读端点不鉴权；变更端点必须携带 `X-Deploy-Token`，未配置令牌时一律 fail-closed（503）。
+
+- `GET /api/v1/deploy/manifests`：聚合后的项目清单
+- `GET /api/v1/deploy/validate`：聚合校验报告
+- `GET /api/v1/deploy/status`：声明态与实际态对照
+- `GET /api/v1/deploy/preflight`：一次性分级前置检查报告
+- `GET /api/v1/deploy/runs`、`GET /api/v1/deploy/runs/:id`：运行记录
+- `POST /api/v1/deploy/run`：发起一次部署运行
+- `POST /api/v1/deploy/rollback`：一键回滚
+
 ## 与其它项目的关系
 
 - **被消费于** [HA 服务维护视图](/zh/projects/ha-services-maintenanceview/)，通过它的 `deployer.base_url` 接入
+- **驱动** Tinyvisor 完成裸金属运行中的重启；进程仍由 Tinyvisor 监督，不归本服务
 - **不使用** HRPAuth 的微服务扩展层，只读取自己的 `data/manifest.json`
-- **遵循** [HA-Contract](/zh/projects/ha-contract/) 中的版本清单契约，文档位于 `docs/dev/HA-Services-Deployer/version-manifest.md`
+- **遵循** [HA-Contract](/zh/projects/ha-contract/) 中的版本清单契约；契约记录位于本仓 `knowledge/0006-version-manifest.md`
 - manifest v1 明确不负责首次部署初始化，也不负责配置模板渲染
 
 ## 相关页面
 
+- [部署编排](/zh/game/deployment)：清单模型、两种运行时、回滚与凭据语义
 - [容器编排](/zh/projects/ha-services-deployer/container-orchestration)：运行整个平台的 Compose 模板
 - [HA 服务维护视图](/zh/projects/ha-services-maintenanceview/)：消费这份清单的前端
 - [HA-Contract](/zh/projects/ha-contract/)：版本清单契约
